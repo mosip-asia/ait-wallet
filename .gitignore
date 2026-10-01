@@ -89,3 +89,6 @@ android/*.jks
 tmp/
 temp/
 scratch/
+
+# Internal Recruiting & Job Descriptions
+jobs/

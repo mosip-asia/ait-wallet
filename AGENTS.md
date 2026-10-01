@@ -1,4 +1,4 @@
-# AGENT.md — Developer & AI Agent Guidelines
+# AGENTS.md — Developer & AI Agent Guidelines
 
 > **Target Audience**: Any AI Coding Agent (Antigravity, Claude, Copilot, Cursor, Codex, Devin, Aider) or human developer working on the `ait-wallet` repository.
 
@@ -112,3 +112,15 @@ When tasked with generating code or modifying existing files:
 4. **Follow Git & Commit Conventions**:
    - Use Conventional Commits (`feat:`, `fix:`, `docs:`, `refactor:`, `chore:`).
    - Write clear, concise, user-facing change summaries.
+
+---
+
+## 🛡️ 5. Project Scope Boundaries & Tooling Invariants
+
+### A. Digital Issuance vs. Manual Operations
+- **In-Scope**: Digital credential issuance software, schema design (`schema.org` + dual-contexts), automated eligibility evaluation via SIS/SOMSIS APIs, and administrative issuance/revocation dashboards.
+- **Out-of-Scope**: Manual physical scanning of paper archives, data entry of historical paper transcripts, and retroactive database data cleansing. AIT administrative departments are the authoritative owners responsible for cleaning and certifying their data in SIS.
+
+### B. Headless Chrome PDF Compilation
+- When converting Markdown documents to PDF on macOS environments, use the zero-dependency pipeline via local Headless Google Chrome (`jobs/convert_to_pdf.py`).
+- Maintain compact executive print styling (`8.5pt` body font, `line-height: 1.5`, `margin: 18mm`) to fit standard 4-section documents into exactly 2 pages.

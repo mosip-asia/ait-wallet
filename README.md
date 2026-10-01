@@ -324,7 +324,7 @@ flowchart LR
 ├── .github/
 │   ├── ISSUE_TEMPLATE/            # Templates for bug reports, features, and use case proposals
 │   └── PULL_REQUEST_TEMPLATE.md
-├── AGENT.md                       # AI Agent & Developer Guidelines (Prime Directives & Invariants)
+├── AGENTS.md                      # AI Agent & Developer Guidelines (Prime Directives & Invariants)
 ├── LICENSE                        # Apache 2.0 License
 └── README.md                      # Main project documentation (this file)
 ```
@@ -345,7 +345,7 @@ flowchart LR
 
 ## 📖 Documentation Index
 
-- 🤖 **[AI Agent & Developer Guidelines](AGENT.md)** *(Mandatory for AI agents & contributors)*
+- 🤖 **[AI Agent & Developer Guidelines](AGENTS.md)** *(Mandatory for AI agents & contributors)*
 - 🎓 **[VCs & Decentralized Identity: AIT Learning Guide](docs/LEARNING_GUIDE.md)** *(Recommended Starting Point)*
 - 📐 [Technical Architecture & VDR Adapter Hub](docs/ARCHITECTURE.md)
 - 🌐 [Global Standards, Dual-Contexts & VDRs (National ID & Transcript)](docs/GLOBAL_STANDARDS_AND_REGISTRIES.md)
