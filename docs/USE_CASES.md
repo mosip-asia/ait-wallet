@@ -44,6 +44,7 @@ sequenceDiagram
 - **Sub-Second Proximity Tap**: Operates offline via ISO 18013-5 NFC at campus turnstiles, public transport, and secure facility gates.
 - **Universal Standards Interoperability**: Resolves public keys and revocation lists dynamically against Thailand VDR, AIT VDR, or India DigiLocker without proprietary gate software.
 - **Selective Disclosure**: Allows holders to prove student affiliation or age without disclosing citizen identity numbers or residential address.
+- **View-Only Presentation Guard**: On synced secondary devices (e.g. Desktop Web Wallet or secondary phone), the wallet auto-serves the multi-device IETF SD-JWT payload for web sessions. If a verifier strictly demands the hardware-locked mdoc, the UI alerts the user that the hardware key is locked to their primary phone's Secure Enclave.
 
 ---
 
@@ -108,7 +109,8 @@ Enable short-term visitors, conference attendees, and prospective students to im
 │  TIER 2: PERMANENT REGISTERED ACCOUNT (Multi-Platform)                 │
 │  • Unlocks Web Wallet on desktop browsers                              │
 │  • ✅ Unlocks claiming official PIDs (Student ID, National ID)          │
-│  • Zero-Knowledge E2EE cloud backup & multi-year retention             │
+│  • Envelope Encryption: K_vault (DEK) + Passkey Wrappers (KEK)         │
+│  • Zero-Knowledge EDV sync on BFF & multi-year retention               │
 └────────────────────────────────────────────────────────────────────────┘
 ```
 
