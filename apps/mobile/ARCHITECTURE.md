@@ -1,135 +1,188 @@
 # AIT Wallet — Mobile App Architecture
 
-**Status:** Proposal for review · **Owner:** Saina (Mobile) · **Phase:** 1
+**Status:** Proposal for review  
+**Phase:** 1
 
-This PR proposes the mobile app **code structure** and the **configuration
-model** (per 12 Oct MoM). It is built as an **additive layer** over the MOSIP
-Inji base and implements the Thin Client in `docs/ARCHITECTURE.md §6` and the
-Prime Directives in `AGENTS.md`.
+This document proposes the mobile code structure and configuration approach for AIT Wallet.
 
-> Scope: **structure + the configuration mechanism**. Feature code is out of
-> scope here — feature folders are placeholders that show the pattern, built in
-> later PRs once the Inji base is merged.
+It preserves Inji Mobile’s existing directory layout and introduces an AIT-specific layer for branding, features, integrations, and authentication policies. It follows the system architecture defined in `docs/ARCHITECTURE.md`.
+
+**Scope:** Code organization, module responsibilities, and configuration mechanisms. Feature implementations are delivered in subsequent PRs.
 
 ---
 
-## 1. Principle: a Thin Client
+## 1. Architectural approach
 
-Per Directive #7, the app does not parse registries, decompress status lists, or
-federate trust. It renders, stores, and signs; the BFF (Inji Mimoto) does the
-heavy lifting.
+AIT Wallet extends Inji Mobile rather than rebuilding its wallet capabilities.
 
-```mermaid
-flowchart TD
-    subgraph Mobile ["📱 AIT Mobile Wallet — Thin Client"]
-        UI["🎨 render"]
-        Storage["🔒 encrypted local storage"]
-        Security["🛡️ hardware keys / biometrics"]
-    end
-    BFF["🖥️ Wallet Backend (Inji Mimoto)\nVDR resolution · status lists · schema cache"]
-    Mobile <-->|"clean REST + config sync"| BFF
-```
+The mobile app follows the thin-client boundaries defined in `docs/ARCHITECTURE.md`. Existing Inji credential management, encrypted storage, signing, and authentication capabilities are reused.
+
+### Principles
+
+- Preserve Inji’s existing directory layout.
+- Keep AIT-specific additions together.
+- Reuse existing wallet functionality before introducing new implementations.
+- Separate presentation, workflows, integrations, and configuration.
+- Minimize and document changes to upstream-derived files.
+- Keep private keys and signing operations within the existing on-device security mechanisms.
 
 ---
 
-## 2. Two-Zone Model ⭐
+## 2. Two-zone model
 
-We extend MOSIP **Inji Mobile** (production-proven, XState-driven, flat layout).
-Rather than refactor it, we keep two separated zones:
+The mobile application contains two logical zones within one application.
 
-```mermaid
-flowchart LR
-    subgraph InjiZone ["📦 Inji Zone — upstream (DO NOT restructure)"]
-        IZ["screens/ · components/ · machines/\nshared/ · android/ · ios/"]
-    end
-    subgraph AitZone ["🧩 AIT Zone — additive layer (ait/ + packages/branding)"]
-        AZ["theme · config · components\nfeatures · integrations · security"]
-    end
-    AitZone -->|"theme, config, features"| InjiZone
-    InjiZone -->|"git subtree pull keeps updating"| InjiZone
+| Zone | Responsibility | Rule |
+| :--- | :--- | :--- |
+| Inji-derived code | Existing wallet screens, workflows, credential operations, storage, and native integrations | Preserve the directory layout. Make minimal integration changes and document them. |
+| AIT-specific code | AIT branding, features, integrations, configuration, and authentication policies | Place mobile additions under `apps/mobile/ait/`; place shared design tokens in `packages/branding/`. |
+
+The AIT layer connects to Inji through explicit integration points such as application initialization, navigation, theme integration, and workflow actions.
+
+The `ait/` directory is an organizational boundary, not an automatic override or plugin mechanism. Existing Inji files may require small changes to connect AIT functionality.
+
+This separation reduces upstream conflicts but does not eliminate them. Upstream updates must be reviewed and tested before merging.
+
+---
+
+## 3. Proposed code structure
+
+Existing Inji directories remain in place. The following shows the relevant directories and proposed AIT additions; it is not an exhaustive listing of Inji files.
+
+```text
+ait-wallet/
+  apps/
+    mobile/                         # Inji subtree and AIT mobile additions
+      android/                      # Existing Android project
+      ios/                          # Existing iOS project
+      assets/                       # Existing Inji assets
+      components/                   # Existing Inji components
+      screens/                      # Existing Inji screens
+      routes/                       # Existing navigation
+      machines/                     # Existing XState workflows
+      lib/                          # Existing utilities and integrations
+      shared/                       # Existing shared code
+      types/                        # Existing types
+      locales/                      # Existing localization resources
+
+      ait/
+        theme/                      # Branding-to-theme integration
+        config/                     # Configuration loading and validation
+        components/                 # Reusable AIT UI components
+        features/                   # AIT feature modules
+        integrations/               # AIT backend clients and data mapping
+        security/                   # AIT authentication policies
+        assets/                     # AIT-specific images and icons
+
+      ARCHITECTURE.md                # This document
+      .env.example                  # Documented deployment variables
+      app.config.ts                 # Existing app/build configuration
+      package.json                  # Mobile dependencies and scripts
+      package-lock.json             # Mobile dependency lockfile
+
+  packages/
+    branding/                       # Shared design tokens
+
+  docs/
+    ARCHITECTURE.md                  # System architecture
+
+  .github/
+    workflows/                      # AIT repository CI
 ```
 
-| Zone | Rule |
+Mobile dependencies and the existing mobile lockfile remain under `apps/mobile/`.
+
+`packages/branding/` is a local shared package. Its integration must configure Metro, TypeScript, dependency resolution, and CI so that mobile builds can resolve it.
+
+---
+
+## 4. Module responsibilities
+
+| Directory | Responsibility |
 | :--- | :--- |
-| **Inji Zone** | keep as-is; update via `git subtree pull` |
-| **AIT Zone** (`ait/` + `packages/branding`) | our clean, configurable layer |
+| `ait/theme/` | Adapt shared design tokens to the app’s theme system. |
+| `ait/config/` | Load, validate, and expose deployment and remote configuration. |
+| `ait/components/` | Provide UI components reused across multiple AIT features. |
+| `ait/features/` | Contain feature-specific screens, components, workflows, and types. |
+| `ait/integrations/` | Communicate with AIT backend services and map API responses into application types. |
+| `ait/security/` | Apply AIT authentication policies using existing Inji security capabilities. |
+| `ait/assets/` | Store AIT-specific images, icons, and illustrations. |
+| `packages/branding/` | Define shared visual tokens such as colors, typography, and spacing. |
 
-**Reuse, don't rebuild:** credential core and biometric unlock already exist in
-Inji — the AIT layer extends them, never duplicates them.
+### Feature organization
 
----
+Each feature groups its own code together. For example:
 
-## 3. Code structure
-
-```
-apps/mobile/
-├── ait/
-│   ├── theme/          ✅ configurable theme (consumes packages/branding)
-│   ├── config/         ✅ runtime config (env + BFF remote)
-│   ├── components/     ▫️ reusable AIT UI (token-driven)
-│   ├── features/       ▫️ feature-first: screen + machine + types per feature
-│   ├── integrations/   ▫️ AIT backend clients (repository pattern)
-│   └── security/       ▫️ AIT auth policies (wrap Inji biometrics)
-├── ARCHITECTURE.md
-└── .env.example
-packages/
-└── branding/           ✅ design tokens — the visual configuration surface
+```text
+ait/features/transcript/
+  TranscriptScreen.tsx
+  transcript.machine.ts
+  transcript.types.ts
+  components/
 ```
 
-✅ implemented now · ▫️ structure placeholder (built later)
+Create files and subdirectories only when required by the implementation.
 
----
+### Dependency rules
 
-## 4. Configuration model (the point of this PR)
+- Screens and components handle presentation and user interaction.
+- XState machines coordinate workflows, transitions, and asynchronous actions.
+- Integration modules handle backend communication and response mapping.
+- Feature-specific components remain inside their feature.
+- Components shared across AIT features belong in `ait/components/`.
+- Shared wallet state and credential operations reuse existing Inji modules.
+- Integration and configuration modules must not depend on UI components.
+- Avoid circular dependencies between AIT modules and Inji-derived code.
 
-Two surfaces, so **nothing is hardcoded in screens/services**:
+Typical interaction:
 
-### 4a. Visual — design tokens
-```mermaid
-flowchart LR
-    Tokens["packages/branding"] --> Theme["ait/theme\nbuildTheme + ThemeProvider"]
-    Theme --> useTheme["useTheme()"] --> Comp["components & screens"]
+```text
+Screen → workflow machine → integration or existing Inji capability
 ```
-Re-skin by editing tokens — UI restyles automatically (Directive #2).
-`APPLICATION_THEME` (`gradient | purple`, already in Inji's `.env`) = a variant.
 
-### 4b. Runtime — env + remote
-`ait/config/runtimeConfig.ts` merges fallback ← `.env` ← BFF remote:
-
-| Setting | Source |
-| :--- | :--- |
-| Server hosts | `.env` (per deployment) |
-| Theme variant, language | `.env` |
-| Feature flags | BFF remote (toggle server-side, no app-store update) |
+Screens must not directly implement key management, credential cryptography, or encrypted storage.
 
 ---
 
-## 5. Merge plan (next PR, after Inji is pulled)
+## 5. Integration with Inji
 
-Inji's folders map to our layers — **no files moved**:
+No existing Inji directories are moved.
 
-| Inji Zone | Bridge |
+| Existing Inji area | AIT integration |
 | :--- | :--- |
-| `screens/`, `components/` | read tokens via `ait/theme/useTheme()` |
-| `machines/` (XState) | AIT feature machines follow the same pattern |
-| biometric/auth machines | wrapped by `ait/security` policies (not rebuilt) |
-| `.env`, `app.config.ts` | fed by `ait/config/runtimeConfig` |
+| Application initialization | Initialize AIT configuration and theme integration. |
+| `screens/`, `components/` | Incrementally adopt shared branding and connect AIT components. |
+| `routes/` | Register AIT screens and navigation entries. |
+| `machines/` | Connect AIT workflows to existing wallet workflows and services. |
+| Authentication and biometric workflows | Apply AIT policies while reusing existing authentication capabilities. |
+| Existing local settings | Store supported user preferences through the existing mechanism. |
+| `.env`, `app.config.ts` | Supply build/deployment configuration. |
+| Running application | Load validated remote configuration through `ait/config/`. |
 
-Everything else stays in the Inji Zone untouched → `subtree pull` stays clean.
+Biometric unlock, encrypted storage, key management, and credential handling must first be assessed in the imported Inji revision before adding new implementations.
+
+Device biometric unlock and credential-photo face matching are separate capabilities and must be treated separately.
 
 ---
 
-## 6. Directives honoured
+## 6. Delivery order and status
 
-| Directive | Where |
+### Delivery order
+
+1. Merge the Inji subtree import.
+2. Rebase the AIT structure/configuration branch onto that base.
+3. Implement and verify the branding package, theme integration, and configuration mechanism.
+4. Add AIT features through subsequent PRs.
+
+The initial subtree import must precede additions under `apps/mobile/`, because `git subtree add` expects its destination path not to exist.
+
+### Status terminology
+
+| Status | Meaning |
 | :--- | :--- |
-| #2 Tokens from branding | `ait/theme` consumes `packages/branding`; UI uses `useTheme()` |
-| #7 Thin client + reuse | heavy logic + biometrics reused from Inji; AIT adds config/policies |
+| Proposed | Described and awaiting agreement. |
+| Implemented | Code exists and its behavior has been checked. |
+| Integrated | Connected to the mobile application and verified in the relevant flows. |
+| Placeholder | Indicates intended organization; contains no feature implementation. |
 
----
-
-## 7. Scope
-
-- ✅ **In:** `ait/` structure, the theme + runtime-config mechanism, `packages/branding` tokens, this doc.
-- ⛔ **Out:** feature implementations and the Inji base import (separate branch).
-- 🔎 **Review focus:** the two-zone model, the folder structure, and the two configuration surfaces.
+This document is a proposal. Implementation and integration status must be reported in the accompanying PR.
