@@ -1,19 +1,15 @@
 /**
- * ait/config — runtime configuration (non-visual half of "configurable").
- * Merges fallback ← .env ← BFF remote config, so nothing is hardcoded in
- * screens/services. Visual identity lives in packages/branding, not here.
+ * ait/config — runtime configuration (the non-visual half of "configurable").
+ * Merges fallback ← .env ← BFF remote config, so no screen/service hardcodes a
+ * host, flag or language. Visual identity lives in packages/branding, not here.
  */
 import type { ThemeVariant } from '../theme/theme';
 
-/** Active presentation context (AGENTS.md Pillar 3 — re-orders cards only). */
-export type ContextDomain = 'ait' | 'thailand' | 'india' | 'global';
-
 export interface RuntimeConfig {
   servers: { mimotoHost: string; esignetHost: string; issuerHost: string };
-  themeVariant: ThemeVariant;
-  language: string;
-  defaultContext: ContextDomain;
-  features: { guestMode: boolean; transcriptRequest: boolean; nfcPresentation: boolean };
+  themeVariant: ThemeVariant;        // from APPLICATION_THEME
+  language: string;                  // from APPLICATION_LANGUAGE
+  features: Record<string, boolean>; // feature flags (BFF can toggle remotely)
 }
 
 /** Build-time env (mirrors Inji's .env keys). */
@@ -22,10 +18,9 @@ export interface Env {
   APPLICATION_THEME?: string; APPLICATION_LANGUAGE?: string;
 }
 
-/** Remote overrides the BFF may push (feature flags, trust config). */
+/** Optional overrides the BFF may push at runtime (zero app-store update). */
 export interface RemoteConfig {
-  features?: Partial<RuntimeConfig['features']>;
-  defaultContext?: ContextDomain;
+  features?: Record<string, boolean>;
 }
 
 const FALLBACK: RuntimeConfig = {
@@ -36,8 +31,7 @@ const FALLBACK: RuntimeConfig = {
   },
   themeVariant: 'gradient',
   language: 'en',
-  defaultContext: 'ait',
-  features: { guestMode: true, transcriptRequest: true, nfcPresentation: false },
+  features: { guestMode: true },
 };
 
 /** Effective config: fallback ← env ← remote. */
@@ -50,7 +44,6 @@ export function resolveConfig(env: Env = {}, remote: RemoteConfig = {}): Runtime
     },
     themeVariant: (env.APPLICATION_THEME as ThemeVariant) ?? FALLBACK.themeVariant,
     language: env.APPLICATION_LANGUAGE ?? FALLBACK.language,
-    defaultContext: remote.defaultContext ?? FALLBACK.defaultContext,
     features: { ...FALLBACK.features, ...remote.features },
   };
 }
