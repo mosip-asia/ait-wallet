@@ -144,6 +144,26 @@ flowchart LR
 - **Cross-Platform Access**: Unlocks full access to the **Web Wallet** on desktop browsers.
 - **Storage Lifecycle & Cost Management**: Maintained across years of active use. Inactive accounts are flagged and purged after **6 months** of continuous inactivity to prevent unbounded server storage costs.
 
+### 3.3 Zero-Knowledge E2EE Multi-Device Vault & Recovery Architecture (Termius / Obsidian Model)
+Unlike traditional single-device DPI wallets (which trap keys inside a single phone's non-exportable chip or rely on OS-locked Google Drive / iCloud zip files), AIT Wallet implements a **Zero-Knowledge End-to-End Encrypted (E2EE) Cloud Vault** hosted on the AIT BFF to enable true multi-device continuity across **iOS**, **Android**, and **Desktop Web**:
+
+1. **Two-Key Separation (Account Auth vs. Vault Encryption)**:
+   - **Account Authentication (SSO)**: OAuth/OIDC login (Keycloak, Google, Apple, Microsoft) authenticates the user to the AIT BFF (`/v1/ait/vault`) to read/write their encrypted vault blob. The BFF never sees plaintext credentials or keys.
+   - **Client-Side Vault Encryption**: A random 256-bit **Vault Data Encryption Key (`VaultKey`)** encrypts both the **Verifiable Credentials** and the **exportable Holder Private Keys** (`ES256` / `Ed25519`) using `AES-256-GCM` before leaving the device.
+   - **Local Hardware Protection**: On each logged-in mobile device, the unlocked `VaultKey` and holder keys are wrapped by the local **iOS Secure Enclave / Android KeyStore**, so daily usage and live OIDC4VP challenge signing only require local FaceID / Fingerprint unlock.
+
+2. **Envelope Encryption (Multi-Slot Key Wrapping)**:
+   Rather than encrypting the vault directly with a single password, `VaultKey` is wrapped independently into multiple key slots stored alongside the vault metadata:
+   - **Slot 1 — Master Password (`Argon2id`)**: Derived client-side from the user's Master Password + unique salt.
+   - **Slot 2 — Emergency Recovery Kit / Passkey**: Wrapped by a 24-character Recovery Code (exportable as a printable Emergency QR PDF at Tier 2 signup) or a WebAuthn Passkey (`PRF` extension).
+   - **Slot 3 — Active Device Biometric Slot**: Wrapped by an active device's hardware keystore, allowing a logged-in phone to authorize a Master Password reset without knowing the old password.
+
+3. **Four-Layer Forgotten Master Key Recovery**:
+   - **Layer 1 (Active Device Reset)**: If the user forgets their Master Password on Web/new device while still logged in on an existing phone, the unlocked phone re-wraps **Slot 1** with a new Master Password after biometric verification.
+   - **Layer 2 (Recovery Kit / Passkey)**: Scanning the Emergency Recovery QR PDF or authenticating with a synced Passkey unwraps **Slot 2**, restores the vault, and rotates **Slot 1**.
+   - **Layer 3 (Optional Institutional Escrow)**: 2-of-2 Shamir Secret Sharing split between the student's `@ait.asia` email and AIT KMS.
+   - **Layer 4 (Vault Reset & Instant OIDC4VCI Re-Issuance)**: Because authoritative issuers (AIT Registrar / Inji Certify) retain the source-of-truth records, a user who loses all devices and recovery keys can trigger a **Vault Reset** via AIT SSO—wiping the old ciphertext blob, revoking old credential bindings, and automatically re-issuing fresh AIT Student/Staff ID and Academic Transcript VCs into a new vault.
+
 ---
 
 ## 🏛️ 4. Issuer Architecture: AIT as Authoritative Issuer
@@ -183,6 +203,8 @@ flowchart LR
 1. **VDR Adapter Hub**: Translates diverse national and institutional registry protocols (AIT, Thailand, India DigiLocker, Japan, Indonesia) into a single unified JSON API for the mobile app.
 2. **Status Sync Engine**: Periodically fetches and unpacks gzip-compressed Bitstring Status Lists from external VDRs, determining whether credentials held by users are `ACTIVE`, `REVOKED`, or `EXPIRED`.
 3. **Schema & Issuer Cache**: Caches trusted issuer public keys and schema definitions to minimize external network calls and deliver sub-second responses to mobile clients.
+4. **Inji Mimoto Compatibility Layer (`/v1/mimoto/*`)**: Serves the lightweight discovery endpoints expected by the Inji Mobile state machines (`GET /v1/mimoto/allProperties`, `GET /v1/mimoto/issuers`, `GET /v1/mimoto/issuers/:id`, `GET /v1/mimoto/verifiers`, and optional `/v2/get-token/:issuer`) directly from the AIT BFF, eliminating the need to deploy a separate stateless Java Mimoto server.
+5. **User Lifecycle & Zero-Knowledge Vault Service (`/v1/ait/*`)**: Manages Tier 1 (30-day Guest) and Tier 2 (6-month inactivity Permanent) account state, SSO token validation, and storage of Zero-Knowledge E2EE vault blobs + Envelope Encryption key slots.
 
 ---
 
