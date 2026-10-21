@@ -1,0 +1,22 @@
+{
+  "verifiers": [
+    {
+      "client_id": "did:web:id.ait.ac.th:verifiers:campus-gate",
+      "redirect_uris": [
+        "https://verify.ait.ac.th/callback"
+      ],
+      "response_uris": [
+        "https://verify.ait.ac.th/v1/verify/vp-response"
+      ]
+    },
+    {
+      "client_id": "did:web:id.ait.ac.th:verifiers:library",
+      "redirect_uris": [
+        "https://library.ait.ac.th/verify/callback"
+      ],
+      "response_uris": [
+        "https://library.ait.ac.th/v1/verify/vp-response"
+      ]
+    }
+  ]
+}

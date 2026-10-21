@@ -1,0 +1,28 @@
+{
+  "issuers": [
+    {
+      "credential_issuer": "AITRegistrar",
+      "issuer_id": "AITRegistrar",
+      "protocol": "OpenId4VCI",
+      "display": [
+        {
+          "name": "Asian Institute of Technology (AIT)",
+          "logo": {
+            "url": "https://id.ait.ac.th/assets/ait-logo.png",
+            "alt_text": "AIT Official Crest"
+          },
+          "title": "Asian Institute of Technology",
+          "description": "Download your AIT Student ID, Staff ID, and Official Academic Transcript",
+          "language": "en"
+        }
+      ],
+      "client_id": "ait-wallet-mobile",
+      "redirect_uri": "io.mosip.residentapp.inji://oauthredirect",
+      "token_endpoint": "https://issuer.ait.ac.th/v1/certify/oauth/token",
+      "authorization_audience": "https://sso.ait.ac.th/realms/ait/protocol/openid-connect/token",
+      "proxy_token_endpoint": "https://bff.wallet.ait.ac.th/v1/mimoto/get-token/AITRegistrar",
+      "wellknown_endpoint": "https://issuer.ait.ac.th/v1/certify/issuance/.well-known/openid-credential-issuer",
+      "enabled": "true"
+    }
+  ]
+}
