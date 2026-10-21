@@ -99,6 +99,8 @@ flowchart LR
 ### Milestone 1: Digital ID & Tiered Account Foundation
 - [ ] Initialize mobile wallet based on Inji Mobile framework.
 - [ ] Implement **Tiered Account Architecture**: Tier 1 Temporary Guest (Mobile Only, 30-day inactivity, PID block) and Tier 2 Permanent Registered (Pluggable IdPs: Google, Apple, Microsoft, SSO).
+- [ ] Implement **Zero-Knowledge Encrypted Data Vault (EDV)** on Mimoto using Envelope Encryption (`K_vault` DEK + Passkey PRF KEK) with Argon2id software emulation for budget devices.
+- [ ] Implement **Unified Card Container UI** with View-Only Presentation Guard (`[⚡ Present Ready]` vs `[👁️ View-Only: Device-Locked]`).
 - [ ] Support **AIT Student ID** and **Staff ID** issuance from AIT Inji Certify.
 - [ ] Support **Tier 1 One-Time VCs** (e.g. event coupon / visitor pass).
 - [ ] Implement basic VC lifecycle: Issuance (OIDC4VCI), Presentation (OIDC4VP / QR), and local secure storage.

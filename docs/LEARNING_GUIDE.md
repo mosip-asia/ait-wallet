@@ -106,6 +106,12 @@ When any verifier examines a VC, it performs three distinct checks:
 2. **Check 2: Content Inspection** $\rightarrow$ Reads the wallet's public key (`cnf.jwk`) baked inside the credential payload.
 3. **Check 3: Proof of Possession (The Live Handshake)** $\rightarrow$ Asks the phone to sign a one-time random challenge. If a friend was sent a copy of the VC, their phone does not have the original student's private key locked in their hardware chip, so Check 3 fails immediately.
 
+### 🔑 Multi-Device Holder Binding & The "Keychain" Pattern
+* **Anti-Correlation Privacy**: A privacy-preserving wallet does not use the exact same public key for every credential. Using one key everywhere would allow cafeterias, libraries, and bars to track your movements. The wallet generates **pairwise keys** for different issuers and stores them in an internal **Keychain**.
+* **Device-Bound vs. Synced Keys**:
+  * **Multi-Device Credentials (IETF SD-JWT)**: The holder keypair (`K_holder`) is encrypted inside the user's multi-device E2EE vault. Any authorized phone or laptop possessing `K_vault` can sign live challenges.
+  * **Single-Device Regulated Credentials (ISO 18013-5 mdoc)**: High-assurance government IDs lock the private key permanently to a specific phone's physical **Secure Enclave silicon**. Secure Enclave keys never sync (even between two iPhones). Synced secondary devices can *view* the card claims, but cannot cryptographically present it (`[👁️ View-Only]`).
+
 ---
 
 ## 4. Digital VCs vs. Physical Paper VCs with QR Codes
@@ -235,7 +241,9 @@ To ensure zero friction for new installs while providing robust long-term securi
 
 ### Permanent Account (Tier 2)
 - Upgrading is seamless via pluggable IdPs (Google, Apple, Microsoft, or Institutional SSO).
-- Migrates existing local cryptographic keys into a zero-knowledge E2EE backup vault.
+- **Zero-Knowledge Envelope Encryption**: Migrates the local vault into an **Encrypted Data Vault (EDV)** on the BFF using **Envelope Encryption with Multi-Recipient Key Wrapping** (identical to the security models of Apple iCloud Keychain, Signal SVR, and 1Password).
+  - Master Vault Key (`K_vault`, DEK) encrypts credentials and private keys into `Vault_Data.enc`.
+  - Device Key Wrappers (KEK) derived via WebAuthn PRF lock `K_vault` behind device biometrics.
 - Unlocks desktop Web Wallet and official PID claiming.
 - Inactive accounts are retained up to **6 months** before automated cleanup.
 
@@ -253,20 +261,22 @@ In the **AIT Wallet architecture**, we enforce a strict separation of concerns:
 │  ✔ Visualization & UX (Cards, QR codes, badges)       │
 │  ✔ Secure Local Storage (Encrypted DB / MMKV)          │
 │  ✔ Hardware Keystore (Private keys, Face ID signing)   │
+│  ✔ SoftwareKeymaster Emulation (Argon2id for budget)   │
 └───────────────────────────┬────────────────────────────┘
-                            │ Clean REST API
+                            │ Anonymous Pointer: {vdr_url, index}
                             ▼
 ┌────────────────────────────────────────────────────────┐
 │          🖥️ Wallet Backend (BFF / Inji Mimoto)          │
 │  ✔ VDR Adapter Hub (AIT, Thailand, India, Global)       │
+│  ✔ Zero-Knowledge Storage (Stores opaque ciphertext)   │
 │  ✔ Status Tracking & Bitstring Decompression           │
 │  ✔ Foreign Registry Polling & Normalization            │
 │  ✔ Public Key & Schema Caching                         │
 └────────────────────────────────────────────────────────┘
 ```
 
-- **Mobile App**: Lightweight and durable. It only cares about rendering the UI, saving the credentials locally, and using its Secure Enclave chip to sign Proof of Possession challenges.
-- **Wallet Backend**: Does the heavy lifting. When the mobile app asks *"What is the status of my Thai or Indian VC?"*, the backend executes the adapter, queries the foreign registry, and returns `{ "status": "ACTIVE" }` in milliseconds.
+- **Mobile App**: Lightweight and durable. It only cares about rendering the UI, saving the credentials locally, and using its Secure Enclave chip (or Argon2id software emulator on budget devices) to sign Proof of Possession challenges.
+- **Wallet Backend**: Does the heavy lifting. When the mobile app asks *"What is the status of my Thai or Indian VC?"*, the app sends only an **anonymous pointer** (`{ vdr_url, index }`). The backend executes the adapter, queries the foreign registry, and returns `{ "status": "ACTIVE" }` in milliseconds without ever seeing the user's name or grades.
 
 ---
 
@@ -280,8 +290,12 @@ In the **AIT Wallet architecture**, we enforce a strict separation of concerns:
 | **VDR** | Verifiable Data Registry | The public directory hosting public keys, schemas, and revocation lists. |
 | **VCGA** | VC Governance Authority | The governing organization that sets rules, policies, and accreditations. |
 | **BFF** | Backend-for-Frontend | The server layer (e.g. Inji Mimoto) handling heavy VDR integrations on behalf of the mobile app. |
+| **EDV** | Encrypted Data Vault | W3C specification for zero-knowledge cloud storage where the host stores ciphertext without having decryption keys. |
+| **DEK / KEK** | Data Encryption Key / Key Encrypting Key | Two-tier envelope encryption: DEK (`K_vault`) locks the data; KEKs (device passkeys) lock the DEK. |
+| **PRF** | Pseudo-Random Function | WebAuthn extension allowing biometric passkeys to deterministically output symmetric encryption keys. |
 | **OIDC4VCI** | OpenID for VC Issuance | The international API protocol a mobile phone uses to download a VC from an issuer. |
 | **OIDC4VP** | OpenID for VC Presentations | The international API protocol a mobile phone uses to present a VC to a verifier. |
 | **SD-JWT** | Selective Disclosure JWT | A modern token format allowing users to hide specific attributes when presenting credentials. |
 | **Holder Binding** | Key Binding / PoP | The cryptographic lock binding a VC to the private key inside a specific phone's hardware chip. |
+| **View-Only VC** | Visualized Credential | A credential synced to a secondary device for display, but whose hardware private key is locked to the primary device. |
 | **Bitstring** | Bitstring Status List | An ultra-compact list of `0`s and `1`s in the VDR indicating whether credentials are active or revoked. |
