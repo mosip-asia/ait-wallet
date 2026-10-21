@@ -366,6 +366,7 @@ flowchart LR
 ```text
 .
 ├── apps/
+│   ├── bff/                       # Wallet BFF (Phase 1: Mimoto container -> Phase 2: Node.js/TS BFF)
 │   ├── mobile/                    # AIT Mobile Wallet (React Native / Inji Mobile framework)
 │   └── web/                       # Web Wallet architecture boundary
 ├── packages/

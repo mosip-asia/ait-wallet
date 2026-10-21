@@ -94,6 +94,7 @@ When looking for specific context, consult these authoritative documents:
 | **Project Vision, Roadmap & Governance Milestones** | [docs/VISION_AND_ROADMAP.md](docs/VISION_AND_ROADMAP.md) |
 | **Development Workflow, Git Branching & Definition of Done** | [docs/WORKFLOW_AND_GUIDELINES.md](docs/WORKFLOW_AND_GUIDELINES.md) |
 | **Design Tokens, Color Palettes & Card Dimensions** | [packages/branding/README.md](packages/branding/README.md) |
+| **Wallet BFF Architecture (Mimoto -> Node.js/TS BFF)** | [apps/bff/ARCHITECTURE.md](apps/bff/ARCHITECTURE.md) |
 | **Mobile Client Structure (React Native / Inji Mobile)** | [apps/mobile/README.md](apps/mobile/README.md) |
 | **Web Wallet Boundary & Desktop SSO Interfaces** | [apps/web/README.md](apps/web/README.md) |
 
