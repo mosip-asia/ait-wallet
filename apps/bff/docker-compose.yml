@@ -1,0 +1,19 @@
+services:
+  mimoto:
+    image: ${MIMOTO_IMAGE:-mosipid/inji-mimoto:0.14.0}
+    container_name: ait-wallet-bff
+    restart: unless-stopped
+    ports:
+      - "${BFF_PORT:-8099}:8099"
+    environment:
+      - server.port=8099
+      - spring.config.additional-location=file:/home/mosip/config/mimoto-default.properties
+      - mosip.openid.issuers.config.url=file:///home/mosip/config/mimoto-issuers-config.json
+      - mosip.openid.verifiers.config.url=file:///home/mosip/config/mimoto-trusted-verifiers-config.json
+    volumes:
+      - ./config:/home/mosip/config:ro
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8099/v1/mimoto/actuator/health || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 5

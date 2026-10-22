@@ -9,72 +9,106 @@ The **AIT Wallet** is an open, universal decentralized identity and Verifiable C
 
 ---
 
-## 🌐 Core Capabilities: The 3 Architectural Pillars
+## 🌐 Core Capabilities: The 3 Foundational Design Pillars
 
-### 1. Multi-Platform BFF Architecture & Cross-Device Sync
-The heart of the wallet is the **Wallet Backend (BFF / Inji Mimoto)**. Both the **Mobile App (iOS / Android)** and the **Web Wallet (Desktop Browsers)** operate as ultra-lightweight, durable thin clients, delegating the heavy lifting of multi-registry interoperability and data synchronization to the backend.
+### 1. Envelope Encryption with Multi-Recipient Key Wrapping (Zero-Knowledge Sync)
+To enable seamless multi-device access and ensure users never lose their credentials upon device loss or replacement, the wallet implements a **Zero-Knowledge Encrypted Data Vault (EDV)** leveraging **Envelope Encryption with Multi-Recipient Key Wrapping** (conforming to W3C CCG Encrypted Data Vault specifications and WebAuthn PRF key derivation).
+
+This architecture adopts the proven zero-knowledge security models established by leading privacy-preserving platforms:
+
+| Organization / Platform | Standard & Security Model Equivalent |
+| :--- | :--- |
+| **Apple** | **CloudKit End-to-End Encryption (E2EE) / Keychain "Circle of Trust"** |
+| **Signal Messenger** | **Secure Value Recovery (SVR)** |
+| **Matrix / Element** | **Secure Secret Storage and Sharing (SSSS)** |
+| **1Password / Bitwarden** | **Zero-Knowledge Client-Side Encrypted Vault** |
+
+#### 🔐 Cryptographic Key Hierarchy (DEK vs. KEK)
+The wallet separates bulk data encryption from device authentication using a two-tier cryptographic hierarchy:
+1. **Data Encryption Key (DEK) — Master Vault Key (`K_vault`)**:
+   * A 256-bit symmetric key (`AES-256-GCM`) generated locally on the client.
+   * Encrypts the user's complete vault (Verifiable Credentials, metadata, and the keychain of `K_holder` private/public keypairs) into a single encrypted blob (`Vault_Data.enc`).
+   * The BFF **never** sees or stores `K_vault` in plaintext.
+2. **Key Encrypting Keys (KEK) — Per-Device Key Wrappers**:
+   * Derived locally on each authorized device via **WebAuthn PRF (Pseudo-Random Function)** from hardware biometrics (Face ID, Touch ID, Windows Hello), or via **Argon2id** memory-hard key derivation on budget devices lacking hardware enclaves.
+   * Each authorized device encrypts a copy of `K_vault`, producing a compact ~64-byte **Key Wrapper** (`Wrapper_DeviceA`, `Wrapper_DeviceB`).
+   * Adding an Android phone or Desktop Web Wallet simply registers a new wrapper using a 1-time direct device-pairing QR handshake without re-issuing credentials.
+
+```text
+┌────────────────────────────────────────────────────────────────────────┐
+│           🔄 ENVELOPE ENCRYPTION & MULTI-DEVICE SYNC FLOW              │
+└────────────────────────────────────────────────────────────────────────┘
+
+ [1. CLIENT-SIDE ENCRYPTION (DEVICE A)]
+  User Credentials + K_holder Keys ──► Encrypted with K_vault (DEK) ──► Vault_Data.enc
+  K_vault (Master Key) ──────────────► Encrypted with Passkey A (KEK) ─► Wrapper_DeviceA
+                                                     │
+                                                     ▼
+                             BFF stores Opaque Zero-Knowledge Blob:
+                             { "vault": Vault_Data.enc, "wrappers": [Wrapper_DeviceA] }
+                             (BFF cannot decrypt, inspect, or forge VCs)
+                                                     │
+ [2. ADDING DEVICE B (LAPTOP / 2ND PHONE)]           │
+  Device B connects via SSO (Keycloak)               │
+  Device A & B perform 1-time secure pairing (QR) ──► K_vault shared securely
+  Device B encrypts K_vault with Passkey B (KEK) ───► Uploads Wrapper_DeviceB
+                                                     │
+ [3. INSTANT RESTORATION & CROSS-DEVICE CONTINUITY]  │
+  Any authorized device downloads Vault_Data.enc     ▼
+  Unlocks local Wrapper via Biometric/Passkey ──────► Retrieves K_vault locally
+                                                     100% of credentials & keys restored!
+```
+
+#### 🛡️ Total Disaster Recovery (The "Lost All Devices" Scenario)
+If a user loses all authorized devices simultaneously, recovery operates via two standardized paths:
+* **Sovereign Path (BIP-39 Mnemonic Seed)**: Users who back up a 12-word recovery phrase upon Tier 2 registration can instantly derive `K_vault = Argon2id(seed_phrase)` on any new device.
+* **Institutional Assisted Path (DPI Model)**: The user visits the campus registrar (or completes a video KYC session); the registrar authenticates them in AIT Keycloak, generating a fresh device key and triggering automated OIDC4VCI re-issuance.
+
+---
+
+### 2. The VDR Gateway & Adapter Hub (The Universal Trust Router)
+The wallet functions as an agnostic **"digital leather wallet"**: it holds credentials from any authority worldwide. To prevent mobile battery drain, large app bundle sizes, and App Store update gridlock, the **Wallet Backend (BFF / Inji Mimoto)** acts as the **VDR Gateway and Trust Router**:
 
 ```mermaid
 flowchart TD
     subgraph Clients ["💻 Multi-Platform Thin Clients"]
-        Mobile["📱 Mobile App (iOS / Android)\n• Secure Storage (MMKV)\n• Device Key (Enclave / StrongBox)\n• NFC Tap & Dynamic QR"]
-        Web["💻 Web Wallet (Desktop / Browser)\n• Web Crypto API\n• Passkey / FIDO2\n• Web Presentation & Cross-Device Access"]
+        Mobile["📱 Mobile App (iOS / Android)\n• Queries anonymous status pointer\n• Signs challenges in hardware"]
+        Web["💻 Web Wallet (Desktop / Browser)\n• Web Crypto API\n• Web Presentation & Cross-Device Access"]
     end
 
-    subgraph BFF ["🖥️ Wallet Backend (BFF / Inji Mimoto) — The Core Interop Engine"]
-        VDRHub["🌐 VDR Adapter Hub\n(AIT, Thailand, India DigiLocker, Global)"]
-        SyncEngine["🔄 Zero-Knowledge E2EE Vault Sync\n(Cross-Device Continuity)"]
-        StatusCache["⚡ Status Tracker & Bitstring Cache"]
+    subgraph BFF ["🖥️ Inji Mimoto BFF (The VDR Gateway & Adapter Hub)"]
+        Router{"VDR Protocol Router"}
+        A1["did:web / did:jwk Native Resolver\n(AIT, W3C, International Universities)"]
+        A2["🇹🇭 Thailand Trust Adapter\n(MHESI / DGA National Trust List)"]
+        A3["🇮🇳 India DigiLocker Adapter\n(UIDAI / CCA Root Directory)"]
+        A4["🇪🇺 OpenID Federation 1.0 Adapter\n(Cross-Border Trust Chains)"]
+
+        Router --> A1
+        Router --> A2
+        Router --> A3
+        Router --> A4
+
+        Normalizer["⚡ Status & Key Normalizer\nCaches JWKS & Status Bitstrings"]
+        A1 --> Normalizer
+        A2 --> Normalizer
+        A3 --> Normalizer
+        A4 --> Normalizer
     end
 
-    subgraph Registries ["🏛️ Diverse External Trust Registries"]
-        AIT_Reg["AIT VDR"]
-        Thai_Reg["Thailand VDR"]
-        India_Reg["India DigiLocker"]
-        Global_Reg["Global Academic Federations"]
-    end
-
-    Mobile <-->|Secure REST / WebSocket| BFF
-    Web <-->|Secure REST / WebSocket| BFF
-
-    VDRHub <--> AIT_Reg
-    VDRHub <--> Thai_Reg
-    VDRHub <--> India_Reg
-    VDRHub <--> Global_Reg
+    Mobile <-->|Anonymous Pointer: {vdr_url, index}| BFF
+    Web <-->|Anonymous Pointer: {vdr_url, index}| BFF
 ```
 
-#### 🛡️ Cross-Device Continuity & Zero-Knowledge E2EE Vault Recovery
-To enable seamless multi-device access and ensure users never lose their credentials upon device loss or replacement, the wallet implements **Zero-Knowledge End-to-End Encrypted (E2EE) Vault Synchronization**:
+#### 🛡️ The Anonymous Status Pointer (Zero-Knowledge Privacy Guard)
+* **The Privacy Rule**: The wallet **never** sends the credential, claims, or user identity to the BFF.
+* **The Anonymous Query**: The wallet sends only the anonymous pointer:
+  `GET /status?vdr_url=https://id.ait.ac.th/status/list-2026&index=4209`
+* **Zero Tracking**: The BFF checks the bit (0 = Active, 1 = Revoked) from its cached status list and returns `{ "status": "ACTIVE" }`. Live presentations remain strictly peer-to-peer (P2P) between the phone and the verifier; the BFF logs zero user transactions.
 
-```text
-┌────────────────────────────────────────────────────────────────────────┐
-│             🔄 CROSS-DEVICE CONTINUITY & RECOVERY FLOW                  │
-└────────────────────────────────────────────────────────────────────────┘
-
- [1. NORMAL USAGE]
-  Mobile Wallet holds VCs ───► Encrypts Vault with User Key (Passkey/PRF)
-                                            │
-                                            ▼
-                           BFF stores Zero-Knowledge Encrypted Blob
-                           (BFF cannot read, view, or forge VCs)
-                                            │
- [2. DEVICE LOSS OR REPLACEMENT]            │
-  Phone is lost, upgraded, or damaged       │
-                                            │
- [3. INSTANT RESTORATION]                   │
-  User opens Web Wallet (Laptop) OR         │
-  installs App on replacement phone         ▼
-  Authenticates via SSO ───────► Downloads E2EE Encrypted Blob from BFF
-                                            │
-                                            ▼
-  Enters Recovery Passkey ─────► Decrypts vault locally on new device
-                                 100% of credentials restored! Zero data loss!
-                                            │
- [4. HARDWARE KEY RE-BINDING]               ▼
-  New device registers fresh keypair; previous device keys invalidated.
-```
-
-#### ⚡ Why the BFF is the Engine of Interoperability
+#### ⚡ Separation of Custody from Governance
+* **Out-of-the-Box**: Mimoto natively resolves **`did:web`**, **`did:jwk`**, and **OpenID4VCI discovery documents**, covering 90%+ of international academic and enterprise issuers.
+* **Server-Side Integration**: New national registries (Thailand, India, EU) are onboarded as server-side adapters in Mimoto with **zero App Store releases**.
+* **Graceful Degradation**: If a user imports a credential from an exotic or unsupported VDR, the wallet safely stores and presents it anyway! The UI simply marks the card as `[⚪ STATUS UNCHECKED]`, while relying on the external verifier to check the VDR.
 
 | Architectural Dimension | Traditional Fat-Client Wallet | Our BFF-Driven Multi-Platform Wallet |
 | :--- | :--- | :--- |
@@ -84,8 +118,40 @@ To enable seamless multi-device access and ensure users never lose their credent
 | **Revocation List Polling** | ❌ Drains mobile battery decompressing large bitstring lists | ✅ **BFF Cached**: BFF polls, decompresses, and delivers lightweight status flags to clients |
 | **Data Privacy** | Local device only | **Zero-Knowledge Architecture**: BFF only stores ciphertext; cannot see plaintext VC data |
 
-### 2. Multi-Document Format & Multi-VDR Presentation Design
-The wallet supports all major international credential formats and registries. Rather than cluttering the user interface with separate duplicate cards for each format or registry, the wallet implements a **Unified Card Container** with **visual metadata tags** for format capabilities and VDR anchors:
+---
+
+### 3. Device-Bound vs. Multi-Device Credentials (The "View-Only" Presentation Guard)
+Not all credentials follow the same security rules. The wallet introduces a hybrid cryptographic architecture that respects issuer governance policies while maximizing user convenience:
+
+```mermaid
+flowchart TD
+    subgraph Container ["🪪 Unified Card Container in UI ('AIT Student ID')"]
+        direction TB
+
+        subgraph ClassA ["Class A: Multi-Device Synced Payload (IETF SD-JWT)"]
+            A1["• Format: vc+sd-jwt\n• Bound to: K_holder in E2EE Vault\n• Policy: exportable = true\n• Presentable on: iPhone, Android, and Desktop Web!"]
+        end
+
+        subgraph ClassB ["Class B: Single-Device Hardware Payload (ISO 18013-5 mdoc)"]
+            B1["• Format: mso_mdoc\n• Bound to: Secure Enclave / StrongBox DeviceKey\n• Policy: exportable = false\n• Physically trapped in Device 1 silicon!"]
+        end
+    end
+```
+
+#### 🍎 The Apple / Android Hardware Invariant: Secure Enclaves NEVER Sync
+* When a high-assurance credential (such as an ISO 18013-5 mdoc or national mobile driver's license) is issued, the private key is generated inside the **Apple Secure Enclave** or **Android StrongBox**.
+* By operating system design, hardware enclave keys **never leave the physical silicon chip** and **never sync to iCloud or Google cloud** (even between two iPhones owned by the same user).
+
+#### 👁️ The "View-Only vs. Active Presenter" Pattern
+To maintain exceptional UX without violating hardware non-exportability, the wallet decouples **Visualization (Layer 1)** from **Live Cryptographic Presentation (Layer 2)**:
+* **On the Primary Device (Where mdoc was claimed)**:
+  `[⚡ SD-JWT (Present Ready)]   [📶 mdoc (NFC Tap Ready)]`
+  * The device holds both `K_holder` and the native Secure Enclave key. All presentation modes are active.
+* **On Synced Devices (Laptop Web Wallet or Secondary Phone)**:
+  `[⚡ SD-JWT (Web Present Ready)]  [👁️ mdoc (View Only: Locked to Device 1)]`
+  * The user can decrypt the vault, view their photo, student number, and card details on their laptop.
+  * For web verifications, the wallet auto-serves the **SD-JWT**.
+  * If a verifier strictly demands the hardware-locked **mdoc**, the UI alerts the user: *"Hardware Enclave Required: Please tap using your primary iPhone."*
 
 #### 🪪 Visual Card Presentation with Format & VDR Tags
 
@@ -107,16 +173,6 @@ The wallet supports all major international credential formats and registries. R
 │  [⚡ SD-JWT (QR / Web)]    [📶 mdoc (NFC Proximity)]   [🔗 W3C JSON-LD]  │
 └────────────────────────────────────────────────────────────────────────┘
 ```
-
-#### 🏷️ Tag Anatomy & Capabilities
-
-| Tag Type | Example Badges in UI | Functional Meaning & Purpose |
-| :--- | :--- | :--- |
-| **VCGA Tag** | `[🏛️ VCGA: AIT]` | Identifies the issuing governance authority setting trust policies, credential schemas, and business rules. |
-| **VDR Tag(s)** | `[🌐 VDR: did:web]`<br>`[🇹🇭 VDR: Thailand]` | Indicates which public registry anchors the issuer's public keys and bitstring revocation status list. A card can be cross-registered across multiple VDRs. |
-| **Format: SD-JWT** | `[⚡ SD-JWT]` | **Attribute Selective Disclosure**: Encrypted payload formatted as IETF SD-JWT (`vc+sd-jwt`) for QR-code presentation and online OIDC4VP web sessions, allowing users to conceal sensitive fields. |
-| **Format: mdoc** | `[📶 mdoc]` | **Hardware Proximity Tap**: Binary CBOR payload formatted as ISO/IEC 18013-5 (`mso_mdoc`) for high-speed offline NFC taps at campus turnstiles, library gates, and public transit. |
-| **Format: W3C VC** | `[🔗 W3C JSON-LD]` | **Semantic Interoperability**: Formatted as W3C JSON-LD (`ldp_vc`) for cross-border academic verification with international partner universities. |
 
 #### ⚙️ Under-the-Hood: Multi-Format Storage & Auto-Negotiation
 The card shown in the UI is a **logical container**. Under the hood, the wallet holds distinct cryptographic payloads in local encrypted storage. When interacting with a verifier, the wallet auto-negotiates the optimal format without requiring the user to manually configure protocols:
@@ -147,7 +203,7 @@ graph TD
     end
 ```
 
-### 3. Presentation-Level Context Selector
+### 4. Presentation-Level Context Selector
 Just like switching an app language or display theme, users can select an **Active Context Domain** (e.g. *AIT Campus*, *Thailand*, *India*, or *Global*). 
 
 Functionality-wise, **nothing changes in the cryptographic engine**: all credentials in the local vault remain active and discoverable. The selector acts strictly as a **presentation-layer convenience**, pinning and spotlighting the relevant primary Person Identification Data (PID) card at the top of the wallet deck.
@@ -310,6 +366,7 @@ flowchart LR
 ```text
 .
 ├── apps/
+│   ├── bff/                       # Wallet BFF (Phase 1: Mimoto container -> Phase 2: Node.js/TS BFF)
 │   ├── mobile/                    # AIT Mobile Wallet (React Native / Inji Mobile framework)
 │   └── web/                       # Web Wallet architecture boundary
 ├── packages/

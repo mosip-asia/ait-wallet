@@ -144,6 +144,26 @@ flowchart LR
 - **Cross-Platform Access**: Unlocks full access to the **Web Wallet** on desktop browsers.
 - **Storage Lifecycle & Cost Management**: Maintained across years of active use. Inactive accounts are flagged and purged after **6 months** of continuous inactivity to prevent unbounded server storage costs.
 
+### 3.3 Zero-Knowledge E2EE Multi-Device Vault & Recovery Architecture (Termius / Obsidian Model)
+Unlike traditional single-device DPI wallets (which trap keys inside a single phone's non-exportable chip or rely on OS-locked Google Drive / iCloud zip files), AIT Wallet implements a **Zero-Knowledge End-to-End Encrypted (E2EE) Cloud Vault** hosted on the AIT BFF to enable true multi-device continuity across **iOS**, **Android**, and **Desktop Web**:
+
+1. **Two-Key Separation (Account Auth vs. Vault Encryption)**:
+   - **Account Authentication (SSO)**: OAuth/OIDC login (Keycloak, Google, Apple, Microsoft) authenticates the user to the AIT BFF (`/v1/ait/vault`) to read/write their encrypted vault blob. The BFF never sees plaintext credentials or keys.
+   - **Client-Side Vault Encryption**: A random 256-bit **Vault Data Encryption Key (`VaultKey`)** encrypts both the **Verifiable Credentials** and the **exportable Holder Private Keys** (`ES256` / `Ed25519`) using `AES-256-GCM` before leaving the device.
+   - **Local Hardware Protection**: On each logged-in mobile device, the unlocked `VaultKey` and holder keys are wrapped by the local **iOS Secure Enclave / Android KeyStore**, so daily usage and live OIDC4VP challenge signing only require local FaceID / Fingerprint unlock.
+
+2. **Envelope Encryption (Multi-Slot Key Wrapping)**:
+   Rather than encrypting the vault directly with a single password, `VaultKey` is wrapped independently into multiple key slots stored alongside the vault metadata:
+   - **Slot 1 — Master Password (`Argon2id`)**: Derived client-side from the user's Master Password + unique salt.
+   - **Slot 2 — Emergency Recovery Kit / Passkey**: Wrapped by a 24-character Recovery Code (exportable as a printable Emergency QR PDF at Tier 2 signup) or a WebAuthn Passkey (`PRF` extension).
+   - **Slot 3 — Active Device Biometric Slot**: Wrapped by an active device's hardware keystore, allowing a logged-in phone to authorize a Master Password reset without knowing the old password.
+
+3. **Four-Layer Forgotten Master Key Recovery**:
+   - **Layer 1 (Active Device Reset)**: If the user forgets their Master Password on Web/new device while still logged in on an existing phone, the unlocked phone re-wraps **Slot 1** with a new Master Password after biometric verification.
+   - **Layer 2 (Recovery Kit / Passkey)**: Scanning the Emergency Recovery QR PDF or authenticating with a synced Passkey unwraps **Slot 2**, restores the vault, and rotates **Slot 1**.
+   - **Layer 3 (Optional Institutional Escrow)**: 2-of-2 Shamir Secret Sharing split between the student's `@ait.asia` email and AIT KMS.
+   - **Layer 4 (Vault Reset & Instant OIDC4VCI Re-Issuance)**: Because authoritative issuers (AIT Registrar / Inji Certify) retain the source-of-truth records, a user who loses all devices and recovery keys can trigger a **Vault Reset** via AIT SSO—wiping the old ciphertext blob, revoking old credential bindings, and automatically re-issuing fresh AIT Student/Staff ID and Academic Transcript VCs into a new vault.
+
 ---
 
 ## 🏛️ 4. Issuer Architecture: AIT as Authoritative Issuer
@@ -163,7 +183,7 @@ AIT operates the issuing authority for both identity and academic records:
 
 ## 🖥️ 5. Wallet Backend Architecture (BFF / Inji Mimoto)
 
-All heavy integration logic, VDR routing, and status synchronization reside on the **Wallet Backend (BFF)**. The backend shields the mobile app from external registry complexities:
+All heavy integration logic, VDR routing, and status synchronization reside on the **Wallet Backend (BFF / Inji Mimoto)**. The backend acts as a **Zero-Knowledge Encrypted Data Vault (EDV)** and **Universal VDR Gateway**, shielding client apps from external registry complexities:
 
 ```mermaid
 flowchart LR
@@ -173,7 +193,7 @@ flowchart LR
     VDR_Thai["Thailand VDR"]
     VDR_India["India DigiLocker / Global VDRs"]
 
-    Mobile <-->|"1. Clean REST API\n(getCredentialStatus, getIssuers)"| Backend
+    Mobile <-->|"1. Anonymous Pointer: {vdr_url, index}\n2. Opaque Vault Blob: Vault_Data.enc"| Backend
     Backend <-->|"AIT Adapter"| VDR_AIT
     Backend <-->|"Thailand Adapter"| VDR_Thai
     Backend <-->|"India Adapter"| VDR_India
@@ -183,6 +203,27 @@ flowchart LR
 1. **VDR Adapter Hub**: Translates diverse national and institutional registry protocols (AIT, Thailand, India DigiLocker, Japan, Indonesia) into a single unified JSON API for the mobile app.
 2. **Status Sync Engine**: Periodically fetches and unpacks gzip-compressed Bitstring Status Lists from external VDRs, determining whether credentials held by users are `ACTIVE`, `REVOKED`, or `EXPIRED`.
 3. **Schema & Issuer Cache**: Caches trusted issuer public keys and schema definitions to minimize external network calls and deliver sub-second responses to mobile clients.
+4. **Inji Mimoto Compatibility Layer (`/v1/mimoto/*`)**: Serves the lightweight discovery endpoints expected by the Inji Mobile state machines (`GET /v1/mimoto/allProperties`, `GET /v1/mimoto/issuers`, `GET /v1/mimoto/issuers/:id`, `GET /v1/mimoto/verifiers`, and optional `/v2/get-token/:issuer`) directly from the AIT BFF, eliminating the need to deploy a separate stateless Java Mimoto server.
+5. **User Lifecycle & Zero-Knowledge Vault Service (`/v1/ait/*`)**: Manages Tier 1 (30-day Guest) and Tier 2 (6-month inactivity Permanent) account state, SSO token validation, and storage of Zero-Knowledge E2EE vault blobs + Envelope Encryption key slots.
+
+#### 5.1 Zero-Knowledge Encrypted Data Vault (Envelope Encryption)
+* **W3C EDV & WebAuthn PRF Alignment**: Implements **Envelope Encryption with Multi-Recipient Key Wrapping** (similar to Apple iCloud Keychain, Signal SVR, Matrix SSSS, and 1Password).
+* **DEK / KEK Separation**:
+  * **Master Vault Key (`K_vault`, DEK)**: 256-bit AES-GCM key locking all VCs and the holder's keychain into `Vault_Data.enc`.
+  * **Per-Device Key Wrappers (KEK)**: Derived locally via WebAuthn PRF (or Argon2id PIN on budget phones). Each device uploads a ~64-byte wrapper.
+* **Server-Blind Storage**: The BFF stores only opaque ciphertext. The server has **zero access to plaintext credentials, student IDs, grades, or private keys**.
+
+#### 5.2 VDR Gateway & Anonymous Status Pointer (Privacy Guard)
+* **Zero User Tracking**: When checking if a credential is active, the wallet **never** sends the credential or personal claims to the BFF.
+* **Anonymous Query**: The client sends only the anonymous pointer:
+  `GET /status?vdr_url=https://...&index=4209`
+* **Status Bitstring Normalization**: Mimoto decompresses gzip-compressed bitstring lists from external VDRs, checks the bit index (0 = Active, 1 = Revoked), and returns `{ "status": "ACTIVE" }` in milliseconds.
+* **Zero Presentation Tracking**: Live presentations occur strictly peer-to-peer (P2P) between the phone and the verifier over OIDC4VP or NFC. The BFF is not in the presentation loop and logs no verifications.
+
+#### 5.3 Separation of Custody from Governance
+* **Agnostic Digital Leather Wallet**: The wallet holds and presents credentials from any issuer worldwide.
+* **Server-Side Registry Integration**: Pluggable adapters (`did:web`, `did:jwk`, Thailand Trust Framework, India DigiLocker, OpenID Federation 1.0) are maintained on Mimoto with **zero App Store releases**.
+* **Graceful Degradation**: If a credential references an unsupported VDR, the wallet still securely holds and presents it; the UI gracefully marks the status as `[⚪ STATUS UNCHECKED]`, delegating verification to the verifier.
 
 ---
 
@@ -200,21 +241,20 @@ apps/mobile/
 │   ├── storage/              # 2. Local Encrypted Storage
 │   │   ├── vc-store/         # SQLCipher / Encrypted MMKV storing raw signed VCs
 │   │   └── profile-store/    # Registered account profile or Guest session state
-│   └── security/             # 3. Hardware Security Layer
-│       ├── keystore/         # iOS Secure Enclave / Android KeyStore bridge
+│   └── security/             # 3. Hardware & Software Security Layer
+│       ├── keystore/         # Hardware Keystore Bridge (Secure Enclave / StrongBox / TEE)
+│       ├── emulator/         # SoftwareKeymaster Fallback (Argon2id + AES-GCM for budget devices)
 │       ├── biometrics/       # Face ID / Touch ID / BiometricPrompt authorization
 │       └── presentation/     # Signs live challenge nonces (Proof of Possession)
 ```
 
-### Mobile Division of Labor:
-- **What Mobile Does**:
-  - **Renders VCs**: Displays AIT Student ID, Faculty ID, Transcripts, and Guest Coupons cleanly.
-  - **Contextual Domain Selector (Default VCGA / Region)**: Allows the user to select their active context (e.g., `AIT Campus`, `Thailand`, `India`) like a language toggle. The UI automatically spotlights and pins the corresponding PID card at the top of the deck. This is purely a presentation convenience: under the hood, the cryptographic vault remains neutral and can respond to any verifier request.
-  - **Saves VCs Locally**: Stores the signed credential files in encrypted device storage.
-  - **Guards Private Keys**: Generates and holds asymmetric private keys in the hardware chip.
-  - **Signs Challenges**: Solves live verifier challenges (Proof of Possession) upon biometric prompt.
-- **What Mobile Does NOT Do**:
-  - Does NOT directly parse complex multi-country VDR APIs or maintain long-term foreign network adapters.
-  - Does NOT download huge national status lists across cellular data; the **Wallet Backend** computes the status and returns a simple status response.
+### 6.1 Universal Hardware Inclusivity Tier (DPI Principle)
+To prevent excluding users with budget smartphones, the crypto layer employs graceful hardware degradation:
+1. **Tier 1 (Flagship / Discrete HSM)**: Apple Secure Enclave & Android StrongBox.
+2. **Tier 2 (Standard / Budget ARM)**: ARM TrustZone (TEE) hardware-isolated KeyStore (present on 95%+ of $50–$80 Android devices).
+3. **Tier 3 (Ultra-Budget / Legacy Fallback)**: **Software Keystore Emulation (`SoftwareKeymaster`)** using **Argon2id memory-hard key derivation** + local AES-GCM sandboxing (MMKV/SQLCipher). Encryption at rest is an unbroken invariant.
 
----
+### 6.2 Device-Bound vs. Multi-Device Credentials ("View-Only" Presentation Guard)
+* **Class A: Multi-Device Credentials (SD-JWT)**: Academic Transcripts and Student IDs bound to `K_holder` in the E2EE vault are presentable across iPhone, Android, and Desktop Web.
+* **Class B: Single-Device Regulated Credentials (mdoc)**: High-assurance credentials where the issuer mandates non-exportability are bound permanently to that phone's **Secure Enclave silicon**. By Apple/Android design, Secure Enclave keys never sync across devices (even between two iPhones with the same Apple ID).
+* **The "View-Only" UX Guard**: Synced devices without the physical enclave key can decrypt and visualize card claims (photo, student ID, expiry), but live hardware presentation is disabled (`[👁️ mdoc (View Only: Locked to Device 1)]`) while auto-serving the SD-JWT payload for web sessions.

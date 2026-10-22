@@ -99,6 +99,8 @@ flowchart LR
 ### Milestone 1: Digital ID & Tiered Account Foundation
 - [ ] Initialize mobile wallet based on Inji Mobile framework.
 - [ ] Implement **Tiered Account Architecture**: Tier 1 Temporary Guest (Mobile Only, 30-day inactivity, PID block) and Tier 2 Permanent Registered (Pluggable IdPs: Google, Apple, Microsoft, SSO).
+- [ ] Implement **Zero-Knowledge Encrypted Data Vault (EDV)** on Mimoto using Envelope Encryption (`K_vault` DEK + Passkey PRF KEK) with Argon2id software emulation for budget devices.
+- [ ] Implement **Unified Card Container UI** with View-Only Presentation Guard (`[⚡ Present Ready]` vs `[👁️ View-Only: Device-Locked]`).
 - [ ] Support **AIT Student ID** and **Staff ID** issuance from AIT Inji Certify.
 - [ ] Support **Tier 1 One-Time VCs** (e.g. event coupon / visitor pass).
 - [ ] Implement basic VC lifecycle: Issuance (OIDC4VCI), Presentation (OIDC4VP / QR), and local secure storage.
@@ -123,3 +125,27 @@ flowchart LR
 - [ ] Security audit and penetration testing (hardware keystore, biometric protection, transport security).
 - [ ] Onboarding campaigns targeting **1,000+ active users per semester** at AIT.
 - [ ] Future evaluation of Web Wallet companion and submodule decoupling.
+
+---
+
+## 📋 Feature Backlog: Multi-Device E2EE Vault & Custom AIT BFF
+
+To support true cross-platform continuity (Android ↔ iOS ↔ Desktop Web) on top of the Inji Mobile foundation, the following engineering epics are queued in the project backlog:
+
+### Epic 1: Lightweight AIT BFF (Replacing Standalone Java Mimoto)
+- [ ] **Mimoto Compatibility Endpoints**: Implement `GET /v1/mimoto/allProperties`, `GET /v1/mimoto/issuers`, `GET /v1/mimoto/issuers/:id`, and `GET /v1/mimoto/verifiers` in the AIT BFF backed by the AIT VCGA registry so Inji Mobile works out-of-the-box without a separate Java Mimoto container.
+- [ ] **Tiered Account Service (`/v1/ait/accounts`)**: Implement Tier 1 (Guest Mode, 30-day inactivity TTL) and Tier 2 (Permanent Account via Keycloak / Google / Apple / Microsoft SSO, 6-month inactivity TTL) user lifecycle management.
+- [ ] **Encrypted Vault Storage API (`/v1/ait/vault`)**: Store and version Zero-Knowledge E2EE ciphertext blobs and Envelope Encryption key slots per Tier 2 user.
+
+### Epic 2: Zero-Knowledge E2EE Multi-Device Key & VC Vault (Termius / Obsidian Sync Model)
+- [ ] **Portable Holder Keys Wrapped by Local Hardware**: Update `apps/mobile/shared/cryptoutil/cryptoUtil.ts` so `ES256` and `Ed25519` holder private keys are included inside the encrypted client vault (enabling multi-device OIDC4VP signing across Android, iOS, and Web) while remaining wrapped at rest by local **iOS Secure Enclave / Android KeyStore** biometrics.
+- [ ] **Envelope Encryption (`VaultKey` + Multi-Slot KEKs)**: Generate a random 256-bit `VaultKey` (AES-256-GCM) to encrypt VCs and holder keys, and wrap `VaultKey` across multiple slots:
+  - **Slot 1**: Master Password (`Argon2id` key derivation, reusing Inji's Argon2 foundation).
+  - **Slot 2**: Emergency Recovery Kit (24-character recovery code / printable QR PDF) and/or WebAuthn Passkey (`PRF`).
+  - **Slot 3**: Active Device Biometric KeyStore slot.
+- [ ] **BFF Cloud Sync Adapter**: Replace OS-locked Google Drive / iCloud file backup (`CloudBackupAndRestoreUtils.ts`) with automatic encrypted delta/blob sync to `/v1/ait/vault`.
+
+### Epic 3: Forgotten Master Key Recovery & Vault Reset Flows
+- [ ] **Device-to-Device Password Reset (Layer 1)**: Allow an already-unlocked mobile device (via FaceID/Fingerprint) to re-wrap **Slot 1** when a user forgets their Master Password.
+- [ ] **Emergency Recovery QR / Passkey Unlock (Layer 2)**: Build the Tier 2 onboarding screen to generate and download the Emergency Recovery Kit PDF/QR and restore `VaultKey` via **Slot 2**.
+- [ ] **Vault Reset & Auto-Reissuance Fallback (Layer 4)**: Implement the "Forgot Everything? Reset Vault" flow that wipes the unreadable ciphertext vault on the BFF, revokes old credential bindings, and automatically triggers OIDC4VCI re-issuance of AIT credentials via the user's authenticated SSO session.
