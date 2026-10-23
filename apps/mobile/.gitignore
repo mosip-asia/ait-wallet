@@ -1,0 +1,91 @@
+# Dependencies and local package links
+node_modules/
+/vendor/bundle/
+.yalc/
+yalc.lock
+
+# Local environment (commit only the sanitized template)
+.env
+.env.*
+!.env.example
+
+# Expo and web outputs
+.expo/
+web-build/
+dist/
+
+# Logs, caches, and debugging captures
+npm-debug.*
+yarn-error.log
+*.log
+*.flipper
+.eslintcache
+.metro-health-check*
+.jest/cache/
+coverage/
+
+# Signing material
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.keystore
+
+# Operating system and editor files
+.DS_Store
+.vscode/
+.idea/
+*.iml
+*.orig.*
+temp/
+
+# Xcode user state and build artifacts
+build/
+*.pbxuser
+!default.pbxuser
+*.mode1v3
+!default.mode1v3
+*.mode2v3
+!default.mode2v3
+*.perspectivev3
+!default.perspectivev3
+xcuserdata/
+*.xccheckout
+*.moved-aside
+DerivedData/
+*.hmap
+*.ipa
+*.xcuserstate
+project.xcworkspace/
+ios/.xcode.env.local
+/ios/Pods/
+*.jsbundle
+
+# Android generated state and outputs
+.gradle/
+.kotlin/
+.cxx/
+local.properties
+*.hprof
+*.aab
+*.apk
+android/app/debug/output-metadata.json
+android/app/release/output-metadata.json
+android/app/src/main/assets/faceModel.tflite
+
+# Fastlane generated reports and screenshots
+**/fastlane/report.xml
+**/fastlane/Preview.html
+**/fastlane/screenshots/
+**/fastlane/test_output/
+
+# BUCK
+buck-out/
+.buckd/
+
+# UI automation results
+injitest/report/
+injitest/testng-report/
+injitest/src/logs/
+injitest/target/
