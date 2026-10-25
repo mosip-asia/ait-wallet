@@ -67,6 +67,20 @@ export function logState(state: AnyState) {
       state.event,
       (key, value) => {
         if (key === 'type') return undefined;
+        // State-machine events can contain OAuth codes, tokens and holder proofs.
+        // Truncation still exposes their prefixes, so redact these fields entirely.
+        if (
+          /password|secret|token|authcode|auth_code|authorizationcode|codeverifier|code_verifier|privatekey|private_key|proof|nonce/i.test(key) ||
+          key === 'code'
+        ) {
+          return '[redacted]';
+        }
+        if (
+          typeof value === 'string' &&
+          /[?&](code|access_token|id_token)=/i.test(value)
+        ) {
+          return '[redacted callback URL]';
+        }
         if (typeof value === 'string' && value.length >= 100) {
           return value.slice(0, 100) + '...';
         }

@@ -1,5 +1,6 @@
 import testIDProps, {
   bytesToMB,
+  logState,
   faceMatchConfig,
   generateBackupEncryptionKey,
   generateRandomString,
@@ -312,5 +313,41 @@ describe('bytesToMB', () => {
     const bytes = BYTES_IN_MEGABYTE * 2.5;
     const result = bytesToMB(bytes);
     expect(result).toBe('2.500');
+  });
+});
+
+
+describe('development state logging', () => {
+  it('redacts OAuth material without hiding ordinary event details', () => {
+    const log = jest.spyOn(console, 'log').mockImplementation(() => {});
+    try {
+      logState({
+        event: {type: 'TOKEN_RESPONSE', authCode: 'sensitive-code', access_token: 'sensitive-token', proofJwt: 'sensitive-proof', name: 'Demo'},
+        machine: {id: 'issuer'},
+        toStrings: () => ['ready'],
+      } as any);
+      const output = log.mock.calls.map(call => call.join(' ')).join(' ');
+      expect(output).toContain('[redacted]');
+      expect(output).toContain('Demo');
+      expect(output).not.toContain('sensitive-');
+    } finally {
+      log.mockRestore();
+    }
+  });
+
+  it('redacts callback URLs carrying authorization codes', () => {
+    const log = jest.spyOn(console, 'log').mockImplementation(() => {});
+    try {
+      logState({
+        event: {type: 'CALLBACK', url: 'io.mosip.residentapp.inji://oauthredirect?code=sensitive-code'},
+        machine: {id: 'issuer'},
+        toStrings: () => ['ready'],
+      } as any);
+      const output = log.mock.calls.map(call => call.join(' ')).join(' ');
+      expect(output).toContain('[redacted callback URL]');
+      expect(output).not.toContain('sensitive-code');
+    } finally {
+      log.mockRestore();
+    }
   });
 });

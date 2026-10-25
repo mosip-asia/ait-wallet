@@ -1,0 +1,8 @@
+# Send only the files used by the Dockerfile to Docker.
+# This keeps local keys, environment files, tests, and dependencies out of the context.
+*
+!Dockerfile
+!package.json
+!package-lock.json
+!server.mjs
+!rsa-suite.mjs

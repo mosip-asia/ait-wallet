@@ -1,0 +1,20 @@
+{
+  "name": "ait-local-development-issuer",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "start": "node server.mjs",
+    "test": "node --test test/*.test.mjs"
+  },
+  "dependencies": {
+    "@digitalbazaar/jws-linked-data-signature": "3.0.0",
+    "credentials-context": "2.0.0",
+    "jose": "5.10.0",
+    "jsonld-signatures": "11.6.0",
+    "security-context": "4.0.0"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
