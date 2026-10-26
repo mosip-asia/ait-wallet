@@ -317,7 +317,13 @@ export function encodeB64(str: string) {
  *  use the isCustomKeystore constant in the app lifeycle instead.
  */
 function isCustomSecureKeystore() {
-  return isAndroid() ? RNSecureKeystoreModule.deviceSupportsHardware() : true;
+  if (isAndroid()) {
+    // Android emulators (e.g. sdk_gphone64_*) lack physical StrongBox/TEE chips,
+    // causing deviceSupportsHardware() to return false. However, software-backed
+    // AndroidKeyStore is fully functional for development.
+    return RNSecureKeystoreModule.deviceSupportsHardware() || __DEV__;
+  }
+  return true;
 }
 
 export async function encryptJson(

@@ -563,22 +563,28 @@ export const storeMachine =
           }
         },
         generateEncryptionKey: () => async callback => {
-          if (!isHardwareKeystoreExists) {
-            callback(
-              model.events.ERROR(
-                new Error('Could not generate keychain credentials.'),
-              ),
-            );
-          } else {
-            const isBiometricsEnabled =
-              await RNSecureKeystoreModule.hasBiometricsEnabled();
-            await RNSecureKeystoreModule.generateKey(
-              ENCRYPTION_ID,
-              isBiometricsEnabled,
-              AUTH_TIMEOUT,
-            );
-            await RNSecureKeystoreModule.generateHmacshaKey(HMAC_ALIAS);
-            callback(model.events.KEY_RECEIVED(''));
+          try {
+            if (!isHardwareKeystoreExists) {
+              console.error('generateEncryptionKey: hardware keystore check returned false');
+              callback(
+                model.events.ERROR(
+                  new Error('Could not generate keychain credentials.'),
+                ),
+              );
+            } else {
+              const isBiometricsEnabled =
+                await RNSecureKeystoreModule.hasBiometricsEnabled();
+              await RNSecureKeystoreModule.generateKey(
+                ENCRYPTION_ID,
+                isBiometricsEnabled,
+                AUTH_TIMEOUT,
+              );
+              await RNSecureKeystoreModule.generateHmacshaKey(HMAC_ALIAS);
+              callback(model.events.KEY_RECEIVED(''));
+            }
+          } catch (error) {
+            console.error('generateEncryptionKey error:', error);
+            callback(model.events.ERROR(error));
           }
         },
       },
