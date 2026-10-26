@@ -15,7 +15,7 @@ export const SplashScreen: React.FC<RootRouteProps> = props => {
   useEffect(() => {
     setTimeout(() => {
       if (controller.isLanguagesetup) {
-        props.navigation.navigate('Language');
+        props.navigation.navigate('PhoneEntry');
       } else if (controller.isUnAuthorized) {
         props.navigation.navigate('Welcome');
       }
