@@ -1,0 +1,56 @@
+FROM eclipse-temurin:17-jdk-jammy
+
+# Set non-interactive debconf
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Set Android SDK environment
+ENV ANDROID_SDK_ROOT=/opt/android-sdk
+ENV ANDROID_HOME=/opt/android-sdk
+ENV PATH=${PATH}:${ANDROID_HOME}/cmdline-tools/latest/bin:${ANDROID_HOME}/platform-tools:${ANDROID_HOME}/tools/bin
+
+# 1. Install base utilities and build tools
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    bash \
+    bzip2 \
+    build-essential \
+    curl \
+    git \
+    unzip \
+    wget \
+    python3 \
+    libncurses5 \
+    ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
+# 2. Install Node.js 20.x LTS (bundles npm 10.x)
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+    && apt-get install -y nodejs \
+    && rm -rf /var/lib/apt/lists/*
+
+# 3. Install Android Command Line Tools
+ENV CMDLINE_TOOLS_VERSION=11076708
+RUN mkdir -p ${ANDROID_HOME}/cmdline-tools && \
+    wget -q https://dl.google.com/android/repository/commandlinetools-linux-${CMDLINE_TOOLS_VERSION}_latest.zip -O /tmp/cmdline-tools.zip && \
+    unzip -q /tmp/cmdline-tools.zip -d /tmp/cmdline-tools && \
+    mv /tmp/cmdline-tools/cmdline-tools ${ANDROID_HOME}/cmdline-tools/latest && \
+    rm -rf /tmp/cmdline-tools /tmp/cmdline-tools.zip
+
+# 4. Accept Android SDK licenses & pre-install required SDK & NDK versions
+RUN yes | sdkmanager --licenses && \
+    sdkmanager --install \
+    "platform-tools" \
+    "platforms;android-34" \
+    "platforms;android-35" \
+    "platforms;android-36" \
+    "build-tools;36.0.0" \
+    "build-tools;35.0.0" \
+    "ndk;27.0.12077973" \
+    "cmake;3.22.1"
+
+WORKDIR /app
+
+# Expose Metro bundler port
+EXPOSE 8081
+
+CMD ["bash"]
+

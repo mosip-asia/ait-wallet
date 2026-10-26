@@ -1,0 +1,31 @@
+{
+  "issuers": [
+    {
+      "credential_issuer": "AITRegistrar",
+      "issuer_id": "AITRegistrar",
+      "protocol": "OpenId4VCI",
+      "display": [
+        {
+          "name": "AIT Registrar — Local Demo",
+          "logo": {
+            "url": "https://localhost:8443/assets/ait-demo-logo.svg",
+            "alt_text": "AIT Local Demo logo"
+          },
+          "title": "AIT Local Demo",
+          "description": "Obtain a fictional signed student ID for local testing",
+          "language": "en"
+        }
+      ],
+      "client_id": "ait-wallet-mobile",
+      "client_alias": "ait-wallet-mobile-client",
+      "redirect_uri": "io.mosip.residentapp.inji://oauthredirect",
+      "credential_issuer_host": "https://localhost:8443",
+      "wellknown_endpoint": "https://localhost:8443/.well-known/openid-credential-issuer",
+      "token_endpoint": "http://localhost:8099/v1/mimoto/get-token/AITRegistrar",
+      "authorization_audience": "https://localhost:8443/oauth/token",
+      "proxy_token_endpoint": "https://localhost:8443/oauth/token",
+      "qr_code_type": "EmbeddedVC",
+      "enabled": "true"
+    }
+  ]
+}
