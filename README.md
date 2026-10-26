@@ -410,14 +410,13 @@ npm run android:mosip   # or npm run ios
 .
 ├── apps/
 │   ├── README.md                  # Applications Suite & Mobile Spin-Up Guide
-│   ├── LOCAL_DEVELOPMENT_ISSUER.md # Local mock issuer, CA trust, and offline testing guide
 │   ├── bff/                       # Wallet BFF (Phase 1: Mimoto container -> Phase 2: Node.js/TS BFF)
 │   ├── mobile/                    # AIT Mobile Wallet (React Native / Inji Mobile framework)
 │   └── web/                       # Web Wallet architecture boundary
 ├── packages/
 │   └── branding/                  # Design tokens, color palettes, and card UI dimensions
 ├── tools/
-│   └── local-issuer/              # Fictional local OIDC4VCI mock issuer for offline testing
+│   └── local-issuer/              # Fictional local OIDC4VCI mock issuer & offline testing guide
 ├── docs/
 │   ├── ARCHITECTURE.md            # Technical architecture, VDR adapters, and client-server boundaries
 │   ├── GLOBAL_STANDARDS_AND_REGISTRIES.md # National ID & University Transcript global standards
@@ -461,7 +460,7 @@ npm run android:mosip   # or npm run ios
 
 ### 🛠️ Developer Tutorials & Run Guides
 - 📱 **[Applications Suite & Mobile Spin-Up Guide](apps/README.md)** *(Mobile & BFF local/Docker workflows)*
-- 🧪 **[Local Development Mock Issuer & Testing Guide](apps/LOCAL_DEVELOPMENT_ISSUER.md)** *(Offline testing with mock AIT Registrar)*
+- 🧪 **[Local Development Mock Issuer & Testing Guide](tools/local-issuer/README.md)** *(Offline testing with mock AIT Registrar)*
 - 🤝 **[Development Workflow & Contribution Guidelines](docs/WORKFLOW_AND_GUIDELINES.md)** *(Git branching and Definition of Done)*
 
 ---
