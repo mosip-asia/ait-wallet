@@ -361,6 +361,154 @@ flowchart LR
 
 ---
 
+## 🚀 Quick Start: Inji Wallet Development Stack
+
+The mobile development environment requires running the **Wallet Backend-for-Frontend (BFF / Inji Mimoto)** alongside the **Mobile Client (Inji Mobile)**:
+
+```text
+┌───────────────────────────┐         ┌──────────────────────────┐         ┌──────────────────────────┐
+│   apps/mobile             │         │   apps/bff               │         │   tools/local-issuer     │
+│   Inji Mobile App         │◄───────►│   Inji Mimoto BFF        │◄───────►│   OIDC4VCI Mock Issuer   │
+│   (React Native :8081)    │         │   (Docker :8099)         │         │   (Node.js / TLS :8443)  │
+└───────────────────────────┘         └──────────────────────────┘         └──────────────────────────┘
+```
+
+You can develop the mobile client using either of two methods:
+* **Method 1: Local Installation (Native Host)** — Traditional React Native workflow (requires Node.js, JDK 17, and Android Studio / Xcode installed on your host).
+* **Method 2: Dockerized Development (Headless Container)** — Zero-host-dependency workflow (Node.js, JDK 17, Android SDK/NDK, and Gradle run entirely in Docker; only the Android Emulator runs on your host).
+
+---
+
+### Step 1: Start the Backend (BFF)
+
+Choose **Option A** for connected sandbox testing, or **Option B** for complete offline testing with the mock AIT Registrar:
+
+#### Option A: Standard BFF (Connecting to upstream/cloud sandboxes)
+```bash
+cd apps/bff
+cp -n .env.example .env
+docker compose up -d
+```
+
+#### Option B: BFF + Local Development Mock Issuer (Recommended for Offline Dev)
+If you want to test complete credential issuance locally without external networks:
+```bash
+cd apps/bff
+./scripts/start-local-issuer.sh
+```
+> [!TIP]
+> When using Option B, install the local root CA (`tools/local-issuer/state/ca.pem` or `ca.der`) into your iOS/Android simulator so HTTPS requests succeed. See the [Local Development Mock Issuer Guide](docs/LOCAL_DEVELOPMENT_ISSUER.md) for step-by-step instructions.
+
+Verify the BFF is healthy:
+```bash
+curl http://localhost:8099/v1/mimoto/actuator/health
+# Check configured issuers:
+curl http://localhost:8099/v1/mimoto/issuers
+```
+
+---
+
+### Step 2: Run Inji Mobile Client
+
+Configure the client environment first:
+```bash
+cd apps/mobile
+cp .env.example .env
+```
+Ensure `MIMOTO_HOST=http://localhost:8099` (or `http://10.0.2.2:8099` for Android without reverse proxy).
+
+Now choose your preferred workflow:
+
+#### 📦 Method 1: Local Installation (Native Host)
+Best for macOS developers targeting iOS, or developers with existing Android SDK/NDK setups.
+
+1. **Host Prerequisites**:
+   * **Node.js**: `v20.x` LTS
+   * **Java**: OpenJDK 17
+   * **Android**: Android Studio (API 34/35/36, NDK 27.0.12077973)
+   * **iOS (macOS only)**: Xcode 15+, CocoaPods (`pod install`)
+   * **Ubuntu / Debian packages**: `sudo apt update && sudo apt install -y bzip2 build-essential`
+
+2. **Install Dependencies & Start Metro**:
+   ```bash
+   cd apps/mobile
+   npm install
+
+   # For iOS (macOS only):
+   cd ios && pod install && cd ..
+
+   # Start Metro bundler:
+   npm start
+   ```
+
+3. **Launch on Emulator / Device (in a second terminal)**:
+   ```bash
+   # Run on Android Emulator:
+   npm run android:mosip
+
+   # Run on iOS Simulator (macOS only):
+   npm run ios
+   ```
+
+---
+
+#### 🐳 Method 2: Dockerized Development (Headless Container)
+Best for Linux / Windows developers who do not want to install Node.js, JDK 17, and 15+ GB of Android SDK/NDK toolchains on their host machine.
+
+1. **Host Prerequisites**:
+   * **Docker & Docker Compose**
+   * **Android Emulator + ADB** (installed on host machine to display the UI)
+   * *(No Node.js, Java, or Android SDK required on your host system)*
+
+2. **Compile the APK inside Docker**:
+   ```bash
+   cd apps/mobile
+   npm run docker:build:android
+   # (Or run directly: ./scripts/docker-build-apk.sh)
+   ```
+   *Gradle and npm caches are persisted in named Docker volumes, so subsequent builds are fast.*
+
+3. **Connect Host Emulator via ADB**:
+   ```bash
+   # 1. Start your local Android Emulator on your host machine
+   # 2. Forward emulator ports to host containers:
+   adb reverse tcp:8081 tcp:8081
+   adb reverse tcp:8099 tcp:8099
+   adb reverse tcp:8443 tcp:8443
+
+   # 3. Install the freshly compiled APK onto your running emulator:
+   adb install -r android/app/build/outputs/apk/residentapp/debug/app-residentapp-debug.apk
+   ```
+
+4. **Start Dockerized Metro Bundler**:
+   ```bash
+   npm run docker:metro
+   ```
+   *Open the installed Inji app on your emulator. When you edit code in `apps/mobile` on your host, Metro will hot-reload the changes live.*
+
+---
+
+### Step 3: Issue a Test Credential
+
+If running with the **Local Mock Issuer** (Option B):
+1. Complete initial app setup / passcode entry in the Inji Wallet.
+2. Tap **+ Add Credential** / **Download Credential**.
+3. Select **AIT Registrar — Local Demo**.
+4. Log in using the built-in mock student account:
+   * **Username**: `student`
+   * **Password**: `student-local-password`
+5. Tap **Sign in and issue student ID** to download Nisha Gurung's student ID card into your wallet.
+
+---
+
+### Step 4: Next Steps: Configuring Google OAuth (Tier 2 Upgrade)
+
+By default, the wallet runs in **Tier 1 (Guest Mode)**. To enable **Tier 2 (Permanent Registered Account)** with multi-device cloud backup:
+- Mobile client configuration: Add your OAuth client ID to `GOOGLE_ANDROID_CLIENT_ID` in `apps/mobile/.env`.
+- BFF configuration: Provide `GOOGLE_OAUTH_CLIENT_ID` and `GOOGLE_OAUTH_CLIENT_SECRET` in `apps/bff/.env`.
+
+---
+
 ## 📁 Repository Structure
 
 ```text
@@ -371,10 +519,13 @@ flowchart LR
 │   └── web/                       # Web Wallet architecture boundary
 ├── packages/
 │   └── branding/                  # Design tokens, color palettes, and card UI dimensions
+├── tools/
+│   └── local-issuer/              # Fictional local OIDC4VCI mock issuer for offline testing
 ├── docs/
 │   ├── ARCHITECTURE.md            # Technical architecture, VDR adapters, and client-server boundaries
 │   ├── GLOBAL_STANDARDS_AND_REGISTRIES.md # National ID & University Transcript global standards
 │   ├── LEARNING_GUIDE.md          # Foundational concepts, trust architecture, and jargon buster
+│   ├── LOCAL_DEVELOPMENT_ISSUER.md # Local mock issuer, CA trust, and offline testing guide
 │   ├── USE_CASES.md               # End-to-end user flows (National ID, Transcripts, Guest Mode)
 │   ├── VISION_AND_ROADMAP.md      # Project vision, milestones, and governance model
 │   └── WORKFLOW_AND_GUIDELINES.md # Contribution guide, Git branching, and DoD
@@ -405,6 +556,7 @@ flowchart LR
 - 🤖 **[AI Agent & Developer Guidelines](AGENTS.md)** *(Mandatory for AI agents & contributors)*
 - 🎓 **[VCs & Decentralized Identity: AIT Learning Guide](docs/LEARNING_GUIDE.md)** *(Recommended Starting Point)*
 - 📐 [Technical Architecture & VDR Adapter Hub](docs/ARCHITECTURE.md)
+- 🧪 [Local Development Mock Issuer & Testing Guide](docs/LOCAL_DEVELOPMENT_ISSUER.md)
 - 🌐 [Global Standards, Dual-Contexts & VDRs (National ID & Transcript)](docs/GLOBAL_STANDARDS_AND_REGISTRIES.md)
 - 🔄 [Consolidated Use Cases (Digital ID, Academic Transcript, Guest Mode)](docs/USE_CASES.md)
 - 📋 [Vision & Focused Roadmap](docs/VISION_AND_ROADMAP.md)

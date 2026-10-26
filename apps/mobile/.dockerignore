@@ -1,0 +1,13 @@
+.git
+.github
+node_modules
+android/.gradle
+android/app/build
+android/build
+ios/build
+ios/Pods
+*.apk
+*.aab
+.idea
+.vscode
+

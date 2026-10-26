@@ -1,0 +1,37 @@
+services:
+  # 1. Headless Android APK Builder
+  android-builder:
+    build:
+      context: .
+      dockerfile: Dockerfile.android
+    image: ait-wallet-android-builder:latest
+    working_dir: /app
+    volumes:
+      - .:/app
+      - gradle-cache:/root/.gradle
+      - npm-cache:/root/.npm
+    environment:
+      - GRADLE_OPTS=-Dorg.gradle.daemon=false -Dorg.gradle.parallel=true -Dorg.gradle.jvmargs="-Xmx4096m -XX:+HeapDumpOnOutOfMemoryError"
+    command: >
+      bash -c "npm install && cd android && ./gradlew :app:assembleResidentappDebug"
+
+  # 2. Metro Bundler for live code updates on host emulator
+  metro:
+    build:
+      context: .
+      dockerfile: Dockerfile.android
+    image: ait-wallet-android-builder:latest
+    working_dir: /app
+    ports:
+      - "8081:8081"
+    volumes:
+      - .:/app
+      - gradle-cache:/root/.gradle
+      - npm-cache:/root/.npm
+    command: >
+      bash -c "npm install && npx react-native start --host 0.0.0.0"
+
+volumes:
+  gradle-cache:
+  npm-cache:
+

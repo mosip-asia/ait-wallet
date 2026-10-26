@@ -67,7 +67,46 @@ GOOGLE_ANDROID_CLIENT_ID='<client_id>'
 for more information on the backend services
 refer [here](https://docs.mosip.io/inji/inji-wallet/technical-overview/backend-services).
 
-## Building & Running for Android
+## Building & Running the App: 2 Development Methods
+
+### 📦 Method 1: Local Installation (Native Host)
+
+1. **Prerequisites**: Node.js 20 LTS, JDK 17, and Android Studio (API 34/35/36, NDK 27). On Ubuntu/Debian: `sudo apt update && sudo apt install -y bzip2 build-essential`.
+2. **Install & Run**:
+   ```bash
+   npm install
+   npm start
+   # In another terminal:
+   npm run android:mosip   # Android
+   npm run ios             # iOS (macOS only)
+   ```
+
+---
+
+### 🐳 Method 2: Dockerized Development (Headless Container)
+
+Use this method to develop on Android **without installing Node.js, Java, or Android SDK on your host**. Only your local Android Emulator and `adb` run on the host:
+
+```bash
+# 1. Compile the APK inside Docker container
+npm run docker:build:android
+# (Or run: ./scripts/docker-build-apk.sh)
+
+# 2. Forward ports on host to your local Android Emulator
+adb reverse tcp:8081 tcp:8081
+adb reverse tcp:8099 tcp:8099
+adb reverse tcp:8443 tcp:8443
+
+# 3. Install the APK onto your running local emulator
+adb install -r android/app/build/outputs/apk/residentapp/debug/app-residentapp-debug.apk
+
+# 4. Start the Dockerized Metro bundler for live Fast Refresh / code updates
+npm run docker:metro
+```
+
+---
+
+## Building & Running for Android (Additional Info)
 
 Refer to the documentation of Inji Wallet's [build and deployment android section](https://docs.mosip.io/inji/inji-wallet/build-and-deployment#android-build-and-run) for the steps build the android application.
 

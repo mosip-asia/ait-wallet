@@ -43,29 +43,54 @@ Before developing the mobile wallet, ensure your development workstation meets t
    cp .env.example .env
    ```
 2. Configure the server endpoints:
-   - `MIMOTO_BASE_URL`: Mimoto backend service URL.
+   - `MIMOTO_HOST`: Mimoto backend service URL (default `http://localhost:8099`).
    - `CERTIFY_BASE_URL`: Inji Certify issuance URL.
    - `IDP_AUTH_URL`: Keycloak or university authentication endpoint.
 
 ---
 
-## 🚀 Running the App
+## 🚀 Running the App: 2 Development Methods
+
+### 📦 Method 1: Local Installation (Native Host)
+Use this method if you have Node.js, JDK 17, and Android Studio or Xcode installed on your host:
 
 ```bash
 # 1. Install dependencies
-yarn install
+npm install
 
-# 2. iOS CocoaPods installation
+# 2. For iOS: CocoaPods installation (macOS only)
 cd ios && pod install && cd ..
 
-# 3. Start Metro bundler
-yarn start
+# 3. Start Metro bundler in one terminal
+npm start
 
-# 4. Run on iOS simulator
-yarn ios
+# 4. Launch on Android emulator or connected device (in another terminal)
+npm run android:mosip
 
-# 5. Run on Android emulator / connected device
-yarn android
+# 5. Launch on iOS simulator (macOS only)
+npm run ios
+```
+
+---
+
+### 🐳 Method 2: Dockerized Development (Headless Container)
+Use this method to develop on Android **without installing Node.js, Java, or Android SDK on your host**. Only your local Android Emulator and `adb` run on the host:
+
+```bash
+# 1. Compile the APK inside Docker
+npm run docker:build:android
+# (Or: ./scripts/docker-build-apk.sh)
+
+# 2. Forward ports on host to your local Android Emulator
+adb reverse tcp:8081 tcp:8081
+adb reverse tcp:8099 tcp:8099
+adb reverse tcp:8443 tcp:8443
+
+# 3. Install the APK to the running host emulator
+adb install -r android/app/build/outputs/apk/residentapp/debug/app-residentapp-debug.apk
+
+# 4. Start Dockerized Metro bundler for live code updates
+npm run docker:metro
 ```
 
 ---
