@@ -477,7 +477,7 @@ Best for Linux / Windows developers who do not want to install Node.js, JDK 17, 
    adb reverse tcp:8443 tcp:8443
 
    # 3. Install the freshly compiled APK onto your running emulator:
-   adb install -r android/app/build/outputs/apk/residentapp/debug/app-residentapp-debug.apk
+   adb install -r android/app/build/outputs/apk/residentapp/debug/Inji_universal.apk
    ```
 
 4. **Start Dockerized Metro Bundler**:

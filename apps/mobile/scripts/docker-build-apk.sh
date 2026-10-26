@@ -35,9 +35,16 @@ else
 fi
 
 # 3. Verify output APK artifact
-APK_PATH="android/app/build/outputs/apk/residentapp/debug/app-residentapp-debug.apk"
+APK_DIR="android/app/build/outputs/apk/residentapp/debug"
+APK_PATH=""
 
-if [ -f "$APK_PATH" ]; then
+if [ -f "$APK_DIR/Inji_universal.apk" ]; then
+  APK_PATH="$APK_DIR/Inji_universal.apk"
+elif compgen -G "$APK_DIR/*.apk" > /dev/null; then
+  APK_PATH="$(ls -1 "$APK_DIR"/*.apk | head -n 1)"
+fi
+
+if [ -n "$APK_PATH" ] && [ -f "$APK_PATH" ]; then
   APK_SIZE=$(du -h "$APK_PATH" | cut -f1)
   echo ""
   echo "=========================================================="

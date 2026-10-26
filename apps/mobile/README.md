@@ -98,7 +98,7 @@ adb reverse tcp:8099 tcp:8099
 adb reverse tcp:8443 tcp:8443
 
 # 3. Install the APK onto your running local emulator
-adb install -r android/app/build/outputs/apk/residentapp/debug/app-residentapp-debug.apk
+adb install -r android/app/build/outputs/apk/residentapp/debug/Inji_universal.apk
 
 # 4. Start the Dockerized Metro bundler for live Fast Refresh / code updates
 npm run docker:metro
