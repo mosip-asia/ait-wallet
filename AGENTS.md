@@ -97,7 +97,7 @@ When looking for specific context, consult these authoritative documents:
 | **Applications Suite & Mobile Spin-Up Guide** | [apps/README.md](apps/README.md) |
 | **Wallet BFF Architecture (Mimoto -> Node.js/TS BFF)** | [apps/bff/ARCHITECTURE.md](apps/bff/ARCHITECTURE.md) |
 | **Mobile Client Structure (React Native / Inji Mobile)** | [apps/mobile/README.md](apps/mobile/README.md) |
-| **Local Mock Issuer & Offline Testing Guide** | [docs/LOCAL_DEVELOPMENT_ISSUER.md](docs/LOCAL_DEVELOPMENT_ISSUER.md) |
+| **Local Mock Issuer & Offline Testing Guide** | [apps/LOCAL_DEVELOPMENT_ISSUER.md](apps/LOCAL_DEVELOPMENT_ISSUER.md) |
 | **Web Wallet Boundary & Desktop SSO Interfaces** | [apps/web/README.md](apps/web/README.md) |
 
 ---

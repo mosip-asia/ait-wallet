@@ -126,7 +126,7 @@ npm test
 
 ## 📱 Connecting Inji Mobile
 
-1. In [`apps/mobile/.env`](../apps/mobile/.env), set:
+1. In [`apps/mobile/.env`](./mobile/.env), set:
    ```ini
    MIMOTO_HOST=http://localhost:8099
    ```

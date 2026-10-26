@@ -409,6 +409,8 @@ npm run android:mosip   # or npm run ios
 ```text
 .
 ├── apps/
+│   ├── README.md                  # Applications Suite & Mobile Spin-Up Guide
+│   ├── LOCAL_DEVELOPMENT_ISSUER.md # Local mock issuer, CA trust, and offline testing guide
 │   ├── bff/                       # Wallet BFF (Phase 1: Mimoto container -> Phase 2: Node.js/TS BFF)
 │   ├── mobile/                    # AIT Mobile Wallet (React Native / Inji Mobile framework)
 │   └── web/                       # Web Wallet architecture boundary
@@ -420,7 +422,6 @@ npm run android:mosip   # or npm run ios
 │   ├── ARCHITECTURE.md            # Technical architecture, VDR adapters, and client-server boundaries
 │   ├── GLOBAL_STANDARDS_AND_REGISTRIES.md # National ID & University Transcript global standards
 │   ├── LEARNING_GUIDE.md          # Foundational concepts, trust architecture, and jargon buster
-│   ├── LOCAL_DEVELOPMENT_ISSUER.md # Local mock issuer, CA trust, and offline testing guide
 │   ├── USE_CASES.md               # End-to-end user flows (National ID, Transcripts, Guest Mode)
 │   ├── VISION_AND_ROADMAP.md      # Project vision, milestones, and governance model
 │   └── WORKFLOW_AND_GUIDELINES.md # Contribution guide, Git branching, and DoD
@@ -448,15 +449,20 @@ npm run android:mosip   # or npm run ios
 
 ## 📖 Documentation Index
 
-- 🤖 **[AI Agent & Developer Guidelines](AGENTS.md)** *(Mandatory for AI agents & contributors)*
+### 📐 Architecture & System Contracts
+- 🤖 **[AI Agent & Developer Guidelines](AGENTS.md)** *(Mandatory prime directives & architectural invariants)*
+- 📐 **[Technical Architecture & VDR Adapter Hub](docs/ARCHITECTURE.md)** *(System topology, client-server split)*
+- 🔄 **[Consolidated Use Cases](docs/USE_CASES.md)** *(Student ID, transcripts, and guest coupons)*
+- 📋 **[Vision & Focused Roadmap](docs/VISION_AND_ROADMAP.md)** *(Milestones and multi-governance phases)*
+
+### 📚 Literature, Standards & Education
+- 🎓 **[VCs & Decentralized Identity: AIT Learning Guide](docs/LEARNING_GUIDE.md)** *(Triangle of Trust, jargon buster)*
+- 🌐 **[Global Standards, Dual-Contexts & VDRs](docs/GLOBAL_STANDARDS_AND_REGISTRIES.md)** *(schema.org, eduPerson, MHESI specs)*
+
+### 🛠️ Developer Tutorials & Run Guides
 - 📱 **[Applications Suite & Mobile Spin-Up Guide](apps/README.md)** *(Mobile & BFF local/Docker workflows)*
-- 🎓 **[VCs & Decentralized Identity: AIT Learning Guide](docs/LEARNING_GUIDE.md)** *(Recommended Starting Point)*
-- 📐 [Technical Architecture & VDR Adapter Hub](docs/ARCHITECTURE.md)
-- 🧪 [Local Development Mock Issuer & Testing Guide](docs/LOCAL_DEVELOPMENT_ISSUER.md)
-- 🌐 [Global Standards, Dual-Contexts & VDRs (National ID & Transcript)](docs/GLOBAL_STANDARDS_AND_REGISTRIES.md)
-- 🔄 [Consolidated Use Cases (Digital ID, Academic Transcript, Guest Mode)](docs/USE_CASES.md)
-- 📋 [Vision & Focused Roadmap](docs/VISION_AND_ROADMAP.md)
-- 🤝 [Development Workflow & Contribution Guidelines](docs/WORKFLOW_AND_GUIDELINES.md)
+- 🧪 **[Local Development Mock Issuer & Testing Guide](apps/LOCAL_DEVELOPMENT_ISSUER.md)** *(Offline testing with mock AIT Registrar)*
+- 🤝 **[Development Workflow & Contribution Guidelines](docs/WORKFLOW_AND_GUIDELINES.md)** *(Git branching and Definition of Done)*
 
 ---
 

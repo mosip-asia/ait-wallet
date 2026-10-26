@@ -28,7 +28,7 @@ If you want to test complete issuance locally with an isolated mock AIT Registra
 ```bash
 ./scripts/start-local-issuer.sh
 ```
-*(See [`docs/LOCAL_DEVELOPMENT_ISSUER.md`](../../docs/LOCAL_DEVELOPMENT_ISSUER.md) for certificate installation in emulators and mock login credentials).*
+*(See [`apps/LOCAL_DEVELOPMENT_ISSUER.md`](../LOCAL_DEVELOPMENT_ISSUER.md) for certificate installation in emulators and mock login credentials).*
 
 The BFF will start on **`http://localhost:8099`**.
 

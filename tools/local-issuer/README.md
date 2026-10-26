@@ -41,5 +41,5 @@ npm test
 ## 📖 Detailed Documentation
 
 For full architecture details, local CA installation on iOS/Android emulators, and Mimoto integration:
-👉 **[Local Development Mock Issuer & Testing Guide](../../docs/LOCAL_DEVELOPMENT_ISSUER.md)**
+👉 **[Local Development Mock Issuer & Testing Guide](../../apps/LOCAL_DEVELOPMENT_ISSUER.md)**
 

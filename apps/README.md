@@ -46,7 +46,7 @@ cd apps/bff
 ```
 
 > [!TIP]
-> When using Option B, install the local root CA (`tools/local-issuer/state/ca.pem` or `ca.der`) into your iOS/Android simulator so HTTPS requests succeed. See the [Local Development Mock Issuer Guide](../docs/LOCAL_DEVELOPMENT_ISSUER.md) for full instructions.
+> When using Option B, install the local root CA (`tools/local-issuer/state/ca.pem` or `ca.der`) into your iOS/Android simulator so HTTPS requests succeed. See the [Local Development Mock Issuer Guide](./LOCAL_DEVELOPMENT_ISSUER.md) for full instructions.
 
 **Verify BFF Health**:
 ```bash
@@ -163,3 +163,5 @@ By default, the wallet runs in **Tier 1 (Guest Mode)**. To enable **Tier 2 (Perm
 | [`apps/mobile/`](./mobile) | React Native Inji Mobile Client | [`apps/mobile/README.md`](./mobile/README.md) |
 | [`apps/bff/`](./bff) | Inji Mimoto Backend-for-Frontend | [`apps/bff/README.md`](./bff/README.md), [`apps/bff/ARCHITECTURE.md`](./bff/ARCHITECTURE.md) |
 | [`apps/web/`](./web) | Desktop & Web Wallet architecture boundary | [`apps/web/README.md`](./web/README.md) |
+| [`apps/LOCAL_DEVELOPMENT_ISSUER.md`](./LOCAL_DEVELOPMENT_ISSUER.md) | Local Mock Issuer & Offline Testing Guide | [View Guide](./LOCAL_DEVELOPMENT_ISSUER.md) |
+
