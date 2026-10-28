@@ -1,0 +1,23 @@
+node_modules/
+state/
+.env
+.env.*
+!.env.example
+
+# Also protect keys/certificates accidentally exported outside state/.
+*.pem
+*.key
+*.p12
+*.pfx
+*.jks
+*.keystore
+*.jwk
+*.csr
+*.crt
+*.der
+*.srl
+mimoto-cacerts
+
+*.log
+__pycache__/
+*.pyc

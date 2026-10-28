@@ -1,0 +1,24 @@
+# Local environment files. Commit the safe template, not your values.
+.env
+.env.*
+!.env.example
+
+# Generated development keys, certificates, and exported key stores.
+certs/
+*.pem
+*.key
+*.p12
+*.pfx
+*.jks
+*.keystore
+*.jwk
+*.csr
+*.crt
+*.der
+*.srl
+
+# Local logs and database exports; keep mimoto_init.sql tracked.
+*.log
+*.dump
+*.backup
+*.sql.gz

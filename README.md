@@ -361,16 +361,62 @@ flowchart LR
 
 ---
 
+## 🚀 Quick Start: Inji Wallet Development Stack
+
+The mobile development environment requires running the **Wallet Backend-for-Frontend (BFF / Inji Mimoto)** alongside the **Mobile Client (Inji Mobile)**:
+
+```text
+┌───────────────────────────┐         ┌──────────────────────────┐         ┌──────────────────────────┐
+│   apps/mobile             │         │   apps/bff               │         │   tools/local-issuer     │
+│   Inji Mobile App         │◄───────►│   Inji Mimoto BFF        │◄───────►│   OIDC4VCI Mock Issuer   │
+│   (React Native :8081)    │         │   (Docker :8099)         │         │   (Node.js / TLS :8443)  │
+└───────────────────────────┘         └──────────────────────────┘         └──────────────────────────┘
+```
+
+### 1. Start the Backend (BFF + Mock Issuer)
+```bash
+cd apps/bff
+# Starts PostgreSQL, Inji Mimoto BFF (:8099), and the local mock registrar (:8443):
+./scripts/start-local-issuer.sh
+```
+
+### 2. Start the Mobile Client (`apps/mobile`)
+We support two mobile development workflows:
+* **🐳 Dockerized Development (Recommended for Linux/Android)**: Compile headlessly and run Metro in Docker. Only the Android Emulator runs on your host machine — **no Node.js, JDK 17, or Android SDK required on your host**.
+* **📦 Native Host Installation**: Standard React Native toolchain (recommended for iOS development on macOS).
+
+```bash
+cd apps/mobile
+cp -n .env.example .env
+
+# Method 1 (Dockerized):
+npm run docker:build:android
+adb reverse tcp:8081 tcp:8081 && adb reverse tcp:8099 tcp:8099
+adb install -r android/app/build/outputs/apk/residentapp/debug/Inji_universal.apk
+npm run docker:metro
+
+# Method 2 (Native Host):
+npm install && npm start
+npm run android:mosip   # or npm run ios
+```
+
+👉 **For the comprehensive step-by-step setup, emulator port forwarding, and mock credential tests, see the [Applications & Mobile Spin-Up Guide](apps/README.md).**
+
+---
+
 ## 📁 Repository Structure
 
 ```text
 .
 ├── apps/
+│   ├── README.md                  # Applications Suite & Mobile Spin-Up Guide
 │   ├── bff/                       # Wallet BFF (Phase 1: Mimoto container -> Phase 2: Node.js/TS BFF)
 │   ├── mobile/                    # AIT Mobile Wallet (React Native / Inji Mobile framework)
 │   └── web/                       # Web Wallet architecture boundary
 ├── packages/
 │   └── branding/                  # Design tokens, color palettes, and card UI dimensions
+├── tools/
+│   └── local-issuer/              # Fictional local OIDC4VCI mock issuer & offline testing guide
 ├── docs/
 │   ├── ARCHITECTURE.md            # Technical architecture, VDR adapters, and client-server boundaries
 │   ├── GLOBAL_STANDARDS_AND_REGISTRIES.md # National ID & University Transcript global standards
@@ -402,13 +448,20 @@ flowchart LR
 
 ## 📖 Documentation Index
 
-- 🤖 **[AI Agent & Developer Guidelines](AGENTS.md)** *(Mandatory for AI agents & contributors)*
-- 🎓 **[VCs & Decentralized Identity: AIT Learning Guide](docs/LEARNING_GUIDE.md)** *(Recommended Starting Point)*
-- 📐 [Technical Architecture & VDR Adapter Hub](docs/ARCHITECTURE.md)
-- 🌐 [Global Standards, Dual-Contexts & VDRs (National ID & Transcript)](docs/GLOBAL_STANDARDS_AND_REGISTRIES.md)
-- 🔄 [Consolidated Use Cases (Digital ID, Academic Transcript, Guest Mode)](docs/USE_CASES.md)
-- 📋 [Vision & Focused Roadmap](docs/VISION_AND_ROADMAP.md)
-- 🤝 [Development Workflow & Contribution Guidelines](docs/WORKFLOW_AND_GUIDELINES.md)
+### 📐 Architecture & System Contracts
+- 🤖 **[AI Agent & Developer Guidelines](AGENTS.md)** *(Mandatory prime directives & architectural invariants)*
+- 📐 **[Technical Architecture & VDR Adapter Hub](docs/ARCHITECTURE.md)** *(System topology, client-server split)*
+- 🔄 **[Consolidated Use Cases](docs/USE_CASES.md)** *(Student ID, transcripts, and guest coupons)*
+- 📋 **[Vision & Focused Roadmap](docs/VISION_AND_ROADMAP.md)** *(Milestones and multi-governance phases)*
+
+### 📚 Literature, Standards & Education
+- 🎓 **[VCs & Decentralized Identity: AIT Learning Guide](docs/LEARNING_GUIDE.md)** *(Triangle of Trust, jargon buster)*
+- 🌐 **[Global Standards, Dual-Contexts & VDRs](docs/GLOBAL_STANDARDS_AND_REGISTRIES.md)** *(schema.org, eduPerson, MHESI specs)*
+
+### 🛠️ Developer Tutorials & Run Guides
+- 📱 **[Applications Suite & Mobile Spin-Up Guide](apps/README.md)** *(Mobile & BFF local/Docker workflows)*
+- 🧪 **[Local Development Mock Issuer & Testing Guide](tools/local-issuer/README.md)** *(Offline testing with mock AIT Registrar)*
+- 🤝 **[Development Workflow & Contribution Guidelines](docs/WORKFLOW_AND_GUIDELINES.md)** *(Git branching and Definition of Done)*
 
 ---
 
