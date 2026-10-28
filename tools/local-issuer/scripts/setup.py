@@ -29,11 +29,11 @@ run('node','-e',js,str(STATE/'client-key.pem'),str(STATE/'client-public.jwk'))
 env=os.environ.copy()
 env_path = ROOT/'apps/bff/.env'
 if not env_path.exists():
-    env_path = ROOT/'apps/bff/.env.example'
-if env_path.exists():
-    for line in env_path.read_text().splitlines():
-        if line.startswith('OIDC_P12_PASSWORD='): env['AIT_KEYSTORE_PASSWORD']=line.split('=',1)[1].strip().strip('"\'')
-env.setdefault('AIT_KEYSTORE_PASSWORD','dummypassword')
+    raise SystemExit('Missing apps/bff/.env. Please create it first: cp apps/bff/.env.example apps/bff/.env')
+for line in env_path.read_text().splitlines():
+    if line.startswith('OIDC_P12_PASSWORD='): env['AIT_KEYSTORE_PASSWORD']=line.split('=',1)[1].strip().strip('"\'')
+if not env.get('AIT_KEYSTORE_PASSWORD'):
+    raise SystemExit('OIDC_P12_PASSWORD must be defined in apps/bff/.env.')
 if not (STATE/'client-cert.pem').exists():
     openssl('req','-new','-x509','-key',STATE/'client-key.pem','-out',STATE/'client-cert.pem','-days','365','-subj','/CN=ait-wallet-mobile-client')
 run('openssl','pkcs12','-export','-name','ait-wallet-mobile-client','-inkey',str(STATE/'client-key.pem'),
