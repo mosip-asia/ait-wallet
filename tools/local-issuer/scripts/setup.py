@@ -27,8 +27,12 @@ for name in ['issuer','client']:
 js="const fs=require('fs'),c=require('crypto');fs.writeFileSync(process.argv[2],JSON.stringify(c.createPublicKey(fs.readFileSync(process.argv[1])).export({format:'jwk'}),null,2)+'\\n');"
 run('node','-e',js,str(STATE/'client-key.pem'),str(STATE/'client-public.jwk'))
 env=os.environ.copy()
-for line in (ROOT/'apps/bff/.env').read_text().splitlines():
-    if line.startswith('OIDC_P12_PASSWORD='): env['AIT_KEYSTORE_PASSWORD']=line.split('=',1)[1].strip().strip('"\'')
+env_path = ROOT/'apps/bff/.env'
+if not env_path.exists():
+    env_path = ROOT/'apps/bff/.env.example'
+if env_path.exists():
+    for line in env_path.read_text().splitlines():
+        if line.startswith('OIDC_P12_PASSWORD='): env['AIT_KEYSTORE_PASSWORD']=line.split('=',1)[1].strip().strip('"\'')
 env.setdefault('AIT_KEYSTORE_PASSWORD','dummypassword')
 if not (STATE/'client-cert.pem').exists():
     openssl('req','-new','-x509','-key',STATE/'client-key.pem','-out',STATE/'client-cert.pem','-days','365','-subj','/CN=ait-wallet-mobile-client')
@@ -51,10 +55,21 @@ if expected != observed:
     raise SystemExit('Existing OAuth alias differs from the fixture key. Preserve it; resolve registration before proceeding.')
 run('docker','exec','ait-wallet-bff','rm','-f','/tmp/ait-local-client.p12')
 trust=STATE/'mimoto-cacerts'
-if not trust.exists():
-    java_cacerts=run('docker','exec','ait-wallet-bff','sh','-c','readlink -f "$JAVA_HOME/lib/security/cacerts"')
-    run('docker','cp',f'ait-wallet-bff:{java_cacerts}',str(trust))
-    run('keytool','-importcert','-noprompt','-alias','ait-local-demo-ca','-file',str(STATE/'ca.pem'),'-keystore',str(trust),'-storepass','changeit')
+has_ca = False
+if trust.exists():
+    run('docker', 'cp', str(trust), 'ait-wallet-bff:/tmp/check-trust')
+    res = subprocess.run(['docker', 'exec', 'ait-wallet-bff', 'keytool', '-list', '-keystore', '/tmp/check-trust', '-storepass', 'changeit', '-alias', 'ait-local-demo-ca'], capture_output=True)
+    run('docker', 'exec', 'ait-wallet-bff', 'rm', '-f', '/tmp/check-trust')
+    has_ca = (res.returncode == 0)
+
+if not has_ca:
+    java_cacerts = run('docker', 'exec', 'ait-wallet-bff', 'sh', '-c', 'readlink -f "$JAVA_HOME/lib/security/cacerts"')
+    run('docker', 'exec', 'ait-wallet-bff', 'sh', '-c', f'cp "{java_cacerts}" /tmp/mimoto-cacerts')
+    run('docker', 'cp', str(STATE / 'ca.pem'), 'ait-wallet-bff:/tmp/ait-ca.pem')
+    run('docker', 'exec', 'ait-wallet-bff', 'sh', '-c',
+        'keytool -importcert -noprompt -alias ait-local-demo-ca -file /tmp/ait-ca.pem -keystore /tmp/mimoto-cacerts -storepass changeit')
+    run('docker', 'cp', 'ait-wallet-bff:/tmp/mimoto-cacerts', str(trust))
+    run('docker', 'exec', 'ait-wallet-bff', 'rm', '-f', '/tmp/ait-ca.pem', '/tmp/mimoto-cacerts')
 openssl('x509','-in',STATE/'ca.pem','-outform','DER','-out',STATE/'ca.der')
 # Only certificate/public material is world-readable. Server runs as the current local UID.
 for p in STATE.iterdir(): p.chmod(0o600)
