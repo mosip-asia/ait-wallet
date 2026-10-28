@@ -51,7 +51,7 @@ export const AitOtpInput: React.FC<Props> = ({
         onChangeText={t => onChangeText(t.replace(/[^0-9]/g, '').slice(0, length))}
         keyboardType="number-pad"
         maxLength={length}
-        secureTextEntry={false}
+        secureTextEntry={mask}
         autoFocus
       />
     </Pressable>

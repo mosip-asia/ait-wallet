@@ -16,6 +16,7 @@ import {SplashScreen} from '../screens/SplashScreen';
 import {RequestStackParamList} from './routesConstants';
 import {KeyManagementScreen} from '../screens/Settings/KeyManagementScreen';
 import AuthWebViewScreen from '../screens/AuthWebViewScreen';
+import {AitCredentialRequestScreen} from '../ait/features/issuance/AitCredentialRequestScreen';
 import {
   PhoneEntryScreen,
   OtpScreen,
@@ -106,6 +107,11 @@ export const baseRoutes: Screen[] = [
 
 export const authRoutes: Screen[] = [
   {
+    name: 'AitCredentialRequest',
+    component: AitCredentialRequestScreen,
+    options: {headerShown: false},
+  },
+  {
     name: 'Main',
     component: MainLayout,
     options: {
@@ -124,6 +130,7 @@ export type RootStackParamList = {
   Terms: undefined;
   AitPin: undefined;
   Congratulations: undefined;
+  AitCredentialRequest: undefined;
   Language: undefined;
   KeySetup: undefined;
   IntroSliders: undefined;

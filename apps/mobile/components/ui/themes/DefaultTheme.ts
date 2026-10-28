@@ -1,4 +1,3 @@
-/* eslint-disable sonarjs/no-duplicate-string */
 import {
   Dimensions,
   I18nManager,
@@ -9,13 +8,16 @@ import {
 import {Spacing} from '../styleUtils';
 import {COPILOT_HEIGHT, isIOS, isAndroid} from '../../../shared/constants';
 import Constants from 'expo-constants';
-import HomeScreenLogo from '../../../assets/InjiHomeLogo.svg';
-import InjiLogoSmall from '../../../assets/InjiLogo.svg';
+import {
+  AitLogo as HomeScreenLogo,
+  AitMark as InjiLogoSmall,
+} from '../../../ait/components/AitLogo';
+import {aitLegacyColors} from '../../../ait/theme/legacyColors';
 import i18next from '../../../i18n';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
-const Colors = {
+const Colors = Object.assign({
   Black: '#000000',
   Zambezi: '#5F5F5F',
   Violet: '#5B03AD',
@@ -73,7 +75,7 @@ const Colors = {
   Yellow: '#E8A94F',
   selectIDTextGradient: ['#F5F5F5', '#FFFFFF'],
   mildGray: '#BDBDBD',
-};
+}, aitLegacyColors);
 
 export type ElevationLevel = 0 | 1 | 2 | 3 | 4 | 5 | 6;
 
@@ -87,8 +89,8 @@ export const DefaultTheme = {
       optionalText: '#79732D',
       optionalBg: '#FFFDDE',
     },
-    infoBackground: '#FCF0F7',
-    infoBorder: '#F3DDEA',
+    infoBackground: Colors.LightOrange,
+    infoBorder: Colors.Secondary + '26',
     infoText: '#64748B',
     dottedBorderColor: '#D6DBE3',
     instructionLabel: Colors.darkGrey,
@@ -138,7 +140,7 @@ export const DefaultTheme = {
     DefaultToggle: Colors.LightOrange,
     GrayText: Colors.GrayText,
     errorGrayText: Colors.mediumDarkGrey,
-    gradientBtn: ['#FF5300', '#5B03AD'],
+    gradientBtn: Colors.GradientColors,
     dotColor: Colors.dorColor,
     plainText: Colors.plainText,
     IconBackground: Colors.LightOrange,

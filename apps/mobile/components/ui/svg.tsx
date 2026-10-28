@@ -34,6 +34,7 @@ import ICloudLogo from '../../assets/Icloud-Logo.svg';
 import KebabIcon from '../../assets/Detailed_view_kebab_icon.svg';
 import {displayType} from '../../machines/Issuers/IssuersMachine';
 import {IssuerProps} from '../openId4VCI/Issuer';
+
 import Backup from '../../assets/Backup.svg';
 import PermissionDenied from '../../assets/Permission_Denied.svg';
 import OutlinedShieldedIcon from '../../assets/Outlined_Shielded_Icon.svg';
@@ -71,7 +72,7 @@ import DoneIcon from '../../assets/done-icon.svg';
 import CircleArrowRight from '../../assets/arrow-circle-broken-right.svg';
 
 export class SvgImage {
-  static selectedCheckBox(color = '#951F6F') {
+  static selectedCheckBox(color = Theme.Colors.Icon) {
     return <SelectedCheckBox color1={color} />;
   }
   static copyIcon(): React.ReactNode {
@@ -90,7 +91,7 @@ export class SvgImage {
       />
     );
   }
-  static logOutIcon(): any {
+  static logOutIcon(): React.ReactElement {
     return (
       <SettingsLogOut
         color1={Theme.Colors.linearIconGradientStart}
@@ -99,7 +100,7 @@ export class SvgImage {
     );
   }
 
-  static restoreIcon(): any {
+  static restoreIcon(): React.ReactElement {
     return (
       <RestoreIcon
         color1={Theme.Colors.linearIconGradientStart}
@@ -108,8 +109,7 @@ export class SvgImage {
     );
   }
 
-  static defaultIssuerLogo(defaultLogo: any) {
-    const DefaultLogo = defaultLogo;
+  static defaultIssuerLogo(DefaultLogo: React.ComponentType) {
     return <DefaultLogo />;
   }
 
@@ -572,7 +572,7 @@ export class SvgImage {
     return <Search {...testIDProps('searchIcon')} />;
   }
 
-  static settingsLanguageIcon(size) {
+  static settingsLanguageIcon(size: number) {
     return (
       <SettingsLanguage
         width={size}
@@ -706,7 +706,10 @@ export class SvgImage {
 }
 
 function getIssuerLogo(props: displayType) {
-  return {uri: props.logo.url || props.logo.uri};
+  const {logo} = props;
+  const fallbackUri =
+    'uri' in logo && typeof logo.uri === 'string' ? logo.uri : undefined;
+  return {uri: logo.url || fallbackUri};
 }
 
 interface LogoProps {

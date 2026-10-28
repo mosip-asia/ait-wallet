@@ -1,6 +1,9 @@
 # `ait/` — AIT Customization Layer
 
 Everything AIT-specific lives here, **clearly separated from the Inji base**.
+
+- Shared `packages/branding` tokens now drive onboarding and the default wallet theme, including returning-user screens. `theme/legacyColors.ts` maps them to Inji's theme roles; `components/AitLogo.tsx` supplies the wallet wordmark. Credential issuer branding stays metadata-driven.
+- Development demo: PIN setup → simulated SIS QR scan → review fictional Nisha data → approve with the same wallet PIN → receive, verify, and save the signed student ID. `features/issuance/` reuses Inji's issuance, key signing, verification, and encrypted storage; no issuer password is required.
 Inji's folders (`screens/`, `machines/`, `components/`, `shared/`, native) stay
 untouched so `git subtree pull` keeps bringing upstream fixes cleanly.
 

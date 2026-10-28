@@ -1,16 +1,11 @@
-import {Dimensions} from 'react-native';
 import {RootRouteProps} from '../routes';
-import {Image} from 'react-native';
 import React, {useEffect} from 'react';
-import {APPLICATION_THEME} from 'react-native-dotenv';
 import {Column} from '../components/ui';
 import {useAppLayout} from './AppLayoutController';
+import {AitLogo} from '../ait/components/AitLogo';
+import {palette} from '../ait/theme/tokens';
 
 export const SplashScreen: React.FC<RootRouteProps> = props => {
-  const imageResource =
-    APPLICATION_THEME?.toLowerCase() === 'purple'
-      ? require('../assets/images/png/purpleSplashScreen.png')
-      : require('../assets/images/png/SplashScreen.png');
   const controller = useAppLayout();
   useEffect(() => {
     setTimeout(() => {
@@ -24,17 +19,10 @@ export const SplashScreen: React.FC<RootRouteProps> = props => {
   return (
     <Column
       crossAlign="center"
-      style={{
-        flex: 1,
-        justifyContent: 'center',
-        height: Dimensions.get('screen').height,
-        width: Dimensions.get('screen').width,
-      }}>
-      <Image
-        resizeMode="stretch"
-        style={{width: 400, height: 450}}
-        source={imageResource}
-      />
+      fill
+      backgroundColor={palette.surfaceWhite}
+      style={{justifyContent: 'center'}}>
+      <AitLogo width={280} height={82} />
     </Column>
   );
 };

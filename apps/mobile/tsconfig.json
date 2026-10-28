@@ -8,9 +8,11 @@
     "declaration": false
   },
   "include": [
-    "src",
+    "**/*.ts",
+    "**/*.tsx",
     "custom.d.ts",
     "./types/react-native-dotenv/index.d.ts",
     "./types/react-native-argon2/index.d.ts",
-  ]
+  ],
+  "exclude": ["node_modules", "build", "android", "ios"]
 }

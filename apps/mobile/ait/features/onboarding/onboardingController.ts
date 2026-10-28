@@ -11,7 +11,7 @@
  *
  * Phone number + OTP are hardcoded demo steps (no backend). The PIN is genuine.
  */
-import {useContext} from 'react';
+import {useCallback, useContext} from 'react';
 import {useSelector} from '@xstate/react';
 import {GlobalContext} from '../../../shared/GlobalContext';
 import {
@@ -19,14 +19,34 @@ import {
   selectAuthorized,
   selectPasscodeSalt,
 } from '../../../machines/auth';
+import {hashData} from '../../../shared/commonUtil';
+import {argon2iConfig} from '../../../shared/constants';
 
 export function useOnboarding() {
   const {appService} = useContext(GlobalContext);
   const authService = appService.children.get('auth');
+  if (!authService) throw new Error('Wallet authentication is unavailable.');
+  const passcodeSalt = useSelector(authService, selectPasscodeSalt);
+  const commitPasscode = useCallback(
+    async (passcode: string) => {
+      if (!authService || !passcodeSalt) {
+        throw new Error(
+          'Wallet security is still initializing. Please try again.',
+        );
+      }
+      const hashedPasscode = await hashData(
+        passcode,
+        passcodeSalt,
+        argon2iConfig,
+      );
+      authService.send(AuthEvents.SETUP_PASSCODE(hashedPasscode));
+    },
+    [authService, passcodeSalt],
+  );
 
   return {
     isAuthorized: useSelector(authService, selectAuthorized),
-    isSaltReady: !!useSelector(authService, selectPasscodeSalt),
+    isSaltReady: !!passcodeSalt,
 
     /** languagesetup -> introSlider: begins secure salt generation early. */
     beginSetup: () => authService?.send(AuthEvents.SELECT()),
@@ -35,7 +55,6 @@ export function useOnboarding() {
     proceedToPasscode: () => authService?.send(AuthEvents.NEXT()),
 
     /** settingUp -> authorized: persists the hashed passcode. */
-    commitPasscode: (passcode: string) =>
-      authService?.send(AuthEvents.SETUP_PASSCODE(passcode)),
+    commitPasscode,
   };
 }

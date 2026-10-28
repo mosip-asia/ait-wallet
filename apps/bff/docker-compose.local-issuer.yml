@@ -3,22 +3,24 @@ services:
   config-server:
     volumes:
       # Same container path as the base mount: Compose replaces it with the demo file.
-      - ./config/mimoto-issuers-config.local.json:/config/server/mimoto-issuers-config.json:ro
+      - ${LOCAL_ISSUER_CONFIG:-./config/mimoto-issuers-config.local.json}:/config/server/mimoto-issuers-config.json:ro
 
   mimoto:
     ports:
-      - "127.0.0.1:8443:8443"
+      - "${LOCAL_ISSUER_BIND_ADDRESS:-127.0.0.1}:${LOCAL_ISSUER_PORT:-8443}:8443"
     environment:
       JAVA_TOOL_OPTIONS: >-
         -Djavax.net.ssl.trustStore=/home/mosip/local-dev/cacerts
         -Djavax.net.ssl.trustStorePassword=changeit
     volumes:
-      - ./config/mimoto-issuers-config.local.json:/home/mosip/mimoto-issuers-config.json:ro
+      - ${LOCAL_ISSUER_CONFIG:-./config/mimoto-issuers-config.local.json}:/home/mosip/mimoto-issuers-config.json:ro
       - ../../tools/local-issuer/state/mimoto-cacerts:/home/mosip/local-dev/cacerts:ro
 
   local-issuer:
     build: ../../tools/local-issuer
     user: "${LOCAL_ISSUER_UID:-501}:${LOCAL_ISSUER_GID:-20}"
+    environment:
+      LOCAL_ISSUER_ORIGIN: ${LOCAL_ISSUER_ORIGIN:-https://localhost:8443}
     network_mode: "service:mimoto"
     restart: unless-stopped
     depends_on:

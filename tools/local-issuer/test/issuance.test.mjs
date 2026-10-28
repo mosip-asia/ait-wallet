@@ -12,6 +12,8 @@ import {
   CLIENT,
   REDIRECT,
   CONFIG_ID,
+  DID,
+  PRE_AUTH_GRANT,
   documentLoader,
 } from "../server.mjs";
 const jsigs = createRequire(import.meta.url)("jsonld-signatures");
@@ -33,6 +35,7 @@ function request(path, { method = "GET", form, json, token } = {}) {
       {
         method,
         ca,
+        rejectUnauthorized: true,
         family: 4,
         headers: {
           ...(data
@@ -82,12 +85,12 @@ async function authorization(verifier = pkce()) {
   const ticket = /name="ticket" value="([^"]+)"/.exec(page.body)[1];
   const wrong = await request("/authorize", {
     method: "POST",
-    form: { ticket, username: "student", password: "wrong" },
+    form: { ticket, approved: "false" },
   });
   assert.equal(wrong.status, 403);
   const login = await request("/authorize", {
     method: "POST",
-    form: { ticket, username: "student", password: "student-local-password" },
+    form: { ticket, approved: "true" },
   });
   assert.equal(login.status, 302);
   const callback = new URL(login.headers.location);
@@ -278,5 +281,44 @@ test("real Mimoto token proxy, holder proof, RSA signature, signed identity and 
     401
   );
   const did = await request("/.well-known/did.json");
-  assert.equal(did.body.id, "did:web:localhost%3A8443");
+  assert.equal(did.body.id, DID);
+});
+
+test("demo QR offer is short-lived and single-use, with holder-bound signed Nisha data and no password", async () => {
+  const result = await request("/demo/credential-request", {method: "POST"});
+  assert.equal(result.status, 200);
+  assert.equal(result.body.fixture, true);
+  assert.equal(result.body.fields.find(f => f.label === "Full name").value, "Nisha Gurung");
+  assert.ok(result.body.expiresAt > Date.now() && result.body.expiresAt <= Date.now() + 300000);
+  const offer = JSON.parse(new URL(result.body.offerUri).searchParams.get("credential_offer"));
+  assert.equal(offer.credential_issuer, ORIGIN);
+  const form = {grant_type: PRE_AUTH_GRANT, "pre-authorized_code": offer.grants[PRE_AUTH_GRANT]["pre-authorized_code"]};
+  assert.equal((await request("/oauth/token", {method: "POST", form: {...form, "pre-authorized_code": "invalid"}})).status, 400);
+  assert.equal((await request("/oauth/token", {method: "POST", form: {...form, client_id: "unregistered-client"}})).status, 401);
+  const exchanged = await request("/oauth/token", {method: "POST", form});
+  assert.equal(exchanged.status, 200);
+  assert.equal((await request("/oauth/token", {method: "POST", form})).status, 400);
+  const token = exchanged.body;
+  assert.equal((await request("/credential", {method: "POST", token: token.access_token, json: {format: "ldp_vc"}})).status, 400);
+  const {privateKey, publicKey} = generateKeyPairSync("ec", {namedCurve: "prime256v1"});
+  const jwk = publicKey.export({format: "jwk"});
+  // Anonymous pre-authorized offers have no client identifier in the holder proof.
+  const proof = await new SignJWT({nonce: token.c_nonce})
+    .setProtectedHeader({alg: "ES256", typ: "openid4vci-proof+jwt", jwk})
+    .setAudience(ORIGIN).setIssuedAt().setExpirationTime("2m").sign(privateKey);
+  const issued = await request("/credential", {method: "POST", token: token.access_token,
+    json: {format: "ldp_vc", proof: {proof_type: "jwt", jwt: proof}, name: "Untrusted request name"}});
+  assert.equal(issued.status, 200);
+  const vc = issued.body.credential;
+  assert.equal(vc.credentialSubject.name, "Nisha Gurung");
+  assert.equal(vc.credentialSubject.identifier, "DEMO-2026-0002");
+  assert.equal(vc.about.type, "Course");
+  assert.equal(vc.about.name, result.body.fields.find(f => f.label === "Field of study").value);
+  assert.equal(vc.credentialSubject.id, "did:jwk:" + Buffer.from(JSON.stringify(jwk)).toString("base64url"));
+  const options = {suite: new RsaSignature2018(), purpose: new jsigs.purposes.AssertionProofPurpose(), documentLoader, compactProof: false};
+  assert.equal((await jsigs.verify(vc, options)).verified, true);
+  vc.credentialSubject.name = "Tampered name";
+  assert.equal((await jsigs.verify(vc, options)).verified, false);
+  assert.equal((await request("/credential", {method: "POST", token: token.access_token,
+    json: {format: "ldp_vc", proof: {proof_type: "jwt", jwt: proof}}})).status, 401);
 });

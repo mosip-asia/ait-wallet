@@ -21,11 +21,16 @@ const contexts = new Map([
   ...require("credentials-context").contexts,
   ...require("security-context").contexts,
 ]);
-export const ORIGIN = "https://localhost:8443";
+export const ORIGIN = process.env.LOCAL_ISSUER_ORIGIN || "https://localhost:8443";
+const issuerUrl = new URL(ORIGIN);
+if (issuerUrl.protocol !== "https:" || issuerUrl.origin !== ORIGIN || issuerUrl.username || issuerUrl.password) {
+  throw new Error("LOCAL_ISSUER_ORIGIN must be an HTTPS origin");
+}
 export const CLIENT = "ait-wallet-mobile";
 export const REDIRECT = "io.mosip.residentapp.inji://oauthredirect";
 export const CONFIG_ID = "AITLocalStudent";
-export const DID = "did:web:localhost%3A8443";
+export const DID = "did:web:" + encodeURIComponent(issuerUrl.host);
+export const PRE_AUTH_GRANT = "urn:ietf:params:oauth:grant-type:pre-authorized_code";
 const stateDir =
   process.env.ISSUER_STATE_DIR ||
   fileURLToPath(new URL("./state", import.meta.url));
@@ -131,20 +136,31 @@ export const authorizationMetadata = {
   token_endpoint: ORIGIN + "/oauth/token",
   jwks_uri: ORIGIN + "/jwks",
   response_types_supported: ["code"],
-  grant_types_supported: ["authorization_code"],
+  grant_types_supported: ["authorization_code", PRE_AUTH_GRANT],
+  "pre-authorized_grant_anonymous_access_supported": true,
   scopes_supported: ["ait.local.student", "openid"],
   code_challenge_methods_supported: ["S256"],
-  token_endpoint_auth_methods_supported: ["private_key_jwt"],
+  token_endpoint_auth_methods_supported: ["private_key_jwt", "none"],
   token_endpoint_auth_signing_alg_values_supported: ["RS256"],
 };
 const tickets = new Map(),
   codes = new Map(),
+  offers = new Map(),
   tokens = new Map(),
   usedAssertions = new Map();
 const now = () => Math.floor(Date.now() / 1000);
 const random = () => randomBytes(32).toString("base64url");
 const hash = (x) => createHash("sha256").update(x).digest("base64url");
 const counters = { login: 0, token: 0, credential: 0, rejected: 0 };
+// Fictional issuer-owned fixture data, never a wallet credential schema.
+const demoStudent = Object.freeze({
+  name: "Nisha Gurung",
+  givenName: "Nisha",
+  familyName: "Gurung",
+  identifier: "DEMO-2026-0002",
+  program: "Computer Science (M.Eng.)",
+  institution: "AIT Local Demo",
+});
 function fail(error, status = 400) {
   throw Object.assign(new Error(error), { status });
 }
@@ -202,18 +218,19 @@ export async function issueCredential(holder) {
     credentialSubject: {
       id: holder,
       type: "Person",
-      name: "Nisha Gurung",
-      givenName: "Nisha",
-      familyName: "Gurung",
-      identifier: "DEMO-2026-0002",
+      name: demoStudent.name,
+      givenName: demoStudent.givenName,
+      familyName: demoStudent.familyName,
+      identifier: demoStudent.identifier,
       // eduPersonAffiliation uses its registered OID, without a custom context.
       "urn:oid:1.3.6.1.4.1.5923.1.1.1.1": ["student"],
-      affiliation: { type: "EducationalOrganization", name: "AIT Local Demo" },
+      affiliation: { type: "EducationalOrganization", name: demoStudent.institution },
       enrollment: "active",
     },
     // enrollment is a schema.org Enrollment/educational role via a full semantic IRI below.
     name: "AIT Local Demo Student ID",
     description: "Fictional local development student credential",
+    about: { type: "Course", name: demoStudent.program },
   };
   // Use only vocabulary-defined fields in the signed graph (no custom claim definitions).
   delete credential.credentialSubject.enrollment;
@@ -277,6 +294,32 @@ async function handle(req, res) {
     path = url.pathname;
   if (req.method === "GET" && path === "/health")
     return json(res, 200, { status: "UP", fixture: true, events: counters });
+  if (req.method === "POST" && path === "/demo/credential-request") {
+    const code = random();
+    const exp = now() + 300;
+    offers.set(hash(code), {exp});
+    const credentialOffer = {
+      credential_issuer: ORIGIN,
+      credential_configuration_ids: [CONFIG_ID],
+      grants: { [PRE_AUTH_GRANT]: { "pre-authorized_code": code } },
+    };
+    return json(res, 200, {
+      fixture: true,
+      id: randomUUID(),
+      expiresAt: exp * 1000,
+      issuer: ORIGIN,
+      issuerName: "AIT SIS — Local Demo",
+      credentialName: "AIT Local Demo Student ID",
+      fields: [
+        { label: "Full name", value: demoStudent.name },
+        { label: "Student ID", value: demoStudent.identifier },
+        { label: "Field of study", value: demoStudent.program },
+        { label: "Institution", value: demoStudent.institution },
+        { label: "Enrollment", value: "Active" },
+      ],
+      offerUri: "openid-credential-offer://?credential_offer=" + encodeURIComponent(JSON.stringify(credentialOffer)),
+    });
+  }
   if (req.method === "GET" && path === "/.well-known/openid-credential-issuer")
     return json(res, 200, metadata);
   if (
@@ -331,9 +374,9 @@ async function handle(req, res) {
         "default-src 'none'; style-src 'unsafe-inline'; form-action 'self' io.mosip.residentapp.inji://oauthredirect; frame-ancestors 'none'; base-uri 'none'",
     });
     return res.end(
-      `<!doctype html><html><meta name="viewport" content="width=device-width,initial-scale=1"><title>AIT Local Demo login</title><style>body{font:18px system-ui;max-width:460px;margin:40px auto;padding:20px}input,button{display:block;font:inherit;padding:12px;margin:12px 0;width:90%}button{background:#005c50;color:white}</style><h1>AIT Registrar — Local Demo</h1><p>Fictional local test service.</p><form method="post" action="/authorize"><input type="hidden" name="ticket" value="${escaped(
+      `<!doctype html><html><meta name="viewport" content="width=device-width,initial-scale=1"><title>AIT Local Demo consent</title><style>body{font:18px system-ui;max-width:460px;margin:40px auto;padding:20px}button{font:inherit;padding:12px;background:#0B5D34;color:white}</style><h1>AIT Registrar — Local Demo</h1><p>Fictional student credential for ${escaped(demoStudent.name)}. Use the wallet's demo QR flow to review and approve with your wallet PIN.</p><form method="post" action="/authorize"><input type="hidden" name="ticket" value="${escaped(
         ticket
-      )}"><label>Username<input name="username" autocomplete="username" required></label><label>Password<input name="password" type="password" autocomplete="current-password" required></label><button>Sign in and issue student ID</button></form></html>`
+      )}"><button name="approved" value="true">Approve fictional demo credential</button></form></html>`
     );
   }
   if (req.method === "POST" && path === "/authorize") {
@@ -345,8 +388,7 @@ async function handle(req, res) {
       t = tickets.get(f.ticket);
     check(t && t.exp > now() && t.attempts++ < 5, "invalid_request");
     check(
-      equal(f.username, "student") &&
-        equal(f.password, "student-local-password"),
+      f.approved === "true",
       "access_denied",
       403
     );
@@ -365,23 +407,25 @@ async function handle(req, res) {
   }
   if (req.method === "POST" && path === "/oauth/token") {
     const f = await body(req);
-    await clientAuthentication(f);
-    check(f.grant_type === "authorization_code", "unsupported_grant_type");
-    check(
-      f.client_id === CLIENT && f.redirect_uri === REDIRECT,
-      "invalid_grant"
-    );
-    const c = codes.get(hash(f.code || ""));
-    check(c && c.exp > now(), "invalid_grant");
-    check(
-      /^[A-Za-z0-9._~-]{43,128}$/.test(f.code_verifier || "") &&
-        equal(hash(f.code_verifier), c.code_challenge),
-      "invalid_grant"
-    );
-    codes.delete(hash(f.code));
+    const preAuthorized = f.grant_type === PRE_AUTH_GRANT;
+    if (preAuthorized) {
+      check(!f.client_id || f.client_id === CLIENT, "invalid_client", 401);
+      const key = hash(f["pre-authorized_code"] || "");
+      const offer = offers.get(key);
+      check(offer && offer.exp > now(), "invalid_grant");
+      offers.delete(key);
+    } else {
+      await clientAuthentication(f);
+      check(f.grant_type === "authorization_code", "unsupported_grant_type");
+      check(f.client_id === CLIENT && f.redirect_uri === REDIRECT, "invalid_grant");
+      const c = codes.get(hash(f.code || ""));
+      check(c && c.exp > now(), "invalid_grant");
+      check(/^[A-Za-z0-9._~-]{43,128}$/.test(f.code_verifier || "") && equal(hash(f.code_verifier), c.code_challenge), "invalid_grant");
+      codes.delete(hash(f.code));
+    }
     const accessToken = random(),
       nonce = random();
-    tokens.set(hash(accessToken), { nonce, exp: now() + 300, issued: false });
+    tokens.set(hash(accessToken), { nonce, exp: now() + 300, issued: false, preAuthorized });
     counters.token++;
     return json(res, 200, {
       access_token: accessToken,
@@ -425,7 +469,7 @@ async function handle(req, res) {
       ({ payload } = await jwtVerify(proof, await importJWK(jwk, header.alg), {
         algorithms: ["RS256", "ES256", "EdDSA"],
         audience: ORIGIN,
-        issuer: CLIENT,
+        ...(token.preAuthorized ? {} : {issuer: CLIENT}),
         requiredClaims: ["iat", "nonce"],
         clockTolerance: 5,
       }));
@@ -460,7 +504,7 @@ async function handle(req, res) {
   fail("not_found", 404);
 }
 setInterval(() => {
-  for (const map of [tickets, codes, tokens])
+  for (const map of [tickets, codes, offers, tokens])
     for (const [k, v] of map) if (v.exp < now()) map.delete(k);
   for (const [k, v] of usedAssertions) if (v < now()) usedAssertions.delete(k);
 }, 30000).unref();

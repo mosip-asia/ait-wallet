@@ -68,7 +68,7 @@ exports[`IssuersScreen should render idle state 1`] = `
     style={
       [
         {
-          "color": "#000000",
+          "color": "#1A1D20",
           "fontSize": 16,
           "lineHeight": 18,
         },
@@ -83,7 +83,7 @@ exports[`IssuersScreen should render idle state 1`] = `
         null,
         null,
         {
-          "color": "#6F6F6F",
+          "color": "#6C757D",
           "fontFamily": "Montserrat_400Regular",
           "fontSize": 12,
           "lineHeight": 19,
@@ -201,7 +201,7 @@ exports[`IssuersScreen should render with issuers list 1`] = `
     style={
       [
         {
-          "color": "#000000",
+          "color": "#1A1D20",
           "fontSize": 16,
           "lineHeight": 18,
         },
@@ -216,7 +216,7 @@ exports[`IssuersScreen should render with issuers list 1`] = `
         null,
         null,
         {
-          "color": "#6F6F6F",
+          "color": "#6C757D",
           "fontFamily": "Montserrat_400Regular",
           "fontSize": 12,
           "lineHeight": 19,
