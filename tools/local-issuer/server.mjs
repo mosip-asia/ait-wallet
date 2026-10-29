@@ -25,7 +25,7 @@ export const ORIGIN = "https://localhost:8443";
 export const CLIENT = "ait-wallet-mobile";
 export const REDIRECT = "io.mosip.residentapp.inji://oauthredirect";
 export const CONFIG_ID = "AITLocalStudent";
-export const DID = "did:web:localhost%3A8443";
+export const DID = "did:web:localhost";
 const stateDir =
   process.env.ISSUER_STATE_DIR ||
   fileURLToPath(new URL("./state", import.meta.url));

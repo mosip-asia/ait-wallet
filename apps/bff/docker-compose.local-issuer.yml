@@ -18,7 +18,7 @@ services:
 
   local-issuer:
     build: ../../tools/local-issuer
-    user: "${LOCAL_ISSUER_UID:-501}:${LOCAL_ISSUER_GID:-20}"
+    user: "${LOCAL_ISSUER_UID:-1000}:${LOCAL_ISSUER_GID:-1000}"
     network_mode: "service:mimoto"
     restart: unless-stopped
     depends_on:
