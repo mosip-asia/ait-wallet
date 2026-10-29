@@ -4,8 +4,8 @@ from pathlib import Path
 import os, subprocess
 ROOT=Path(__file__).resolve().parents[3]
 STATE=ROOT/'tools/local-issuer/state'
-STATE.mkdir(exist_ok=True,mode=0o700)
-os.umask(0o077)
+STATE.mkdir(exist_ok=True,mode=0o755)
+os.umask(0o022)
 def run(*args, env=None):
     return subprocess.run(args,check=True,capture_output=True,text=True,env=env).stdout.strip()
 def openssl(*args): return run('openssl',*map(str,args))
@@ -71,7 +71,7 @@ if not has_ca:
     run('docker', 'cp', 'ait-wallet-bff:/tmp/mimoto-cacerts', str(trust))
     run('docker', 'exec', 'ait-wallet-bff', 'rm', '-f', '/tmp/ait-ca.pem', '/tmp/mimoto-cacerts')
 openssl('x509','-in',STATE/'ca.pem','-outform','DER','-out',STATE/'ca.der')
-# Only certificate/public material is world-readable. Server runs as the current local UID.
-for p in STATE.iterdir(): p.chmod(0o600)
-for name in ['ca.pem','ca.der','client-public.jwk','tls-cert.pem','mimoto-cacerts']: (STATE/name).chmod(0o644)
+# Public development fixture: ensure state files are readable across container UIDs.
+STATE.chmod(0o755)
+for p in STATE.iterdir(): p.chmod(0o644)
 print('Local keys ready; existing Mimoto keystore/DB preserved. JVM truststore retains public roots.')

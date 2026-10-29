@@ -90,6 +90,7 @@ npm run docker:build:android
 adb reverse tcp:8081 tcp:8081   # Metro bundler
 adb reverse tcp:8099 tcp:8099   # Inji Mimoto BFF
 adb reverse tcp:8443 tcp:8443   # Local Mock Issuer
+adb reverse tcp:443 tcp:8443    # Local Mock Issuer did:web resolution
 
 # 3. (If testing with Local Mock Issuer): Trust local development CA:
 adb push ../../tools/local-issuer/state/ca.der /sdcard/Download/

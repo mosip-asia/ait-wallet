@@ -70,6 +70,7 @@ if [ -n "$APK_PATH" ] && [ -f "$APK_PATH" ]; then
       echo "     adb reverse tcp:8081 tcp:8081   # Metro bundler"
       echo "     adb reverse tcp:8099 tcp:8099   # Inji Mimoto BFF"
       echo "     adb reverse tcp:8443 tcp:8443   # Local Mock Issuer"
+      echo "     adb reverse tcp:443 tcp:8443    # Local Mock Issuer did:web resolution"
       echo ""
       echo "  2. (Optional: Local Mock Issuer) Push local CA certificate:"
       echo "     adb push ../../tools/local-issuer/state/ca.der /sdcard/Download/"
