@@ -14,6 +14,7 @@ import {I18nManager, View} from 'react-native';
 import {isIOS} from '../shared/constants';
 import {Copilot} from '../components/ui/Copilot';
 import LinearGradient from 'react-native-linear-gradient';
+import {palette} from '../ait/theme/tokens';
 
 export const HomeScreenLayout: React.FC<RootRouteProps> = props => {
   const {t} = useTranslation('IssuersScreen');
@@ -26,7 +27,7 @@ export const HomeScreenLayout: React.FC<RootRouteProps> = props => {
     } else {
       props.navigation.setOptions({
         tabBarShowLabel: true,
-        tabBarActiveTintColor: Theme.Colors.IconBg,
+        tabBarActiveTintColor: palette.primary,
         tabBarLabelStyle: {
           fontSize: 12,
           fontFamily: 'Montserrat_600SemiBold',

@@ -28,6 +28,7 @@ import {
 import {BOTTOM_TAB_ROUTES} from '../routes/routesConstants';
 import {getHomeMachineService} from './Home/HomeScreenController';
 import {selectIsIssuerMachineBusyForDeepLink} from './Home/HomeScreenMachine';
+import {palette} from '../ait/theme/tokens';
 
 const {Navigator, Screen} = createBottomTabNavigator();
 
@@ -39,8 +40,8 @@ export const MainLayout: React.FC = () => {
 
   const options: BottomTabNavigationOptions = {
     tabBarShowLabel: true,
-    tabBarActiveTintColor: Theme.Colors.IconBg,
     ...Theme.BottomTabBarStyle,
+    tabBarActiveTintColor: palette.primary,
   };
   const navigation = useNavigation<ScanLayoutNavigation>();
 

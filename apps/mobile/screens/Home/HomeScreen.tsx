@@ -1,6 +1,7 @@
 import React, {useContext, useEffect} from 'react';
 import {Icon} from 'react-native-elements';
 import {Column} from '../../components/ui';
+import {AitDashboardHeader} from '../../ait/components/AitDashboardHeader';
 import {Theme} from '../../components/ui/styleUtils';
 import {HomeRouteProps} from '../../routes/routeTypes';
 import {MyVcsTab} from './MyVcsTab';
@@ -103,6 +104,7 @@ export const HomeScreen: React.FC<HomeRouteProps> = props => {
     <React.Fragment>
       <BannerNotificationContainer />
       <Column fill backgroundColor={Theme.Colors.lightGreyBackgroundColor}>
+        <AitDashboardHeader />
         {controller.haveTabsLoaded && (
           <Column fill>
             <MyVcsTab

@@ -604,11 +604,13 @@
     }
   },
   "MyVcsTab": {
-    "searchByName": "Search",
-    "bringYourDigitalID": "Bring your digital identity",
+    "dashboardTitle": "Your AIT wallet",
+    "dashboardDescription": "Your campus credentials, together in one place.",
+    "searchByName": "Search credentials",
+    "bringYourDigitalID": "Your AIT journey starts here",
     "generateVcDescription": "Tap on \"Download card\" below to download your card",
-    "generateVcFABDescription": "Tap on  \"+\" below to download your card",
-    "downloadCard": "Download Card",
+    "generateVcFABDescription": "Tap + to add a credential from AIT or another issuer.",
+    "downloadCard": "Add credential",
     "downloadingYourCard": "Downloading your card, this can take upto 5 minutes",
     "downloadingVcSuccess": "Your Card has been downloaded successfully",
     "downloadingVcFailed": "Sorry! Due to technical error we are unable to download your card now. Please try again later.",
@@ -712,9 +714,9 @@
     }
   },
   "MainLayout": {
-    "home": "Home",
+    "home": "Wallet",
     "share": "Share",
-    "history": "History",
+    "history": "Activity",
     "request": "Request",
     "settings": "Settings"
   },
