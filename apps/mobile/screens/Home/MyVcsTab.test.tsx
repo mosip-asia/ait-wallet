@@ -13,8 +13,8 @@ jest.mock('../../shared/constants', () => ({
   isAndroid: () => true,
 }));
 
-jest.mock('../../components/VC/VcItemContainer', () => ({
-  VcItemContainer: (props: any) => {
+jest.mock('../../ait/components/AitCredentialCard', () => ({
+  AitCredentialCard: (props: any) => {
     const {View} = require('react-native');
     return <View testID="vcItemContainer" />;
   },

@@ -1,119 +1,60 @@
 import {getFocusedRouteNameFromRoute} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import React, {useState} from 'react';
+import React from 'react';
 import {useTranslation} from 'react-i18next';
-import {Row, Text} from '../components/ui';
+import {Pressable, StyleSheet, Text, View} from 'react-native';
 import {Header} from '../components/ui/Header';
-import {Theme} from '../components/ui/styleUtils';
 import {RootRouteProps} from '../routes';
 import {HomeScreen} from './Home/HomeScreen';
 import {IssuersScreen} from './Issuers/IssuersScreen';
-import {SvgImage} from '../components/ui/svg';
-import {HelpScreen} from '../components/HelpScreen';
-import {I18nManager, View} from 'react-native';
-import {isIOS} from '../shared/constants';
-import {Copilot} from '../components/ui/Copilot';
-import LinearGradient from 'react-native-linear-gradient';
-import {palette} from '../ait/theme/tokens';
+import {palette, spacing} from '../ait/theme/tokens';
+
+const {Navigator, Screen} = createNativeStackNavigator();
 
 export const HomeScreenLayout: React.FC<RootRouteProps> = props => {
-  const {t} = useTranslation('IssuersScreen');
-  const {Navigator, Screen} = createNativeStackNavigator();
+  const {t} = useTranslation();
 
   React.useLayoutEffect(() => {
     const routeName = getFocusedRouteNameFromRoute(props.route);
-    if (routeName === 'IssuersScreen') {
-      props.navigation.setOptions({tabBarStyle: {display: 'none'}});
-    } else {
-      props.navigation.setOptions({
-        tabBarShowLabel: true,
-        tabBarActiveTintColor: palette.primary,
-        tabBarLabelStyle: {
-          fontSize: 12,
-          fontFamily: 'Montserrat_600SemiBold',
-        },
-        tabBarStyle: {
-          height: 75,
-          paddingHorizontal: 10,
-        },
-        tabBarItemStyle: {
-          height: 83,
-          padding: 11,
-        },
-      });
-    }
+    props.navigation.setOptions({
+      tabBarStyle:
+        routeName === 'IssuersScreen' ? {display: 'none'} : undefined,
+    });
   }, [props.navigation, props.route]);
-
-  const screenOptions = (
-    <HelpScreen
-      source={'Inji'}
-      triggerComponent={
-        <Copilot
-          title={t('copilot:helpTitle')}
-          description={t('copilot:helpMessage')}
-          order={1}>
-          <LinearGradient
-            style={{borderRadius: 8}}
-            colors={Theme.Colors.GradientColorsLight}
-            start={Theme.LinearGradientDirection.start}
-            end={Theme.LinearGradientDirection.end}>
-            <View style={Theme.HelpScreenStyle.viewStyle}>
-              <Row crossAlign="center" style={Theme.HelpScreenStyle.rowStyle}>
-                <View testID="helpIcon" style={Theme.HelpScreenStyle.iconStyle}>
-                  {SvgImage.coloredInfo()}
-                </View>
-                <Text
-                  testID="helpText"
-                  style={Theme.HelpScreenStyle.labelStyle}>
-                  {t('help')}
-                </Text>
-              </Row>
-            </View>
-          </LinearGradient>
-        </Copilot>
-      }
-    />
-  );
-
-  const [isRTL] = useState(I18nManager.isRTL);
-
-  const HomeScreenOptions = {
-    headerLeft: () =>
-      isIOS() || !isRTL ? (
-        <View style={Theme.Styles.injiHomeLogo}>
-          {SvgImage.InjiLogo(Theme.Styles.injiLogo)}
-        </View>
-      ) : (
-        screenOptions
-      ),
-    headerTitle: '',
-    headerRight: () =>
-      isIOS() || !isRTL ? (
-        screenOptions
-      ) : (
-        <View style={Theme.Styles.injiHomeLogo}>
-          {SvgImage.InjiLogo(Theme.Styles.injiLogo)}
-        </View>
-      ),
-  };
 
   return (
     <Navigator>
       <Screen
-        key={'HomeScreen'}
-        name={'HomeScreen'}
+        name="HomeScreen"
         component={HomeScreen}
-        options={HomeScreenOptions}
+        options={{
+          headerTitle: '',
+          headerShadowVisible: false,
+          headerLeft: () => <Text style={styles.title}>AIT Wallet</Text>,
+          headerRight: () => (
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel={t('AitDashboard:profile')}
+              onPress={() => props.navigation.navigate('settings' as never)}
+              style={styles.profile}>
+              <View style={styles.avatar}>
+                <Text style={styles.avatarText}>○</Text>
+              </View>
+              <Text style={styles.profileText}>
+                {t('AitDashboard:profile')}
+              </Text>
+            </Pressable>
+          ),
+        }}
       />
       <Screen
-        key={'Issuers'}
-        name={'IssuersScreen'}
+        name="IssuersScreen"
         component={IssuersScreen}
         options={{
-          header: props => (
+          header: headerProps => (
             <Header
-              goBack={props.navigation.goBack}
-              title={t('title')}
+              goBack={headerProps.navigation.goBack}
+              title={t('IssuersScreen:title')}
               testID="issuersScreenHeader"
             />
           ),
@@ -122,3 +63,24 @@ export const HomeScreenLayout: React.FC<RootRouteProps> = props => {
     </Navigator>
   );
 };
+
+const styles = StyleSheet.create({
+  title: {fontSize: 19, fontWeight: '700', color: palette.primary},
+  profile: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.sm,
+    minHeight: 44,
+  },
+  avatar: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: palette.primary,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  avatarText: {color: palette.primary, fontSize: 22},
+  profileText: {color: palette.textPrimary, fontSize: 12},
+});

@@ -32,6 +32,29 @@ If you want to test complete issuance locally with an isolated mock AIT Registra
 
 The BFF will start on **`http://localhost:8099`**.
 
+### Show AIT Local Demo and Inji sandbox issuers together
+
+After starting the local issuer, merge Inji's public QA catalog into the generated
+local configuration (run from the repository root):
+
+```bash
+python3 apps/bff/scripts/sync-inji-issuers.py
+docker restart ait-bff-config-server ait-wallet-bff bff-local-issuer-1
+```
+
+The script defaults to `tools/local-issuer/state/mimoto-issuers-config.json`.
+Use `--config PATH` if your containers mount a different issuer config file.
+The local stack must mount this generated file in both the BFF and config server;
+set `LOCAL_ISSUER_CONFIG=../../tools/local-issuer/state/mimoto-issuers-config.json`
+when starting Compose if needed. The generated file stays outside Git.
+
+Existing entries take precedence on duplicate issuer IDs, preserving the AIT
+demo endpoints. Upstream token endpoints remain on Inji's remote BFF so sandbox
+clients use their existing registrations. This adds catalog visibility; individual
+sandbox services and test accounts may be unavailable. Reopen Add credential to
+fetch the updated list. Rerunning the script adds newly published issuers without
+duplicating existing ones; it preserves existing entries rather than updating them.
+
 ### 3. Verify Mimoto Endpoints
 ```bash
 # 1. Check remote wallet properties

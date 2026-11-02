@@ -14,7 +14,7 @@ import testIDProps from '../shared/commonUtil';
 import {SvgImage} from '../components/ui/svg';
 import {isAndroidVersionBelow, isIOS} from '../shared/constants';
 import {CopilotProvider} from 'react-native-copilot';
-import {View} from 'react-native';
+import {Pressable, Text, View} from 'react-native';
 import {CopilotTooltip} from '../components/CopilotTooltip';
 import {Copilot} from '../components/ui/Copilot';
 import LinearGradient from 'react-native-linear-gradient';
@@ -99,6 +99,21 @@ export const MainLayout: React.FC = () => {
             }}
             options={{
               ...route.options,
+              headerLeft: () => (
+                <Pressable
+                  accessibilityRole="button"
+                  accessibilityLabel="AIT Wallet"
+                  onPress={() => navigation.navigate(BOTTOM_TAB_ROUTES.home)}
+                  style={{
+                    paddingHorizontal: 12,
+                    minHeight: 44,
+                    justifyContent: 'center',
+                  }}>
+                  <Text style={{color: palette.primary, fontWeight: '600'}}>
+                    ‹ AIT Wallet
+                  </Text>
+                </Pressable>
+              ),
               title: t(route.name),
               tabBarIcon: ({focused}) => (
                 <Column
