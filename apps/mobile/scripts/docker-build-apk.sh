@@ -78,6 +78,8 @@ if [ -n "$APK_PATH" ] && [ -f "$APK_PATH" ]; then
       echo ""
       echo "  3. Install the APK:"
       echo "     adb install -r $APK_PATH"
+      echo "     # If signature mismatch occurs (INSTALL_FAILED_UPDATE_INCOMPATIBLE):"
+      echo "     # adb uninstall io.mosip.residentapp"
       echo ""
       echo "  4. Start Metro bundler container for live code updates:"
       echo "     npm run docker:metro"

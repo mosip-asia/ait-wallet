@@ -97,6 +97,7 @@ adb push ../../tools/local-issuer/state/ca.der /sdcard/Download/
 # In emulator: Settings -> Security -> More Security Settings -> Encryption & Credentials -> Install a certificate -> CA certificate (select ca.der)
 
 # 4. Install the freshly compiled APK onto your running emulator:
+# (If upgrading from an older build with mismatched signatures, run: adb uninstall io.mosip.residentapp)
 adb install -r android/app/build/outputs/apk/residentapp/debug/Inji_universal.apk
 
 # 5. Start the Dockerized Metro bundler for live Fast Refresh / code updates:
@@ -104,6 +105,13 @@ npm run docker:metro
 ```
 
 *Open the installed Inji app on your emulator. When you edit TypeScript/React Native code on your host, Metro will hot-reload the changes live.*
+
+> [!TIP]
+> **Signature Mismatch (`INSTALL_FAILED_UPDATE_INCOMPATIBLE`)**:
+> If you already have an older build installed on the emulator that was signed with a different debug keystore, `adb install -r` will fail. Uninstall the existing package before reinstalling:
+> ```bash
+> adb uninstall io.mosip.residentapp
+> ```
 
 ---
 
