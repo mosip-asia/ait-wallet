@@ -62,11 +62,15 @@ export class DocumentLoader {
         throw new Error(`Invalid did:web URL: missing domain in ${url}`);
       }
 
+      // Route local development DID resolution to mock issuer port (8443) when running on localhost without explicit port
+      const targetHost =
+        baseDomain === 'localhost' ? 'localhost:8443' : baseDomain;
+
       const path = components.slice(1).join('/');
       const didUrl =
         path.length === 0
-          ? `https://${baseDomain}/.well-known/did.json`
-          : `https://${baseDomain}/${path}/did.json`;
+          ? `https://${targetHost}/.well-known/did.json`
+          : `https://${targetHost}/${path}/did.json`;
 
       console.info('[DOC_LOADER] Resolving DID:', didUrl);
 

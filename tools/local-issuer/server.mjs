@@ -17,9 +17,13 @@ import { RsaSignature2018 } from "./rsa-suite.mjs";
 import { decodeProtectedHeader, importJWK, jwtVerify } from "jose";
 const require = createRequire(import.meta.url);
 const jsigs = require("jsonld-signatures");
+const securityV3 = JSON.parse(
+  readFileSync(new URL("./contexts/security-v3.json", import.meta.url), "utf8")
+);
 const contexts = new Map([
   ...require("credentials-context").contexts,
   ...require("security-context").contexts,
+  ["https://w3id.org/security/v3", securityV3],
 ]);
 export const ORIGIN = process.env.LOCAL_ISSUER_ORIGIN || "https://localhost:8443";
 const issuerUrl = new URL(ORIGIN);
@@ -29,7 +33,7 @@ if (issuerUrl.protocol !== "https:" || issuerUrl.origin !== ORIGIN || issuerUrl.
 export const CLIENT = "ait-wallet-mobile";
 export const REDIRECT = "io.mosip.residentapp.inji://oauthredirect";
 export const CONFIG_ID = "AITLocalStudent";
-export const DID = "did:web:" + encodeURIComponent(issuerUrl.host);
+export const DID = "did:web:localhost";
 export const PRE_AUTH_GRANT = "urn:ietf:params:oauth:grant-type:pre-authorized_code";
 const stateDir =
   process.env.ISSUER_STATE_DIR ||

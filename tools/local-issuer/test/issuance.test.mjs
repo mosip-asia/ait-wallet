@@ -281,7 +281,7 @@ test("real Mimoto token proxy, holder proof, RSA signature, signed identity and 
     401
   );
   const did = await request("/.well-known/did.json");
-  assert.equal(did.body.id, DID);
+  assert.equal(did.body.id, "did:web:localhost");
 });
 
 test("demo QR offer is short-lived and single-use, with holder-bound signed Nisha data and no password", async () => {
