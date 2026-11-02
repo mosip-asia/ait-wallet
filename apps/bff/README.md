@@ -85,7 +85,18 @@ In GitHub → **Settings → Secrets and variables → Actions**, at repository 
 
 The `deploy` user (Docker, passwordless sudo, key accepted only from NetBird addresses) is managed in `mosip-asia/ait-vc-infra` (`ait-vc-wallet/`).
 
-**Before the first deployment:** `deploy.sh` creates `apps/bff/.env` from `.env.example` when it is missing, so the stack starts with the development passwords. For real ones, write `/projects/ait-wallet/apps/bff/.env` on the VM first: changing `POSTGRES_PASSWORD` or `OIDC_P12_PASSWORD` later means `docker compose down -v` and a new keystore, which deletes the BFF's data.
+**Before the first deployment:** `deploy.sh` creates `apps/bff/.env` from `.env.example` when it is missing, so the stack starts with the development passwords. For real ones, prepare the VM before the first deployment. Clone first: the pipeline's own clone fails if the folder already holds files.
+
+```bash
+sudo mkdir -p /projects/ait-wallet
+sudo chown deploy:deploy /projects/ait-wallet
+sudo -u deploy git clone https://github.com/mosip-asia/ait-wallet.git /projects/ait-wallet
+cd /projects/ait-wallet/apps/bff
+sudo -u deploy cp .env.example .env
+sudo -u deploy nano .env
+```
+
+Changing `POSTGRES_PASSWORD` or `OIDC_P12_PASSWORD` later means `docker compose down -v` and a new keystore, which deletes the BFF's data.
 
 ### Reach the Deployed BFF
 - From a device on the NetBird mesh: `http://wallet-dev-vm:8099/v1/mimoto/...` (Docker-published ports over the mesh are not tested yet; if it does not answer, use the SSH forward below).
