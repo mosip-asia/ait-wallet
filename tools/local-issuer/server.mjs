@@ -17,9 +17,13 @@ import { RsaSignature2018 } from "./rsa-suite.mjs";
 import { decodeProtectedHeader, importJWK, jwtVerify } from "jose";
 const require = createRequire(import.meta.url);
 const jsigs = require("jsonld-signatures");
+const securityV3 = JSON.parse(
+  readFileSync(new URL("./contexts/security-v3.json", import.meta.url), "utf8")
+);
 const contexts = new Map([
   ...require("credentials-context").contexts,
   ...require("security-context").contexts,
+  ["https://w3id.org/security/v3", securityV3],
 ]);
 export const ORIGIN = "https://localhost:8443";
 export const CLIENT = "ait-wallet-mobile";

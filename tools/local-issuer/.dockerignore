@@ -6,3 +6,4 @@
 !package-lock.json
 !server.mjs
 !rsa-suite.mjs
+!contexts/**
