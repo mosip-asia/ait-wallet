@@ -104,6 +104,20 @@ describe('DocumentLoader', () => {
       );
     });
 
+    it('should resolve did:web:localhost to port 8443 for local mock issuer development', async () => {
+      mockLoader.mockResolvedValue({
+        document: {
+          id: 'did:web:localhost',
+        },
+      });
+
+      await DocumentLoader.didWebDocumentLoader('did:web:localhost');
+
+      expect(mockLoader).toHaveBeenCalledWith(
+        'https://localhost:8443/.well-known/did.json',
+      );
+    });
+
     it('should throw when resolved DID document id does not match requested DID', async () => {
       mockLoader.mockResolvedValue({
         document: {

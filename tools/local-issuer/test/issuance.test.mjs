@@ -278,5 +278,5 @@ test("real Mimoto token proxy, holder proof, RSA signature, signed identity and 
     401
   );
   const did = await request("/.well-known/did.json");
-  assert.equal(did.body.id, "did:web:localhost%3A8443");
+  assert.equal(did.body.id, "did:web:localhost");
 });

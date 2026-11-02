@@ -3,11 +3,12 @@
 import { JwsLinkedDataSignature } from "@digitalbazaar/jws-linked-data-signature";
 import { verify, constants } from "node:crypto";
 export class RsaSignature2018 extends JwsLinkedDataSignature {
-  constructor({ signer } = {}) {
+  constructor({ signer, date } = {}) {
     super({
       type: "RsaSignature2018",
       alg: "PS256",
       signer,
+      date,
       contextUrl: "https://www.w3.org/2018/credentials/v1",
       LDKeyClass: {
         from: async (key) => ({
@@ -28,6 +29,16 @@ export class RsaSignature2018 extends JwsLinkedDataSignature {
       },
     });
     this.canonizeOptions = { algorithm: "URDNA2015" };
+  }
+  async canonizeProof(proof, { documentLoader }) {
+    const p = {
+      ...proof,
+      "@context": "https://w3id.org/security/v3",
+    };
+    delete p.jws;
+    delete p.signatureValue;
+    delete p.proofValue;
+    return this.canonize(p, { documentLoader, skipExpansion: false });
   }
   async getVerificationMethod({ proof, documentLoader }) {
     const id =
