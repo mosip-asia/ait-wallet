@@ -105,6 +105,7 @@ jobs:
               exit 1
             fi
 
-            # 2. Only record new success AFTER deploy.sh and smoke-test SUCCEED
-            echo "${{ github.ref_name }}" > .deploy_success
-            echo "✅ Deployment verified! Recorded ${{ github.ref_name }} as the new stable baseline."
+            # 2. Only record new success AFTER deploy.sh and smoke-test SUCCEED. The commit, not the
+            #    ref name: after a manual run the name is a branch, which moves.
+            echo "${{ github.sha }}" > .deploy_success
+            echo "✅ Deployment verified! Recorded ${{ github.ref_name }} (${{ github.sha }}) as the new stable baseline."
