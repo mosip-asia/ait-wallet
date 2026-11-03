@@ -3,7 +3,7 @@ services:
   config-server:
     volumes:
       # Same container path as the base mount: Compose replaces it with the demo file.
-      - ${LOCAL_ISSUER_CONFIG:-./config/mimoto-issuers-config.local.json}:/config/server/mimoto-issuers-config.json:ro
+      - ./config/mimoto-issuers-config.local.json:/config/server/mimoto-issuers-config.json:ro
 
   mimoto:
     ports:
@@ -13,7 +13,7 @@ services:
         -Djavax.net.ssl.trustStore=/home/mosip/local-dev/cacerts
         -Djavax.net.ssl.trustStorePassword=changeit
     volumes:
-      - ${LOCAL_ISSUER_CONFIG:-./config/mimoto-issuers-config.local.json}:/home/mosip/mimoto-issuers-config.json:ro
+      - ./config/mimoto-issuers-config.local.json:/home/mosip/mimoto-issuers-config.json:ro
       - ../../tools/local-issuer/state/mimoto-cacerts:/home/mosip/local-dev/cacerts:ro
 
   local-issuer:
