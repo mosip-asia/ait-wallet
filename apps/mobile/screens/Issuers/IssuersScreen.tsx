@@ -1,5 +1,6 @@
 import React, {useEffect, useLayoutEffect, useState} from 'react';
 import {useTranslation} from 'react-i18next';
+import {CommonActions} from '@react-navigation/native';
 import {FlatList, Pressable, View} from 'react-native';
 import {Issuer} from '../../components/openId4VCI/Issuer';
 import {Header} from '../../components/ui/Header';
@@ -53,7 +54,7 @@ export const IssuersScreen: React.FC<
 > = props => {
   const controller = useIssuerScreenController(props);
   const {i18n, t} = useTranslation('IssuersScreen');
-  const issuers = controller.issuers;
+  const issuers: issuerType[] = controller.issuers;
   const [filteredSearchData, setFilteredSearchData] = useState(issuers);
   const [search, setSearch] = useState('');
   const [tapToSearch, setTapToSearch] = useState(false);
@@ -136,6 +137,10 @@ export const IssuersScreen: React.FC<
   }, [controller.isAuthEndpointToOpen]);
 
   const onPressHandler = (id: string, protocol: string) => {
+    if (__DEV__ && id === 'AITRegistrar' && issuers.find(issuer => issuer.issuer_id === id)?.display?.some(display => display.title === 'AIT Local Demo')) {
+      props.navigation.dispatch(CommonActions.navigate({name: 'AitCredentialRequest'}));
+      return;
+    }
     sendStartEvent(
       getStartEventData(TelemetryConstants.FlowType.vcDownload, {id: id}),
     );
@@ -150,21 +155,6 @@ export const IssuersScreen: React.FC<
       ? controller.DOWNLOAD_ID()
       : controller.SELECTED_ISSUER(id);
   };
-
-  const isGenericError = () => {
-    return controller.errorMessageType === ErrorMessage.GENERIC;
-  };
-
-  function isBackendError(): boolean {
-    return (
-      controller.errorMessageType === ErrorMessage.TECHNICAL_DIFFICULTIES ||
-      controller.errorMessageType ===
-        ErrorMessage.CREDENTIAL_TYPE_DOWNLOAD_FAILURE ||
-      controller.errorMessageType ===
-        ErrorMessage.AUTHORIZATION_GRANT_TYPE_NOT_SUPPORTED ||
-      controller.errorMessageType === ErrorMessage.NETWORK_REQUEST_FAILED
-    );
-  }
 
   const onFocusSearch = () => {
     setTapToSearch(true);

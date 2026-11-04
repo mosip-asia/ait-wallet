@@ -29,8 +29,8 @@ exports[`MyVcsTab should render AddVcModal when AddVcModalService is set 1`] = `
       ]
     }
   >
-    <View
-      style={
+    <RCTScrollView
+      contentContainerStyle={
         [
           {
             "alignItems": undefined,
@@ -49,137 +49,278 @@ exports[`MyVcsTab should render AddVcModal when AddVcModalService is set 1`] = `
           null,
           null,
           null,
-          {
-            "paddingVertical": 2,
-          },
-          {
-            "paddingHorizontal": 8,
-          },
+          null,
+          null,
         ]
       }
+      refreshControl={
+        <RefreshControlMock
+          onRefresh={[MockFunction]}
+          refreshing={false}
+        />
+      }
     >
-      <RCTScrollView
-        contentContainerStyle={
-          [
+      <RCTRefreshControl />
+      <View>
+        <View
+          style={
             {
-              "alignItems": undefined,
-              "flexDirection": "column",
-              "justifyContent": undefined,
-            },
-            {
-              "flex": 1,
-            },
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            {
-              "alignItems": "center",
-              "backgroundColor": "#fff",
-              "borderRadius": 10,
-              "elevation": 5,
-              "justifyContent": "center",
-              "padding": 10,
-              "shadowColor": "#000",
-              "shadowOpacity": 0.4,
-            },
-            null,
-            null,
-          ]
-        }
-        refreshControl={
-          <RefreshControlMock
-            onRefresh={[MockFunction]}
-            refreshing={false}
-          />
-        }
-      >
-        <RCTRefreshControl />
-        <View>
-          <View
+              "paddingBottom": 32,
+              "paddingHorizontal": 16,
+            }
+          }
+        >
+          <Image
+            accessibilityLabel="banner"
+            resizeMode="cover"
+            source=""
             style={
               {
-                "alignItems": "center",
+                "alignSelf": "stretch",
+                "height": 180,
+                "marginBottom": 24,
+                "marginHorizontal": -16,
+                "width": "auto",
+              }
+            }
+          />
+          <Text
+            style={
+              {
+                "color": "#1A1D20",
+                "fontSize": 17,
+                "fontWeight": "600",
+                "marginBottom": 16,
               }
             }
           >
-            DigitalIdentity
-            <Text
+            documents
+          </Text>
+          <View
+            style={
+              {
+                "backgroundColor": "#FFFFFF",
+                "borderColor": "#0B5D3440",
+                "borderRadius": 8,
+                "borderWidth": 1,
+                "marginBottom": 16,
+                "overflow": "hidden",
+              }
+            }
+          >
+            <View
+              accessibilityRole="button"
+              accessibilityState={
+                {
+                  "busy": undefined,
+                  "checked": undefined,
+                  "disabled": undefined,
+                  "expanded": true,
+                  "selected": undefined,
+                }
+              }
+              accessibilityValue={
+                {
+                  "max": undefined,
+                  "min": undefined,
+                  "now": undefined,
+                  "text": undefined,
+                }
+              }
+              accessible={true}
+              collapsable={false}
+              focusable={true}
+              onBlur={[Function]}
+              onClick={[Function]}
+              onFocus={[Function]}
+              onResponderGrant={[Function]}
+              onResponderMove={[Function]}
+              onResponderRelease={[Function]}
+              onResponderTerminate={[Function]}
+              onResponderTerminationRequest={[Function]}
+              onStartShouldSetResponder={[Function]}
               style={
-                [
-                  {
-                    "color": "#000000",
-                    "fontSize": 16,
-                    "lineHeight": 18,
-                  },
-                  {
-                    "fontFamily": "Montserrat_700Bold",
-                    "fontSize": 15,
-                    "justifyContent": "center",
-                  },
-                  null,
-                  {
-                    "textAlign": "center",
-                  },
-                  {
-                    "marginBottom": 6,
-                    "marginEnd": 0,
-                    "marginStart": 0,
-                    "marginTop": 33,
-                  },
-                  null,
-                  {
-                    "paddingTop": 3,
-                  },
-                ]
+                {
+                  "alignItems": "center",
+                  "backgroundColor": "#0B5D340D",
+                  "flexDirection": "row",
+                  "gap": 8,
+                  "justifyContent": "space-between",
+                  "padding": 16,
+                }
               }
             >
-              bringYourDigitalID
-            </Text>
-            <Text
+              <Text
+                style={
+                  {
+                    "color": "#0B5D34",
+                    "flex": 1,
+                    "fontSize": 13,
+                    "fontWeight": "700",
+                  }
+                }
+              >
+                studentId
+              </Text>
+              <Text
+                style={
+                  {
+                    "color": "#0B5D34",
+                    "fontSize": 19,
+                  }
+                }
+              >
+                ▴
+              </Text>
+            </View>
+            <View
+              accessibilityLabel="addStudentId"
+              accessibilityRole="button"
+              accessibilityState={
+                {
+                  "busy": undefined,
+                  "checked": undefined,
+                  "disabled": undefined,
+                  "expanded": undefined,
+                  "selected": undefined,
+                }
+              }
+              accessibilityValue={
+                {
+                  "max": undefined,
+                  "min": undefined,
+                  "now": undefined,
+                  "text": undefined,
+                }
+              }
+              accessible={true}
+              collapsable={false}
+              focusable={true}
+              onBlur={[Function]}
+              onClick={[Function]}
+              onFocus={[Function]}
+              onResponderGrant={[Function]}
+              onResponderMove={[Function]}
+              onResponderRelease={[Function]}
+              onResponderTerminate={[Function]}
+              onResponderTerminationRequest={[Function]}
+              onStartShouldSetResponder={[Function]}
               style={
-                [
+                {
+                  "alignItems": "center",
+                  "justifyContent": "center",
+                  "minHeight": 190,
+                  "padding": 24,
+                }
+              }
+              testID="addStudentId"
+            >
+              <Text
+                style={
                   {
-                    "color": "#000000",
-                    "fontSize": 16,
-                    "lineHeight": 18,
-                  },
+                    "color": "#0B5D34",
+                    "fontSize": 32,
+                    "marginBottom": 8,
+                  }
+                }
+              >
+                +
+              </Text>
+              <Text
+                style={
                   {
-                    "fontFamily": "Montserrat_400Regular",
-                    "fontSize": 14,
-                  },
-                  {
-                    "color": "#C7C7C7",
-                  },
-                  {
-                    "textAlign": "center",
-                  },
-                  {
-                    "marginBottom": 30,
-                    "marginEnd": 12,
-                    "marginStart": 12,
-                    "marginTop": 0,
-                  },
-                  null,
-                  {
-                    "fontFamily": "Montserrat_700Bold",
+                    "color": "#0B5D34",
                     "fontSize": 15,
-                    "justifyContent": "center",
-                    "paddingTop": 3,
-                  },
-                ]
+                    "fontWeight": "600",
+                    "textAlign": "center",
+                  }
+                }
+              >
+                addStudentId
+              </Text>
+            </View>
+          </View>
+          <View
+            style={
+              {
+                "backgroundColor": "#FFFFFF",
+                "borderColor": "#0B5D3440",
+                "borderRadius": 8,
+                "borderWidth": 1,
+                "marginBottom": 16,
+                "overflow": "hidden",
+              }
+            }
+          >
+            <View
+              accessibilityRole="button"
+              accessibilityState={
+                {
+                  "busy": undefined,
+                  "checked": undefined,
+                  "disabled": undefined,
+                  "expanded": false,
+                  "selected": undefined,
+                }
+              }
+              accessibilityValue={
+                {
+                  "max": undefined,
+                  "min": undefined,
+                  "now": undefined,
+                  "text": undefined,
+                }
+              }
+              accessible={true}
+              collapsable={false}
+              focusable={true}
+              onBlur={[Function]}
+              onClick={[Function]}
+              onFocus={[Function]}
+              onResponderGrant={[Function]}
+              onResponderMove={[Function]}
+              onResponderRelease={[Function]}
+              onResponderTerminate={[Function]}
+              onResponderTerminationRequest={[Function]}
+              onStartShouldSetResponder={[Function]}
+              style={
+                {
+                  "alignItems": "center",
+                  "backgroundColor": "#0B5D340D",
+                  "flexDirection": "row",
+                  "gap": 8,
+                  "justifyContent": "space-between",
+                  "padding": 16,
+                }
               }
             >
-              generateVcFABDescription
-            </Text>
+              <Text
+                style={
+                  {
+                    "color": "#0B5D34",
+                    "flex": 1,
+                    "fontSize": 13,
+                    "fontWeight": "700",
+                  }
+                }
+              >
+                transcript
+              </Text>
+              <Text
+                style={
+                  {
+                    "color": "#0B5D34",
+                    "fontSize": 19,
+                  }
+                }
+              >
+                ▾
+              </Text>
+            </View>
           </View>
         </View>
-      </RCTScrollView>
-    </View>
+      </View>
+    </RCTScrollView>
   </View>,
   "AddVcModal",
   <View
@@ -229,8 +370,8 @@ exports[`MyVcsTab should render GetVcModal when GetVcModalService is set 1`] = `
       ]
     }
   >
-    <View
-      style={
+    <RCTScrollView
+      contentContainerStyle={
         [
           {
             "alignItems": undefined,
@@ -249,137 +390,278 @@ exports[`MyVcsTab should render GetVcModal when GetVcModalService is set 1`] = `
           null,
           null,
           null,
-          {
-            "paddingVertical": 2,
-          },
-          {
-            "paddingHorizontal": 8,
-          },
+          null,
+          null,
         ]
       }
+      refreshControl={
+        <RefreshControlMock
+          onRefresh={[MockFunction]}
+          refreshing={false}
+        />
+      }
     >
-      <RCTScrollView
-        contentContainerStyle={
-          [
+      <RCTRefreshControl />
+      <View>
+        <View
+          style={
             {
-              "alignItems": undefined,
-              "flexDirection": "column",
-              "justifyContent": undefined,
-            },
-            {
-              "flex": 1,
-            },
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            {
-              "alignItems": "center",
-              "backgroundColor": "#fff",
-              "borderRadius": 10,
-              "elevation": 5,
-              "justifyContent": "center",
-              "padding": 10,
-              "shadowColor": "#000",
-              "shadowOpacity": 0.4,
-            },
-            null,
-            null,
-          ]
-        }
-        refreshControl={
-          <RefreshControlMock
-            onRefresh={[MockFunction]}
-            refreshing={false}
-          />
-        }
-      >
-        <RCTRefreshControl />
-        <View>
-          <View
+              "paddingBottom": 32,
+              "paddingHorizontal": 16,
+            }
+          }
+        >
+          <Image
+            accessibilityLabel="banner"
+            resizeMode="cover"
+            source=""
             style={
               {
-                "alignItems": "center",
+                "alignSelf": "stretch",
+                "height": 180,
+                "marginBottom": 24,
+                "marginHorizontal": -16,
+                "width": "auto",
+              }
+            }
+          />
+          <Text
+            style={
+              {
+                "color": "#1A1D20",
+                "fontSize": 17,
+                "fontWeight": "600",
+                "marginBottom": 16,
               }
             }
           >
-            DigitalIdentity
-            <Text
+            documents
+          </Text>
+          <View
+            style={
+              {
+                "backgroundColor": "#FFFFFF",
+                "borderColor": "#0B5D3440",
+                "borderRadius": 8,
+                "borderWidth": 1,
+                "marginBottom": 16,
+                "overflow": "hidden",
+              }
+            }
+          >
+            <View
+              accessibilityRole="button"
+              accessibilityState={
+                {
+                  "busy": undefined,
+                  "checked": undefined,
+                  "disabled": undefined,
+                  "expanded": true,
+                  "selected": undefined,
+                }
+              }
+              accessibilityValue={
+                {
+                  "max": undefined,
+                  "min": undefined,
+                  "now": undefined,
+                  "text": undefined,
+                }
+              }
+              accessible={true}
+              collapsable={false}
+              focusable={true}
+              onBlur={[Function]}
+              onClick={[Function]}
+              onFocus={[Function]}
+              onResponderGrant={[Function]}
+              onResponderMove={[Function]}
+              onResponderRelease={[Function]}
+              onResponderTerminate={[Function]}
+              onResponderTerminationRequest={[Function]}
+              onStartShouldSetResponder={[Function]}
               style={
-                [
-                  {
-                    "color": "#000000",
-                    "fontSize": 16,
-                    "lineHeight": 18,
-                  },
-                  {
-                    "fontFamily": "Montserrat_700Bold",
-                    "fontSize": 15,
-                    "justifyContent": "center",
-                  },
-                  null,
-                  {
-                    "textAlign": "center",
-                  },
-                  {
-                    "marginBottom": 6,
-                    "marginEnd": 0,
-                    "marginStart": 0,
-                    "marginTop": 33,
-                  },
-                  null,
-                  {
-                    "paddingTop": 3,
-                  },
-                ]
+                {
+                  "alignItems": "center",
+                  "backgroundColor": "#0B5D340D",
+                  "flexDirection": "row",
+                  "gap": 8,
+                  "justifyContent": "space-between",
+                  "padding": 16,
+                }
               }
             >
-              bringYourDigitalID
-            </Text>
-            <Text
+              <Text
+                style={
+                  {
+                    "color": "#0B5D34",
+                    "flex": 1,
+                    "fontSize": 13,
+                    "fontWeight": "700",
+                  }
+                }
+              >
+                studentId
+              </Text>
+              <Text
+                style={
+                  {
+                    "color": "#0B5D34",
+                    "fontSize": 19,
+                  }
+                }
+              >
+                ▴
+              </Text>
+            </View>
+            <View
+              accessibilityLabel="addStudentId"
+              accessibilityRole="button"
+              accessibilityState={
+                {
+                  "busy": undefined,
+                  "checked": undefined,
+                  "disabled": undefined,
+                  "expanded": undefined,
+                  "selected": undefined,
+                }
+              }
+              accessibilityValue={
+                {
+                  "max": undefined,
+                  "min": undefined,
+                  "now": undefined,
+                  "text": undefined,
+                }
+              }
+              accessible={true}
+              collapsable={false}
+              focusable={true}
+              onBlur={[Function]}
+              onClick={[Function]}
+              onFocus={[Function]}
+              onResponderGrant={[Function]}
+              onResponderMove={[Function]}
+              onResponderRelease={[Function]}
+              onResponderTerminate={[Function]}
+              onResponderTerminationRequest={[Function]}
+              onStartShouldSetResponder={[Function]}
               style={
-                [
+                {
+                  "alignItems": "center",
+                  "justifyContent": "center",
+                  "minHeight": 190,
+                  "padding": 24,
+                }
+              }
+              testID="addStudentId"
+            >
+              <Text
+                style={
                   {
-                    "color": "#000000",
-                    "fontSize": 16,
-                    "lineHeight": 18,
-                  },
+                    "color": "#0B5D34",
+                    "fontSize": 32,
+                    "marginBottom": 8,
+                  }
+                }
+              >
+                +
+              </Text>
+              <Text
+                style={
                   {
-                    "fontFamily": "Montserrat_400Regular",
-                    "fontSize": 14,
-                  },
-                  {
-                    "color": "#C7C7C7",
-                  },
-                  {
-                    "textAlign": "center",
-                  },
-                  {
-                    "marginBottom": 30,
-                    "marginEnd": 12,
-                    "marginStart": 12,
-                    "marginTop": 0,
-                  },
-                  null,
-                  {
-                    "fontFamily": "Montserrat_700Bold",
+                    "color": "#0B5D34",
                     "fontSize": 15,
-                    "justifyContent": "center",
-                    "paddingTop": 3,
-                  },
-                ]
+                    "fontWeight": "600",
+                    "textAlign": "center",
+                  }
+                }
+              >
+                addStudentId
+              </Text>
+            </View>
+          </View>
+          <View
+            style={
+              {
+                "backgroundColor": "#FFFFFF",
+                "borderColor": "#0B5D3440",
+                "borderRadius": 8,
+                "borderWidth": 1,
+                "marginBottom": 16,
+                "overflow": "hidden",
+              }
+            }
+          >
+            <View
+              accessibilityRole="button"
+              accessibilityState={
+                {
+                  "busy": undefined,
+                  "checked": undefined,
+                  "disabled": undefined,
+                  "expanded": false,
+                  "selected": undefined,
+                }
+              }
+              accessibilityValue={
+                {
+                  "max": undefined,
+                  "min": undefined,
+                  "now": undefined,
+                  "text": undefined,
+                }
+              }
+              accessible={true}
+              collapsable={false}
+              focusable={true}
+              onBlur={[Function]}
+              onClick={[Function]}
+              onFocus={[Function]}
+              onResponderGrant={[Function]}
+              onResponderMove={[Function]}
+              onResponderRelease={[Function]}
+              onResponderTerminate={[Function]}
+              onResponderTerminationRequest={[Function]}
+              onStartShouldSetResponder={[Function]}
+              style={
+                {
+                  "alignItems": "center",
+                  "backgroundColor": "#0B5D340D",
+                  "flexDirection": "row",
+                  "gap": 8,
+                  "justifyContent": "space-between",
+                  "padding": 16,
+                }
               }
             >
-              generateVcFABDescription
-            </Text>
+              <Text
+                style={
+                  {
+                    "color": "#0B5D34",
+                    "flex": 1,
+                    "fontSize": 13,
+                    "fontWeight": "700",
+                  }
+                }
+              >
+                transcript
+              </Text>
+              <Text
+                style={
+                  {
+                    "color": "#0B5D34",
+                    "fontSize": 19,
+                  }
+                }
+              >
+                ▾
+              </Text>
+            </View>
           </View>
         </View>
-      </RCTScrollView>
-    </View>
+      </View>
+    </RCTScrollView>
   </View>,
   "GetVcModal",
   <View
@@ -429,8 +711,8 @@ exports[`MyVcsTab should render binding error overlay 1`] = `
       ]
     }
   >
-    <View
-      style={
+    <RCTScrollView
+      contentContainerStyle={
         [
           {
             "alignItems": undefined,
@@ -449,137 +731,278 @@ exports[`MyVcsTab should render binding error overlay 1`] = `
           null,
           null,
           null,
-          {
-            "paddingVertical": 2,
-          },
-          {
-            "paddingHorizontal": 8,
-          },
+          null,
+          null,
         ]
       }
+      refreshControl={
+        <RefreshControlMock
+          onRefresh={[MockFunction]}
+          refreshing={false}
+        />
+      }
     >
-      <RCTScrollView
-        contentContainerStyle={
-          [
+      <RCTRefreshControl />
+      <View>
+        <View
+          style={
             {
-              "alignItems": undefined,
-              "flexDirection": "column",
-              "justifyContent": undefined,
-            },
-            {
-              "flex": 1,
-            },
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            {
-              "alignItems": "center",
-              "backgroundColor": "#fff",
-              "borderRadius": 10,
-              "elevation": 5,
-              "justifyContent": "center",
-              "padding": 10,
-              "shadowColor": "#000",
-              "shadowOpacity": 0.4,
-            },
-            null,
-            null,
-          ]
-        }
-        refreshControl={
-          <RefreshControlMock
-            onRefresh={[MockFunction]}
-            refreshing={false}
-          />
-        }
-      >
-        <RCTRefreshControl />
-        <View>
-          <View
+              "paddingBottom": 32,
+              "paddingHorizontal": 16,
+            }
+          }
+        >
+          <Image
+            accessibilityLabel="banner"
+            resizeMode="cover"
+            source=""
             style={
               {
-                "alignItems": "center",
+                "alignSelf": "stretch",
+                "height": 180,
+                "marginBottom": 24,
+                "marginHorizontal": -16,
+                "width": "auto",
+              }
+            }
+          />
+          <Text
+            style={
+              {
+                "color": "#1A1D20",
+                "fontSize": 17,
+                "fontWeight": "600",
+                "marginBottom": 16,
               }
             }
           >
-            DigitalIdentity
-            <Text
+            documents
+          </Text>
+          <View
+            style={
+              {
+                "backgroundColor": "#FFFFFF",
+                "borderColor": "#0B5D3440",
+                "borderRadius": 8,
+                "borderWidth": 1,
+                "marginBottom": 16,
+                "overflow": "hidden",
+              }
+            }
+          >
+            <View
+              accessibilityRole="button"
+              accessibilityState={
+                {
+                  "busy": undefined,
+                  "checked": undefined,
+                  "disabled": undefined,
+                  "expanded": true,
+                  "selected": undefined,
+                }
+              }
+              accessibilityValue={
+                {
+                  "max": undefined,
+                  "min": undefined,
+                  "now": undefined,
+                  "text": undefined,
+                }
+              }
+              accessible={true}
+              collapsable={false}
+              focusable={true}
+              onBlur={[Function]}
+              onClick={[Function]}
+              onFocus={[Function]}
+              onResponderGrant={[Function]}
+              onResponderMove={[Function]}
+              onResponderRelease={[Function]}
+              onResponderTerminate={[Function]}
+              onResponderTerminationRequest={[Function]}
+              onStartShouldSetResponder={[Function]}
               style={
-                [
-                  {
-                    "color": "#000000",
-                    "fontSize": 16,
-                    "lineHeight": 18,
-                  },
-                  {
-                    "fontFamily": "Montserrat_700Bold",
-                    "fontSize": 15,
-                    "justifyContent": "center",
-                  },
-                  null,
-                  {
-                    "textAlign": "center",
-                  },
-                  {
-                    "marginBottom": 6,
-                    "marginEnd": 0,
-                    "marginStart": 0,
-                    "marginTop": 33,
-                  },
-                  null,
-                  {
-                    "paddingTop": 3,
-                  },
-                ]
+                {
+                  "alignItems": "center",
+                  "backgroundColor": "#0B5D340D",
+                  "flexDirection": "row",
+                  "gap": 8,
+                  "justifyContent": "space-between",
+                  "padding": 16,
+                }
               }
             >
-              bringYourDigitalID
-            </Text>
-            <Text
+              <Text
+                style={
+                  {
+                    "color": "#0B5D34",
+                    "flex": 1,
+                    "fontSize": 13,
+                    "fontWeight": "700",
+                  }
+                }
+              >
+                studentId
+              </Text>
+              <Text
+                style={
+                  {
+                    "color": "#0B5D34",
+                    "fontSize": 19,
+                  }
+                }
+              >
+                ▴
+              </Text>
+            </View>
+            <View
+              accessibilityLabel="addStudentId"
+              accessibilityRole="button"
+              accessibilityState={
+                {
+                  "busy": undefined,
+                  "checked": undefined,
+                  "disabled": undefined,
+                  "expanded": undefined,
+                  "selected": undefined,
+                }
+              }
+              accessibilityValue={
+                {
+                  "max": undefined,
+                  "min": undefined,
+                  "now": undefined,
+                  "text": undefined,
+                }
+              }
+              accessible={true}
+              collapsable={false}
+              focusable={true}
+              onBlur={[Function]}
+              onClick={[Function]}
+              onFocus={[Function]}
+              onResponderGrant={[Function]}
+              onResponderMove={[Function]}
+              onResponderRelease={[Function]}
+              onResponderTerminate={[Function]}
+              onResponderTerminationRequest={[Function]}
+              onStartShouldSetResponder={[Function]}
               style={
-                [
+                {
+                  "alignItems": "center",
+                  "justifyContent": "center",
+                  "minHeight": 190,
+                  "padding": 24,
+                }
+              }
+              testID="addStudentId"
+            >
+              <Text
+                style={
                   {
-                    "color": "#000000",
-                    "fontSize": 16,
-                    "lineHeight": 18,
-                  },
+                    "color": "#0B5D34",
+                    "fontSize": 32,
+                    "marginBottom": 8,
+                  }
+                }
+              >
+                +
+              </Text>
+              <Text
+                style={
                   {
-                    "fontFamily": "Montserrat_400Regular",
-                    "fontSize": 14,
-                  },
-                  {
-                    "color": "#C7C7C7",
-                  },
-                  {
-                    "textAlign": "center",
-                  },
-                  {
-                    "marginBottom": 30,
-                    "marginEnd": 12,
-                    "marginStart": 12,
-                    "marginTop": 0,
-                  },
-                  null,
-                  {
-                    "fontFamily": "Montserrat_700Bold",
+                    "color": "#0B5D34",
                     "fontSize": 15,
-                    "justifyContent": "center",
-                    "paddingTop": 3,
-                  },
-                ]
+                    "fontWeight": "600",
+                    "textAlign": "center",
+                  }
+                }
+              >
+                addStudentId
+              </Text>
+            </View>
+          </View>
+          <View
+            style={
+              {
+                "backgroundColor": "#FFFFFF",
+                "borderColor": "#0B5D3440",
+                "borderRadius": 8,
+                "borderWidth": 1,
+                "marginBottom": 16,
+                "overflow": "hidden",
+              }
+            }
+          >
+            <View
+              accessibilityRole="button"
+              accessibilityState={
+                {
+                  "busy": undefined,
+                  "checked": undefined,
+                  "disabled": undefined,
+                  "expanded": false,
+                  "selected": undefined,
+                }
+              }
+              accessibilityValue={
+                {
+                  "max": undefined,
+                  "min": undefined,
+                  "now": undefined,
+                  "text": undefined,
+                }
+              }
+              accessible={true}
+              collapsable={false}
+              focusable={true}
+              onBlur={[Function]}
+              onClick={[Function]}
+              onFocus={[Function]}
+              onResponderGrant={[Function]}
+              onResponderMove={[Function]}
+              onResponderRelease={[Function]}
+              onResponderTerminate={[Function]}
+              onResponderTerminationRequest={[Function]}
+              onStartShouldSetResponder={[Function]}
+              style={
+                {
+                  "alignItems": "center",
+                  "backgroundColor": "#0B5D340D",
+                  "flexDirection": "row",
+                  "gap": 8,
+                  "justifyContent": "space-between",
+                  "padding": 16,
+                }
               }
             >
-              generateVcFABDescription
-            </Text>
+              <Text
+                style={
+                  {
+                    "color": "#0B5D34",
+                    "flex": 1,
+                    "fontSize": 13,
+                    "fontWeight": "700",
+                  }
+                }
+              >
+                transcript
+              </Text>
+              <Text
+                style={
+                  {
+                    "color": "#0B5D34",
+                    "fontSize": 19,
+                  }
+                }
+              >
+                ▾
+              </Text>
+            </View>
           </View>
         </View>
-      </RCTScrollView>
-    </View>
+      </View>
+    </RCTScrollView>
   </View>,
   <View
     testID="messageOverlay"
@@ -628,8 +1051,8 @@ exports[`MyVcsTab should render download failed VCs error 1`] = `
       ]
     }
   >
-    <View
-      style={
+    <RCTScrollView
+      contentContainerStyle={
         [
           {
             "alignItems": undefined,
@@ -648,137 +1071,278 @@ exports[`MyVcsTab should render download failed VCs error 1`] = `
           null,
           null,
           null,
-          {
-            "paddingVertical": 2,
-          },
-          {
-            "paddingHorizontal": 8,
-          },
+          null,
+          null,
         ]
       }
+      refreshControl={
+        <RefreshControlMock
+          onRefresh={[MockFunction]}
+          refreshing={false}
+        />
+      }
     >
-      <RCTScrollView
-        contentContainerStyle={
-          [
+      <RCTRefreshControl />
+      <View>
+        <View
+          style={
             {
-              "alignItems": undefined,
-              "flexDirection": "column",
-              "justifyContent": undefined,
-            },
-            {
-              "flex": 1,
-            },
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            {
-              "alignItems": "center",
-              "backgroundColor": "#fff",
-              "borderRadius": 10,
-              "elevation": 5,
-              "justifyContent": "center",
-              "padding": 10,
-              "shadowColor": "#000",
-              "shadowOpacity": 0.4,
-            },
-            null,
-            null,
-          ]
-        }
-        refreshControl={
-          <RefreshControlMock
-            onRefresh={[MockFunction]}
-            refreshing={false}
-          />
-        }
-      >
-        <RCTRefreshControl />
-        <View>
-          <View
+              "paddingBottom": 32,
+              "paddingHorizontal": 16,
+            }
+          }
+        >
+          <Image
+            accessibilityLabel="banner"
+            resizeMode="cover"
+            source=""
             style={
               {
-                "alignItems": "center",
+                "alignSelf": "stretch",
+                "height": 180,
+                "marginBottom": 24,
+                "marginHorizontal": -16,
+                "width": "auto",
+              }
+            }
+          />
+          <Text
+            style={
+              {
+                "color": "#1A1D20",
+                "fontSize": 17,
+                "fontWeight": "600",
+                "marginBottom": 16,
               }
             }
           >
-            DigitalIdentity
-            <Text
+            documents
+          </Text>
+          <View
+            style={
+              {
+                "backgroundColor": "#FFFFFF",
+                "borderColor": "#0B5D3440",
+                "borderRadius": 8,
+                "borderWidth": 1,
+                "marginBottom": 16,
+                "overflow": "hidden",
+              }
+            }
+          >
+            <View
+              accessibilityRole="button"
+              accessibilityState={
+                {
+                  "busy": undefined,
+                  "checked": undefined,
+                  "disabled": undefined,
+                  "expanded": true,
+                  "selected": undefined,
+                }
+              }
+              accessibilityValue={
+                {
+                  "max": undefined,
+                  "min": undefined,
+                  "now": undefined,
+                  "text": undefined,
+                }
+              }
+              accessible={true}
+              collapsable={false}
+              focusable={true}
+              onBlur={[Function]}
+              onClick={[Function]}
+              onFocus={[Function]}
+              onResponderGrant={[Function]}
+              onResponderMove={[Function]}
+              onResponderRelease={[Function]}
+              onResponderTerminate={[Function]}
+              onResponderTerminationRequest={[Function]}
+              onStartShouldSetResponder={[Function]}
               style={
-                [
-                  {
-                    "color": "#000000",
-                    "fontSize": 16,
-                    "lineHeight": 18,
-                  },
-                  {
-                    "fontFamily": "Montserrat_700Bold",
-                    "fontSize": 15,
-                    "justifyContent": "center",
-                  },
-                  null,
-                  {
-                    "textAlign": "center",
-                  },
-                  {
-                    "marginBottom": 6,
-                    "marginEnd": 0,
-                    "marginStart": 0,
-                    "marginTop": 33,
-                  },
-                  null,
-                  {
-                    "paddingTop": 3,
-                  },
-                ]
+                {
+                  "alignItems": "center",
+                  "backgroundColor": "#0B5D340D",
+                  "flexDirection": "row",
+                  "gap": 8,
+                  "justifyContent": "space-between",
+                  "padding": 16,
+                }
               }
             >
-              bringYourDigitalID
-            </Text>
-            <Text
+              <Text
+                style={
+                  {
+                    "color": "#0B5D34",
+                    "flex": 1,
+                    "fontSize": 13,
+                    "fontWeight": "700",
+                  }
+                }
+              >
+                studentId
+              </Text>
+              <Text
+                style={
+                  {
+                    "color": "#0B5D34",
+                    "fontSize": 19,
+                  }
+                }
+              >
+                ▴
+              </Text>
+            </View>
+            <View
+              accessibilityLabel="addStudentId"
+              accessibilityRole="button"
+              accessibilityState={
+                {
+                  "busy": undefined,
+                  "checked": undefined,
+                  "disabled": undefined,
+                  "expanded": undefined,
+                  "selected": undefined,
+                }
+              }
+              accessibilityValue={
+                {
+                  "max": undefined,
+                  "min": undefined,
+                  "now": undefined,
+                  "text": undefined,
+                }
+              }
+              accessible={true}
+              collapsable={false}
+              focusable={true}
+              onBlur={[Function]}
+              onClick={[Function]}
+              onFocus={[Function]}
+              onResponderGrant={[Function]}
+              onResponderMove={[Function]}
+              onResponderRelease={[Function]}
+              onResponderTerminate={[Function]}
+              onResponderTerminationRequest={[Function]}
+              onStartShouldSetResponder={[Function]}
               style={
-                [
+                {
+                  "alignItems": "center",
+                  "justifyContent": "center",
+                  "minHeight": 190,
+                  "padding": 24,
+                }
+              }
+              testID="addStudentId"
+            >
+              <Text
+                style={
                   {
-                    "color": "#000000",
-                    "fontSize": 16,
-                    "lineHeight": 18,
-                  },
+                    "color": "#0B5D34",
+                    "fontSize": 32,
+                    "marginBottom": 8,
+                  }
+                }
+              >
+                +
+              </Text>
+              <Text
+                style={
                   {
-                    "fontFamily": "Montserrat_400Regular",
-                    "fontSize": 14,
-                  },
-                  {
-                    "color": "#C7C7C7",
-                  },
-                  {
-                    "textAlign": "center",
-                  },
-                  {
-                    "marginBottom": 30,
-                    "marginEnd": 12,
-                    "marginStart": 12,
-                    "marginTop": 0,
-                  },
-                  null,
-                  {
-                    "fontFamily": "Montserrat_700Bold",
+                    "color": "#0B5D34",
                     "fontSize": 15,
-                    "justifyContent": "center",
-                    "paddingTop": 3,
-                  },
-                ]
+                    "fontWeight": "600",
+                    "textAlign": "center",
+                  }
+                }
+              >
+                addStudentId
+              </Text>
+            </View>
+          </View>
+          <View
+            style={
+              {
+                "backgroundColor": "#FFFFFF",
+                "borderColor": "#0B5D3440",
+                "borderRadius": 8,
+                "borderWidth": 1,
+                "marginBottom": 16,
+                "overflow": "hidden",
+              }
+            }
+          >
+            <View
+              accessibilityRole="button"
+              accessibilityState={
+                {
+                  "busy": undefined,
+                  "checked": undefined,
+                  "disabled": undefined,
+                  "expanded": false,
+                  "selected": undefined,
+                }
+              }
+              accessibilityValue={
+                {
+                  "max": undefined,
+                  "min": undefined,
+                  "now": undefined,
+                  "text": undefined,
+                }
+              }
+              accessible={true}
+              collapsable={false}
+              focusable={true}
+              onBlur={[Function]}
+              onClick={[Function]}
+              onFocus={[Function]}
+              onResponderGrant={[Function]}
+              onResponderMove={[Function]}
+              onResponderRelease={[Function]}
+              onResponderTerminate={[Function]}
+              onResponderTerminationRequest={[Function]}
+              onStartShouldSetResponder={[Function]}
+              style={
+                {
+                  "alignItems": "center",
+                  "backgroundColor": "#0B5D340D",
+                  "flexDirection": "row",
+                  "gap": 8,
+                  "justifyContent": "space-between",
+                  "padding": 16,
+                }
               }
             >
-              generateVcFABDescription
-            </Text>
+              <Text
+                style={
+                  {
+                    "color": "#0B5D34",
+                    "flex": 1,
+                    "fontSize": 13,
+                    "fontWeight": "700",
+                  }
+                }
+              >
+                transcript
+              </Text>
+              <Text
+                style={
+                  {
+                    "color": "#0B5D34",
+                    "fontSize": 19,
+                  }
+                }
+              >
+                ▾
+              </Text>
+            </View>
           </View>
         </View>
-      </RCTScrollView>
-    </View>
+      </View>
+    </RCTScrollView>
   </View>,
   <View
     testID="messageOverlay"
@@ -827,8 +1391,8 @@ exports[`MyVcsTab should render empty state with no VCs 1`] = `
       ]
     }
   >
-    <View
-      style={
+    <RCTScrollView
+      contentContainerStyle={
         [
           {
             "alignItems": undefined,
@@ -847,137 +1411,278 @@ exports[`MyVcsTab should render empty state with no VCs 1`] = `
           null,
           null,
           null,
-          {
-            "paddingVertical": 2,
-          },
-          {
-            "paddingHorizontal": 8,
-          },
+          null,
+          null,
         ]
       }
+      refreshControl={
+        <RefreshControlMock
+          onRefresh={[MockFunction]}
+          refreshing={false}
+        />
+      }
     >
-      <RCTScrollView
-        contentContainerStyle={
-          [
+      <RCTRefreshControl />
+      <View>
+        <View
+          style={
             {
-              "alignItems": undefined,
-              "flexDirection": "column",
-              "justifyContent": undefined,
-            },
-            {
-              "flex": 1,
-            },
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            {
-              "alignItems": "center",
-              "backgroundColor": "#fff",
-              "borderRadius": 10,
-              "elevation": 5,
-              "justifyContent": "center",
-              "padding": 10,
-              "shadowColor": "#000",
-              "shadowOpacity": 0.4,
-            },
-            null,
-            null,
-          ]
-        }
-        refreshControl={
-          <RefreshControlMock
-            onRefresh={[MockFunction]}
-            refreshing={false}
-          />
-        }
-      >
-        <RCTRefreshControl />
-        <View>
-          <View
+              "paddingBottom": 32,
+              "paddingHorizontal": 16,
+            }
+          }
+        >
+          <Image
+            accessibilityLabel="banner"
+            resizeMode="cover"
+            source=""
             style={
               {
-                "alignItems": "center",
+                "alignSelf": "stretch",
+                "height": 180,
+                "marginBottom": 24,
+                "marginHorizontal": -16,
+                "width": "auto",
+              }
+            }
+          />
+          <Text
+            style={
+              {
+                "color": "#1A1D20",
+                "fontSize": 17,
+                "fontWeight": "600",
+                "marginBottom": 16,
               }
             }
           >
-            DigitalIdentity
-            <Text
+            documents
+          </Text>
+          <View
+            style={
+              {
+                "backgroundColor": "#FFFFFF",
+                "borderColor": "#0B5D3440",
+                "borderRadius": 8,
+                "borderWidth": 1,
+                "marginBottom": 16,
+                "overflow": "hidden",
+              }
+            }
+          >
+            <View
+              accessibilityRole="button"
+              accessibilityState={
+                {
+                  "busy": undefined,
+                  "checked": undefined,
+                  "disabled": undefined,
+                  "expanded": true,
+                  "selected": undefined,
+                }
+              }
+              accessibilityValue={
+                {
+                  "max": undefined,
+                  "min": undefined,
+                  "now": undefined,
+                  "text": undefined,
+                }
+              }
+              accessible={true}
+              collapsable={false}
+              focusable={true}
+              onBlur={[Function]}
+              onClick={[Function]}
+              onFocus={[Function]}
+              onResponderGrant={[Function]}
+              onResponderMove={[Function]}
+              onResponderRelease={[Function]}
+              onResponderTerminate={[Function]}
+              onResponderTerminationRequest={[Function]}
+              onStartShouldSetResponder={[Function]}
               style={
-                [
-                  {
-                    "color": "#000000",
-                    "fontSize": 16,
-                    "lineHeight": 18,
-                  },
-                  {
-                    "fontFamily": "Montserrat_700Bold",
-                    "fontSize": 15,
-                    "justifyContent": "center",
-                  },
-                  null,
-                  {
-                    "textAlign": "center",
-                  },
-                  {
-                    "marginBottom": 6,
-                    "marginEnd": 0,
-                    "marginStart": 0,
-                    "marginTop": 33,
-                  },
-                  null,
-                  {
-                    "paddingTop": 3,
-                  },
-                ]
+                {
+                  "alignItems": "center",
+                  "backgroundColor": "#0B5D340D",
+                  "flexDirection": "row",
+                  "gap": 8,
+                  "justifyContent": "space-between",
+                  "padding": 16,
+                }
               }
             >
-              bringYourDigitalID
-            </Text>
-            <Text
+              <Text
+                style={
+                  {
+                    "color": "#0B5D34",
+                    "flex": 1,
+                    "fontSize": 13,
+                    "fontWeight": "700",
+                  }
+                }
+              >
+                studentId
+              </Text>
+              <Text
+                style={
+                  {
+                    "color": "#0B5D34",
+                    "fontSize": 19,
+                  }
+                }
+              >
+                ▴
+              </Text>
+            </View>
+            <View
+              accessibilityLabel="addStudentId"
+              accessibilityRole="button"
+              accessibilityState={
+                {
+                  "busy": undefined,
+                  "checked": undefined,
+                  "disabled": undefined,
+                  "expanded": undefined,
+                  "selected": undefined,
+                }
+              }
+              accessibilityValue={
+                {
+                  "max": undefined,
+                  "min": undefined,
+                  "now": undefined,
+                  "text": undefined,
+                }
+              }
+              accessible={true}
+              collapsable={false}
+              focusable={true}
+              onBlur={[Function]}
+              onClick={[Function]}
+              onFocus={[Function]}
+              onResponderGrant={[Function]}
+              onResponderMove={[Function]}
+              onResponderRelease={[Function]}
+              onResponderTerminate={[Function]}
+              onResponderTerminationRequest={[Function]}
+              onStartShouldSetResponder={[Function]}
               style={
-                [
+                {
+                  "alignItems": "center",
+                  "justifyContent": "center",
+                  "minHeight": 190,
+                  "padding": 24,
+                }
+              }
+              testID="addStudentId"
+            >
+              <Text
+                style={
                   {
-                    "color": "#000000",
-                    "fontSize": 16,
-                    "lineHeight": 18,
-                  },
+                    "color": "#0B5D34",
+                    "fontSize": 32,
+                    "marginBottom": 8,
+                  }
+                }
+              >
+                +
+              </Text>
+              <Text
+                style={
                   {
-                    "fontFamily": "Montserrat_400Regular",
-                    "fontSize": 14,
-                  },
-                  {
-                    "color": "#C7C7C7",
-                  },
-                  {
-                    "textAlign": "center",
-                  },
-                  {
-                    "marginBottom": 30,
-                    "marginEnd": 12,
-                    "marginStart": 12,
-                    "marginTop": 0,
-                  },
-                  null,
-                  {
-                    "fontFamily": "Montserrat_700Bold",
+                    "color": "#0B5D34",
                     "fontSize": 15,
-                    "justifyContent": "center",
-                    "paddingTop": 3,
-                  },
-                ]
+                    "fontWeight": "600",
+                    "textAlign": "center",
+                  }
+                }
+              >
+                addStudentId
+              </Text>
+            </View>
+          </View>
+          <View
+            style={
+              {
+                "backgroundColor": "#FFFFFF",
+                "borderColor": "#0B5D3440",
+                "borderRadius": 8,
+                "borderWidth": 1,
+                "marginBottom": 16,
+                "overflow": "hidden",
+              }
+            }
+          >
+            <View
+              accessibilityRole="button"
+              accessibilityState={
+                {
+                  "busy": undefined,
+                  "checked": undefined,
+                  "disabled": undefined,
+                  "expanded": false,
+                  "selected": undefined,
+                }
+              }
+              accessibilityValue={
+                {
+                  "max": undefined,
+                  "min": undefined,
+                  "now": undefined,
+                  "text": undefined,
+                }
+              }
+              accessible={true}
+              collapsable={false}
+              focusable={true}
+              onBlur={[Function]}
+              onClick={[Function]}
+              onFocus={[Function]}
+              onResponderGrant={[Function]}
+              onResponderMove={[Function]}
+              onResponderRelease={[Function]}
+              onResponderTerminate={[Function]}
+              onResponderTerminationRequest={[Function]}
+              onStartShouldSetResponder={[Function]}
+              style={
+                {
+                  "alignItems": "center",
+                  "backgroundColor": "#0B5D340D",
+                  "flexDirection": "row",
+                  "gap": 8,
+                  "justifyContent": "space-between",
+                  "padding": 16,
+                }
               }
             >
-              generateVcFABDescription
-            </Text>
+              <Text
+                style={
+                  {
+                    "color": "#0B5D34",
+                    "flex": 1,
+                    "fontSize": 13,
+                    "fontWeight": "700",
+                  }
+                }
+              >
+                transcript
+              </Text>
+              <Text
+                style={
+                  {
+                    "color": "#0B5D34",
+                    "fontSize": 19,
+                  }
+                }
+              >
+                ▾
+              </Text>
+            </View>
           </View>
         </View>
-      </RCTScrollView>
-    </View>
+      </View>
+    </RCTScrollView>
   </View>,
   <View
     testID="messageOverlay"
@@ -1026,8 +1731,8 @@ exports[`MyVcsTab should render hardware keystore alert overlay 1`] = `
       ]
     }
   >
-    <View
-      style={
+    <RCTScrollView
+      contentContainerStyle={
         [
           {
             "alignItems": undefined,
@@ -1046,137 +1751,278 @@ exports[`MyVcsTab should render hardware keystore alert overlay 1`] = `
           null,
           null,
           null,
-          {
-            "paddingVertical": 2,
-          },
-          {
-            "paddingHorizontal": 8,
-          },
+          null,
+          null,
         ]
       }
+      refreshControl={
+        <RefreshControlMock
+          onRefresh={[MockFunction]}
+          refreshing={false}
+        />
+      }
     >
-      <RCTScrollView
-        contentContainerStyle={
-          [
+      <RCTRefreshControl />
+      <View>
+        <View
+          style={
             {
-              "alignItems": undefined,
-              "flexDirection": "column",
-              "justifyContent": undefined,
-            },
-            {
-              "flex": 1,
-            },
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            {
-              "alignItems": "center",
-              "backgroundColor": "#fff",
-              "borderRadius": 10,
-              "elevation": 5,
-              "justifyContent": "center",
-              "padding": 10,
-              "shadowColor": "#000",
-              "shadowOpacity": 0.4,
-            },
-            null,
-            null,
-          ]
-        }
-        refreshControl={
-          <RefreshControlMock
-            onRefresh={[MockFunction]}
-            refreshing={false}
-          />
-        }
-      >
-        <RCTRefreshControl />
-        <View>
-          <View
+              "paddingBottom": 32,
+              "paddingHorizontal": 16,
+            }
+          }
+        >
+          <Image
+            accessibilityLabel="banner"
+            resizeMode="cover"
+            source=""
             style={
               {
-                "alignItems": "center",
+                "alignSelf": "stretch",
+                "height": 180,
+                "marginBottom": 24,
+                "marginHorizontal": -16,
+                "width": "auto",
+              }
+            }
+          />
+          <Text
+            style={
+              {
+                "color": "#1A1D20",
+                "fontSize": 17,
+                "fontWeight": "600",
+                "marginBottom": 16,
               }
             }
           >
-            DigitalIdentity
-            <Text
+            documents
+          </Text>
+          <View
+            style={
+              {
+                "backgroundColor": "#FFFFFF",
+                "borderColor": "#0B5D3440",
+                "borderRadius": 8,
+                "borderWidth": 1,
+                "marginBottom": 16,
+                "overflow": "hidden",
+              }
+            }
+          >
+            <View
+              accessibilityRole="button"
+              accessibilityState={
+                {
+                  "busy": undefined,
+                  "checked": undefined,
+                  "disabled": undefined,
+                  "expanded": true,
+                  "selected": undefined,
+                }
+              }
+              accessibilityValue={
+                {
+                  "max": undefined,
+                  "min": undefined,
+                  "now": undefined,
+                  "text": undefined,
+                }
+              }
+              accessible={true}
+              collapsable={false}
+              focusable={true}
+              onBlur={[Function]}
+              onClick={[Function]}
+              onFocus={[Function]}
+              onResponderGrant={[Function]}
+              onResponderMove={[Function]}
+              onResponderRelease={[Function]}
+              onResponderTerminate={[Function]}
+              onResponderTerminationRequest={[Function]}
+              onStartShouldSetResponder={[Function]}
               style={
-                [
-                  {
-                    "color": "#000000",
-                    "fontSize": 16,
-                    "lineHeight": 18,
-                  },
-                  {
-                    "fontFamily": "Montserrat_700Bold",
-                    "fontSize": 15,
-                    "justifyContent": "center",
-                  },
-                  null,
-                  {
-                    "textAlign": "center",
-                  },
-                  {
-                    "marginBottom": 6,
-                    "marginEnd": 0,
-                    "marginStart": 0,
-                    "marginTop": 33,
-                  },
-                  null,
-                  {
-                    "paddingTop": 3,
-                  },
-                ]
+                {
+                  "alignItems": "center",
+                  "backgroundColor": "#0B5D340D",
+                  "flexDirection": "row",
+                  "gap": 8,
+                  "justifyContent": "space-between",
+                  "padding": 16,
+                }
               }
             >
-              bringYourDigitalID
-            </Text>
-            <Text
+              <Text
+                style={
+                  {
+                    "color": "#0B5D34",
+                    "flex": 1,
+                    "fontSize": 13,
+                    "fontWeight": "700",
+                  }
+                }
+              >
+                studentId
+              </Text>
+              <Text
+                style={
+                  {
+                    "color": "#0B5D34",
+                    "fontSize": 19,
+                  }
+                }
+              >
+                ▴
+              </Text>
+            </View>
+            <View
+              accessibilityLabel="addStudentId"
+              accessibilityRole="button"
+              accessibilityState={
+                {
+                  "busy": undefined,
+                  "checked": undefined,
+                  "disabled": undefined,
+                  "expanded": undefined,
+                  "selected": undefined,
+                }
+              }
+              accessibilityValue={
+                {
+                  "max": undefined,
+                  "min": undefined,
+                  "now": undefined,
+                  "text": undefined,
+                }
+              }
+              accessible={true}
+              collapsable={false}
+              focusable={true}
+              onBlur={[Function]}
+              onClick={[Function]}
+              onFocus={[Function]}
+              onResponderGrant={[Function]}
+              onResponderMove={[Function]}
+              onResponderRelease={[Function]}
+              onResponderTerminate={[Function]}
+              onResponderTerminationRequest={[Function]}
+              onStartShouldSetResponder={[Function]}
               style={
-                [
+                {
+                  "alignItems": "center",
+                  "justifyContent": "center",
+                  "minHeight": 190,
+                  "padding": 24,
+                }
+              }
+              testID="addStudentId"
+            >
+              <Text
+                style={
                   {
-                    "color": "#000000",
-                    "fontSize": 16,
-                    "lineHeight": 18,
-                  },
+                    "color": "#0B5D34",
+                    "fontSize": 32,
+                    "marginBottom": 8,
+                  }
+                }
+              >
+                +
+              </Text>
+              <Text
+                style={
                   {
-                    "fontFamily": "Montserrat_400Regular",
-                    "fontSize": 14,
-                  },
-                  {
-                    "color": "#C7C7C7",
-                  },
-                  {
-                    "textAlign": "center",
-                  },
-                  {
-                    "marginBottom": 30,
-                    "marginEnd": 12,
-                    "marginStart": 12,
-                    "marginTop": 0,
-                  },
-                  null,
-                  {
-                    "fontFamily": "Montserrat_700Bold",
+                    "color": "#0B5D34",
                     "fontSize": 15,
-                    "justifyContent": "center",
-                    "paddingTop": 3,
-                  },
-                ]
+                    "fontWeight": "600",
+                    "textAlign": "center",
+                  }
+                }
+              >
+                addStudentId
+              </Text>
+            </View>
+          </View>
+          <View
+            style={
+              {
+                "backgroundColor": "#FFFFFF",
+                "borderColor": "#0B5D3440",
+                "borderRadius": 8,
+                "borderWidth": 1,
+                "marginBottom": 16,
+                "overflow": "hidden",
+              }
+            }
+          >
+            <View
+              accessibilityRole="button"
+              accessibilityState={
+                {
+                  "busy": undefined,
+                  "checked": undefined,
+                  "disabled": undefined,
+                  "expanded": false,
+                  "selected": undefined,
+                }
+              }
+              accessibilityValue={
+                {
+                  "max": undefined,
+                  "min": undefined,
+                  "now": undefined,
+                  "text": undefined,
+                }
+              }
+              accessible={true}
+              collapsable={false}
+              focusable={true}
+              onBlur={[Function]}
+              onClick={[Function]}
+              onFocus={[Function]}
+              onResponderGrant={[Function]}
+              onResponderMove={[Function]}
+              onResponderRelease={[Function]}
+              onResponderTerminate={[Function]}
+              onResponderTerminationRequest={[Function]}
+              onStartShouldSetResponder={[Function]}
+              style={
+                {
+                  "alignItems": "center",
+                  "backgroundColor": "#0B5D340D",
+                  "flexDirection": "row",
+                  "gap": 8,
+                  "justifyContent": "space-between",
+                  "padding": 16,
+                }
               }
             >
-              generateVcFABDescription
-            </Text>
+              <Text
+                style={
+                  {
+                    "color": "#0B5D34",
+                    "flex": 1,
+                    "fontSize": 13,
+                    "fontWeight": "700",
+                  }
+                }
+              >
+                transcript
+              </Text>
+              <Text
+                style={
+                  {
+                    "color": "#0B5D34",
+                    "fontSize": 19,
+                  }
+                }
+              >
+                ▾
+              </Text>
+            </View>
           </View>
         </View>
-      </RCTScrollView>
-    </View>
+      </View>
+    </RCTScrollView>
   </View>,
   <View
     testID="messageOverlay"
@@ -1225,8 +2071,8 @@ exports[`MyVcsTab should render isRequestSuccessful banner 1`] = `
       ]
     }
   >
-    <View
-      style={
+    <RCTScrollView
+      contentContainerStyle={
         [
           {
             "alignItems": undefined,
@@ -1245,137 +2091,278 @@ exports[`MyVcsTab should render isRequestSuccessful banner 1`] = `
           null,
           null,
           null,
-          {
-            "paddingVertical": 2,
-          },
-          {
-            "paddingHorizontal": 8,
-          },
+          null,
+          null,
         ]
       }
+      refreshControl={
+        <RefreshControlMock
+          onRefresh={[MockFunction]}
+          refreshing={false}
+        />
+      }
     >
-      <RCTScrollView
-        contentContainerStyle={
-          [
+      <RCTRefreshControl />
+      <View>
+        <View
+          style={
             {
-              "alignItems": undefined,
-              "flexDirection": "column",
-              "justifyContent": undefined,
-            },
-            {
-              "flex": 1,
-            },
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            {
-              "alignItems": "center",
-              "backgroundColor": "#fff",
-              "borderRadius": 10,
-              "elevation": 5,
-              "justifyContent": "center",
-              "padding": 10,
-              "shadowColor": "#000",
-              "shadowOpacity": 0.4,
-            },
-            null,
-            null,
-          ]
-        }
-        refreshControl={
-          <RefreshControlMock
-            onRefresh={[MockFunction]}
-            refreshing={false}
-          />
-        }
-      >
-        <RCTRefreshControl />
-        <View>
-          <View
+              "paddingBottom": 32,
+              "paddingHorizontal": 16,
+            }
+          }
+        >
+          <Image
+            accessibilityLabel="banner"
+            resizeMode="cover"
+            source=""
             style={
               {
-                "alignItems": "center",
+                "alignSelf": "stretch",
+                "height": 180,
+                "marginBottom": 24,
+                "marginHorizontal": -16,
+                "width": "auto",
+              }
+            }
+          />
+          <Text
+            style={
+              {
+                "color": "#1A1D20",
+                "fontSize": 17,
+                "fontWeight": "600",
+                "marginBottom": 16,
               }
             }
           >
-            DigitalIdentity
-            <Text
+            documents
+          </Text>
+          <View
+            style={
+              {
+                "backgroundColor": "#FFFFFF",
+                "borderColor": "#0B5D3440",
+                "borderRadius": 8,
+                "borderWidth": 1,
+                "marginBottom": 16,
+                "overflow": "hidden",
+              }
+            }
+          >
+            <View
+              accessibilityRole="button"
+              accessibilityState={
+                {
+                  "busy": undefined,
+                  "checked": undefined,
+                  "disabled": undefined,
+                  "expanded": true,
+                  "selected": undefined,
+                }
+              }
+              accessibilityValue={
+                {
+                  "max": undefined,
+                  "min": undefined,
+                  "now": undefined,
+                  "text": undefined,
+                }
+              }
+              accessible={true}
+              collapsable={false}
+              focusable={true}
+              onBlur={[Function]}
+              onClick={[Function]}
+              onFocus={[Function]}
+              onResponderGrant={[Function]}
+              onResponderMove={[Function]}
+              onResponderRelease={[Function]}
+              onResponderTerminate={[Function]}
+              onResponderTerminationRequest={[Function]}
+              onStartShouldSetResponder={[Function]}
               style={
-                [
-                  {
-                    "color": "#000000",
-                    "fontSize": 16,
-                    "lineHeight": 18,
-                  },
-                  {
-                    "fontFamily": "Montserrat_700Bold",
-                    "fontSize": 15,
-                    "justifyContent": "center",
-                  },
-                  null,
-                  {
-                    "textAlign": "center",
-                  },
-                  {
-                    "marginBottom": 6,
-                    "marginEnd": 0,
-                    "marginStart": 0,
-                    "marginTop": 33,
-                  },
-                  null,
-                  {
-                    "paddingTop": 3,
-                  },
-                ]
+                {
+                  "alignItems": "center",
+                  "backgroundColor": "#0B5D340D",
+                  "flexDirection": "row",
+                  "gap": 8,
+                  "justifyContent": "space-between",
+                  "padding": 16,
+                }
               }
             >
-              bringYourDigitalID
-            </Text>
-            <Text
+              <Text
+                style={
+                  {
+                    "color": "#0B5D34",
+                    "flex": 1,
+                    "fontSize": 13,
+                    "fontWeight": "700",
+                  }
+                }
+              >
+                studentId
+              </Text>
+              <Text
+                style={
+                  {
+                    "color": "#0B5D34",
+                    "fontSize": 19,
+                  }
+                }
+              >
+                ▴
+              </Text>
+            </View>
+            <View
+              accessibilityLabel="addStudentId"
+              accessibilityRole="button"
+              accessibilityState={
+                {
+                  "busy": undefined,
+                  "checked": undefined,
+                  "disabled": undefined,
+                  "expanded": undefined,
+                  "selected": undefined,
+                }
+              }
+              accessibilityValue={
+                {
+                  "max": undefined,
+                  "min": undefined,
+                  "now": undefined,
+                  "text": undefined,
+                }
+              }
+              accessible={true}
+              collapsable={false}
+              focusable={true}
+              onBlur={[Function]}
+              onClick={[Function]}
+              onFocus={[Function]}
+              onResponderGrant={[Function]}
+              onResponderMove={[Function]}
+              onResponderRelease={[Function]}
+              onResponderTerminate={[Function]}
+              onResponderTerminationRequest={[Function]}
+              onStartShouldSetResponder={[Function]}
               style={
-                [
+                {
+                  "alignItems": "center",
+                  "justifyContent": "center",
+                  "minHeight": 190,
+                  "padding": 24,
+                }
+              }
+              testID="addStudentId"
+            >
+              <Text
+                style={
                   {
-                    "color": "#000000",
-                    "fontSize": 16,
-                    "lineHeight": 18,
-                  },
+                    "color": "#0B5D34",
+                    "fontSize": 32,
+                    "marginBottom": 8,
+                  }
+                }
+              >
+                +
+              </Text>
+              <Text
+                style={
                   {
-                    "fontFamily": "Montserrat_400Regular",
-                    "fontSize": 14,
-                  },
-                  {
-                    "color": "#C7C7C7",
-                  },
-                  {
-                    "textAlign": "center",
-                  },
-                  {
-                    "marginBottom": 30,
-                    "marginEnd": 12,
-                    "marginStart": 12,
-                    "marginTop": 0,
-                  },
-                  null,
-                  {
-                    "fontFamily": "Montserrat_700Bold",
+                    "color": "#0B5D34",
                     "fontSize": 15,
-                    "justifyContent": "center",
-                    "paddingTop": 3,
-                  },
-                ]
+                    "fontWeight": "600",
+                    "textAlign": "center",
+                  }
+                }
+              >
+                addStudentId
+              </Text>
+            </View>
+          </View>
+          <View
+            style={
+              {
+                "backgroundColor": "#FFFFFF",
+                "borderColor": "#0B5D3440",
+                "borderRadius": 8,
+                "borderWidth": 1,
+                "marginBottom": 16,
+                "overflow": "hidden",
+              }
+            }
+          >
+            <View
+              accessibilityRole="button"
+              accessibilityState={
+                {
+                  "busy": undefined,
+                  "checked": undefined,
+                  "disabled": undefined,
+                  "expanded": false,
+                  "selected": undefined,
+                }
+              }
+              accessibilityValue={
+                {
+                  "max": undefined,
+                  "min": undefined,
+                  "now": undefined,
+                  "text": undefined,
+                }
+              }
+              accessible={true}
+              collapsable={false}
+              focusable={true}
+              onBlur={[Function]}
+              onClick={[Function]}
+              onFocus={[Function]}
+              onResponderGrant={[Function]}
+              onResponderMove={[Function]}
+              onResponderRelease={[Function]}
+              onResponderTerminate={[Function]}
+              onResponderTerminationRequest={[Function]}
+              onStartShouldSetResponder={[Function]}
+              style={
+                {
+                  "alignItems": "center",
+                  "backgroundColor": "#0B5D340D",
+                  "flexDirection": "row",
+                  "gap": 8,
+                  "justifyContent": "space-between",
+                  "padding": 16,
+                }
               }
             >
-              generateVcFABDescription
-            </Text>
+              <Text
+                style={
+                  {
+                    "color": "#0B5D34",
+                    "flex": 1,
+                    "fontSize": 13,
+                    "fontWeight": "700",
+                  }
+                }
+              >
+                transcript
+              </Text>
+              <Text
+                style={
+                  {
+                    "color": "#0B5D34",
+                    "fontSize": 19,
+                  }
+                }
+              >
+                ▾
+              </Text>
+            </View>
           </View>
         </View>
-      </RCTScrollView>
-    </View>
+      </View>
+    </RCTScrollView>
   </View>,
   <View
     testID="messageOverlay"
@@ -1424,8 +2411,8 @@ exports[`MyVcsTab should render network off error 1`] = `
       ]
     }
   >
-    <View
-      style={
+    <RCTScrollView
+      contentContainerStyle={
         [
           {
             "alignItems": undefined,
@@ -1444,137 +2431,278 @@ exports[`MyVcsTab should render network off error 1`] = `
           null,
           null,
           null,
-          {
-            "paddingVertical": 2,
-          },
-          {
-            "paddingHorizontal": 8,
-          },
+          null,
+          null,
         ]
       }
+      refreshControl={
+        <RefreshControlMock
+          onRefresh={[MockFunction]}
+          refreshing={false}
+        />
+      }
     >
-      <RCTScrollView
-        contentContainerStyle={
-          [
+      <RCTRefreshControl />
+      <View>
+        <View
+          style={
             {
-              "alignItems": undefined,
-              "flexDirection": "column",
-              "justifyContent": undefined,
-            },
-            {
-              "flex": 1,
-            },
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            {
-              "alignItems": "center",
-              "backgroundColor": "#fff",
-              "borderRadius": 10,
-              "elevation": 5,
-              "justifyContent": "center",
-              "padding": 10,
-              "shadowColor": "#000",
-              "shadowOpacity": 0.4,
-            },
-            null,
-            null,
-          ]
-        }
-        refreshControl={
-          <RefreshControlMock
-            onRefresh={[MockFunction]}
-            refreshing={false}
-          />
-        }
-      >
-        <RCTRefreshControl />
-        <View>
-          <View
+              "paddingBottom": 32,
+              "paddingHorizontal": 16,
+            }
+          }
+        >
+          <Image
+            accessibilityLabel="banner"
+            resizeMode="cover"
+            source=""
             style={
               {
-                "alignItems": "center",
+                "alignSelf": "stretch",
+                "height": 180,
+                "marginBottom": 24,
+                "marginHorizontal": -16,
+                "width": "auto",
+              }
+            }
+          />
+          <Text
+            style={
+              {
+                "color": "#1A1D20",
+                "fontSize": 17,
+                "fontWeight": "600",
+                "marginBottom": 16,
               }
             }
           >
-            DigitalIdentity
-            <Text
+            documents
+          </Text>
+          <View
+            style={
+              {
+                "backgroundColor": "#FFFFFF",
+                "borderColor": "#0B5D3440",
+                "borderRadius": 8,
+                "borderWidth": 1,
+                "marginBottom": 16,
+                "overflow": "hidden",
+              }
+            }
+          >
+            <View
+              accessibilityRole="button"
+              accessibilityState={
+                {
+                  "busy": undefined,
+                  "checked": undefined,
+                  "disabled": undefined,
+                  "expanded": true,
+                  "selected": undefined,
+                }
+              }
+              accessibilityValue={
+                {
+                  "max": undefined,
+                  "min": undefined,
+                  "now": undefined,
+                  "text": undefined,
+                }
+              }
+              accessible={true}
+              collapsable={false}
+              focusable={true}
+              onBlur={[Function]}
+              onClick={[Function]}
+              onFocus={[Function]}
+              onResponderGrant={[Function]}
+              onResponderMove={[Function]}
+              onResponderRelease={[Function]}
+              onResponderTerminate={[Function]}
+              onResponderTerminationRequest={[Function]}
+              onStartShouldSetResponder={[Function]}
               style={
-                [
-                  {
-                    "color": "#000000",
-                    "fontSize": 16,
-                    "lineHeight": 18,
-                  },
-                  {
-                    "fontFamily": "Montserrat_700Bold",
-                    "fontSize": 15,
-                    "justifyContent": "center",
-                  },
-                  null,
-                  {
-                    "textAlign": "center",
-                  },
-                  {
-                    "marginBottom": 6,
-                    "marginEnd": 0,
-                    "marginStart": 0,
-                    "marginTop": 33,
-                  },
-                  null,
-                  {
-                    "paddingTop": 3,
-                  },
-                ]
+                {
+                  "alignItems": "center",
+                  "backgroundColor": "#0B5D340D",
+                  "flexDirection": "row",
+                  "gap": 8,
+                  "justifyContent": "space-between",
+                  "padding": 16,
+                }
               }
             >
-              bringYourDigitalID
-            </Text>
-            <Text
+              <Text
+                style={
+                  {
+                    "color": "#0B5D34",
+                    "flex": 1,
+                    "fontSize": 13,
+                    "fontWeight": "700",
+                  }
+                }
+              >
+                studentId
+              </Text>
+              <Text
+                style={
+                  {
+                    "color": "#0B5D34",
+                    "fontSize": 19,
+                  }
+                }
+              >
+                ▴
+              </Text>
+            </View>
+            <View
+              accessibilityLabel="addStudentId"
+              accessibilityRole="button"
+              accessibilityState={
+                {
+                  "busy": undefined,
+                  "checked": undefined,
+                  "disabled": undefined,
+                  "expanded": undefined,
+                  "selected": undefined,
+                }
+              }
+              accessibilityValue={
+                {
+                  "max": undefined,
+                  "min": undefined,
+                  "now": undefined,
+                  "text": undefined,
+                }
+              }
+              accessible={true}
+              collapsable={false}
+              focusable={true}
+              onBlur={[Function]}
+              onClick={[Function]}
+              onFocus={[Function]}
+              onResponderGrant={[Function]}
+              onResponderMove={[Function]}
+              onResponderRelease={[Function]}
+              onResponderTerminate={[Function]}
+              onResponderTerminationRequest={[Function]}
+              onStartShouldSetResponder={[Function]}
               style={
-                [
+                {
+                  "alignItems": "center",
+                  "justifyContent": "center",
+                  "minHeight": 190,
+                  "padding": 24,
+                }
+              }
+              testID="addStudentId"
+            >
+              <Text
+                style={
                   {
-                    "color": "#000000",
-                    "fontSize": 16,
-                    "lineHeight": 18,
-                  },
+                    "color": "#0B5D34",
+                    "fontSize": 32,
+                    "marginBottom": 8,
+                  }
+                }
+              >
+                +
+              </Text>
+              <Text
+                style={
                   {
-                    "fontFamily": "Montserrat_400Regular",
-                    "fontSize": 14,
-                  },
-                  {
-                    "color": "#C7C7C7",
-                  },
-                  {
-                    "textAlign": "center",
-                  },
-                  {
-                    "marginBottom": 30,
-                    "marginEnd": 12,
-                    "marginStart": 12,
-                    "marginTop": 0,
-                  },
-                  null,
-                  {
-                    "fontFamily": "Montserrat_700Bold",
+                    "color": "#0B5D34",
                     "fontSize": 15,
-                    "justifyContent": "center",
-                    "paddingTop": 3,
-                  },
-                ]
+                    "fontWeight": "600",
+                    "textAlign": "center",
+                  }
+                }
+              >
+                addStudentId
+              </Text>
+            </View>
+          </View>
+          <View
+            style={
+              {
+                "backgroundColor": "#FFFFFF",
+                "borderColor": "#0B5D3440",
+                "borderRadius": 8,
+                "borderWidth": 1,
+                "marginBottom": 16,
+                "overflow": "hidden",
+              }
+            }
+          >
+            <View
+              accessibilityRole="button"
+              accessibilityState={
+                {
+                  "busy": undefined,
+                  "checked": undefined,
+                  "disabled": undefined,
+                  "expanded": false,
+                  "selected": undefined,
+                }
+              }
+              accessibilityValue={
+                {
+                  "max": undefined,
+                  "min": undefined,
+                  "now": undefined,
+                  "text": undefined,
+                }
+              }
+              accessible={true}
+              collapsable={false}
+              focusable={true}
+              onBlur={[Function]}
+              onClick={[Function]}
+              onFocus={[Function]}
+              onResponderGrant={[Function]}
+              onResponderMove={[Function]}
+              onResponderRelease={[Function]}
+              onResponderTerminate={[Function]}
+              onResponderTerminationRequest={[Function]}
+              onStartShouldSetResponder={[Function]}
+              style={
+                {
+                  "alignItems": "center",
+                  "backgroundColor": "#0B5D340D",
+                  "flexDirection": "row",
+                  "gap": 8,
+                  "justifyContent": "space-between",
+                  "padding": 16,
+                }
               }
             >
-              generateVcFABDescription
-            </Text>
+              <Text
+                style={
+                  {
+                    "color": "#0B5D34",
+                    "flex": 1,
+                    "fontSize": 13,
+                    "fontWeight": "700",
+                  }
+                }
+              >
+                transcript
+              </Text>
+              <Text
+                style={
+                  {
+                    "color": "#0B5D34",
+                    "fontSize": 19,
+                  }
+                }
+              >
+                ▾
+              </Text>
+            </View>
           </View>
         </View>
-      </RCTScrollView>
-    </View>
+      </View>
+    </RCTScrollView>
   </View>,
   <View
     testID="messageOverlay"
@@ -1623,8 +2751,8 @@ exports[`MyVcsTab should render tampered VCs overlay 1`] = `
       ]
     }
   >
-    <View
-      style={
+    <RCTScrollView
+      contentContainerStyle={
         [
           {
             "alignItems": undefined,
@@ -1643,137 +2771,278 @@ exports[`MyVcsTab should render tampered VCs overlay 1`] = `
           null,
           null,
           null,
-          {
-            "paddingVertical": 2,
-          },
-          {
-            "paddingHorizontal": 8,
-          },
+          null,
+          null,
         ]
       }
+      refreshControl={
+        <RefreshControlMock
+          onRefresh={[MockFunction]}
+          refreshing={false}
+        />
+      }
     >
-      <RCTScrollView
-        contentContainerStyle={
-          [
+      <RCTRefreshControl />
+      <View>
+        <View
+          style={
             {
-              "alignItems": undefined,
-              "flexDirection": "column",
-              "justifyContent": undefined,
-            },
-            {
-              "flex": 1,
-            },
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            {
-              "alignItems": "center",
-              "backgroundColor": "#fff",
-              "borderRadius": 10,
-              "elevation": 5,
-              "justifyContent": "center",
-              "padding": 10,
-              "shadowColor": "#000",
-              "shadowOpacity": 0.4,
-            },
-            null,
-            null,
-          ]
-        }
-        refreshControl={
-          <RefreshControlMock
-            onRefresh={[MockFunction]}
-            refreshing={false}
-          />
-        }
-      >
-        <RCTRefreshControl />
-        <View>
-          <View
+              "paddingBottom": 32,
+              "paddingHorizontal": 16,
+            }
+          }
+        >
+          <Image
+            accessibilityLabel="banner"
+            resizeMode="cover"
+            source=""
             style={
               {
-                "alignItems": "center",
+                "alignSelf": "stretch",
+                "height": 180,
+                "marginBottom": 24,
+                "marginHorizontal": -16,
+                "width": "auto",
+              }
+            }
+          />
+          <Text
+            style={
+              {
+                "color": "#1A1D20",
+                "fontSize": 17,
+                "fontWeight": "600",
+                "marginBottom": 16,
               }
             }
           >
-            DigitalIdentity
-            <Text
+            documents
+          </Text>
+          <View
+            style={
+              {
+                "backgroundColor": "#FFFFFF",
+                "borderColor": "#0B5D3440",
+                "borderRadius": 8,
+                "borderWidth": 1,
+                "marginBottom": 16,
+                "overflow": "hidden",
+              }
+            }
+          >
+            <View
+              accessibilityRole="button"
+              accessibilityState={
+                {
+                  "busy": undefined,
+                  "checked": undefined,
+                  "disabled": undefined,
+                  "expanded": true,
+                  "selected": undefined,
+                }
+              }
+              accessibilityValue={
+                {
+                  "max": undefined,
+                  "min": undefined,
+                  "now": undefined,
+                  "text": undefined,
+                }
+              }
+              accessible={true}
+              collapsable={false}
+              focusable={true}
+              onBlur={[Function]}
+              onClick={[Function]}
+              onFocus={[Function]}
+              onResponderGrant={[Function]}
+              onResponderMove={[Function]}
+              onResponderRelease={[Function]}
+              onResponderTerminate={[Function]}
+              onResponderTerminationRequest={[Function]}
+              onStartShouldSetResponder={[Function]}
               style={
-                [
-                  {
-                    "color": "#000000",
-                    "fontSize": 16,
-                    "lineHeight": 18,
-                  },
-                  {
-                    "fontFamily": "Montserrat_700Bold",
-                    "fontSize": 15,
-                    "justifyContent": "center",
-                  },
-                  null,
-                  {
-                    "textAlign": "center",
-                  },
-                  {
-                    "marginBottom": 6,
-                    "marginEnd": 0,
-                    "marginStart": 0,
-                    "marginTop": 33,
-                  },
-                  null,
-                  {
-                    "paddingTop": 3,
-                  },
-                ]
+                {
+                  "alignItems": "center",
+                  "backgroundColor": "#0B5D340D",
+                  "flexDirection": "row",
+                  "gap": 8,
+                  "justifyContent": "space-between",
+                  "padding": 16,
+                }
               }
             >
-              bringYourDigitalID
-            </Text>
-            <Text
+              <Text
+                style={
+                  {
+                    "color": "#0B5D34",
+                    "flex": 1,
+                    "fontSize": 13,
+                    "fontWeight": "700",
+                  }
+                }
+              >
+                studentId
+              </Text>
+              <Text
+                style={
+                  {
+                    "color": "#0B5D34",
+                    "fontSize": 19,
+                  }
+                }
+              >
+                ▴
+              </Text>
+            </View>
+            <View
+              accessibilityLabel="addStudentId"
+              accessibilityRole="button"
+              accessibilityState={
+                {
+                  "busy": undefined,
+                  "checked": undefined,
+                  "disabled": undefined,
+                  "expanded": undefined,
+                  "selected": undefined,
+                }
+              }
+              accessibilityValue={
+                {
+                  "max": undefined,
+                  "min": undefined,
+                  "now": undefined,
+                  "text": undefined,
+                }
+              }
+              accessible={true}
+              collapsable={false}
+              focusable={true}
+              onBlur={[Function]}
+              onClick={[Function]}
+              onFocus={[Function]}
+              onResponderGrant={[Function]}
+              onResponderMove={[Function]}
+              onResponderRelease={[Function]}
+              onResponderTerminate={[Function]}
+              onResponderTerminationRequest={[Function]}
+              onStartShouldSetResponder={[Function]}
               style={
-                [
+                {
+                  "alignItems": "center",
+                  "justifyContent": "center",
+                  "minHeight": 190,
+                  "padding": 24,
+                }
+              }
+              testID="addStudentId"
+            >
+              <Text
+                style={
                   {
-                    "color": "#000000",
-                    "fontSize": 16,
-                    "lineHeight": 18,
-                  },
+                    "color": "#0B5D34",
+                    "fontSize": 32,
+                    "marginBottom": 8,
+                  }
+                }
+              >
+                +
+              </Text>
+              <Text
+                style={
                   {
-                    "fontFamily": "Montserrat_400Regular",
-                    "fontSize": 14,
-                  },
-                  {
-                    "color": "#C7C7C7",
-                  },
-                  {
-                    "textAlign": "center",
-                  },
-                  {
-                    "marginBottom": 30,
-                    "marginEnd": 12,
-                    "marginStart": 12,
-                    "marginTop": 0,
-                  },
-                  null,
-                  {
-                    "fontFamily": "Montserrat_700Bold",
+                    "color": "#0B5D34",
                     "fontSize": 15,
-                    "justifyContent": "center",
-                    "paddingTop": 3,
-                  },
-                ]
+                    "fontWeight": "600",
+                    "textAlign": "center",
+                  }
+                }
+              >
+                addStudentId
+              </Text>
+            </View>
+          </View>
+          <View
+            style={
+              {
+                "backgroundColor": "#FFFFFF",
+                "borderColor": "#0B5D3440",
+                "borderRadius": 8,
+                "borderWidth": 1,
+                "marginBottom": 16,
+                "overflow": "hidden",
+              }
+            }
+          >
+            <View
+              accessibilityRole="button"
+              accessibilityState={
+                {
+                  "busy": undefined,
+                  "checked": undefined,
+                  "disabled": undefined,
+                  "expanded": false,
+                  "selected": undefined,
+                }
+              }
+              accessibilityValue={
+                {
+                  "max": undefined,
+                  "min": undefined,
+                  "now": undefined,
+                  "text": undefined,
+                }
+              }
+              accessible={true}
+              collapsable={false}
+              focusable={true}
+              onBlur={[Function]}
+              onClick={[Function]}
+              onFocus={[Function]}
+              onResponderGrant={[Function]}
+              onResponderMove={[Function]}
+              onResponderRelease={[Function]}
+              onResponderTerminate={[Function]}
+              onResponderTerminationRequest={[Function]}
+              onStartShouldSetResponder={[Function]}
+              style={
+                {
+                  "alignItems": "center",
+                  "backgroundColor": "#0B5D340D",
+                  "flexDirection": "row",
+                  "gap": 8,
+                  "justifyContent": "space-between",
+                  "padding": 16,
+                }
               }
             >
-              generateVcFABDescription
-            </Text>
+              <Text
+                style={
+                  {
+                    "color": "#0B5D34",
+                    "flex": 1,
+                    "fontSize": 13,
+                    "fontWeight": "700",
+                  }
+                }
+              >
+                transcript
+              </Text>
+              <Text
+                style={
+                  {
+                    "color": "#0B5D34",
+                    "fontSize": 19,
+                  }
+                }
+              >
+                ▾
+              </Text>
+            </View>
           </View>
         </View>
-      </RCTScrollView>
-    </View>
+      </View>
+    </RCTScrollView>
   </View>,
   <View
     testID="messageOverlay"
@@ -1822,8 +3091,8 @@ exports[`MyVcsTab should render verification error overlay 1`] = `
       ]
     }
   >
-    <View
-      style={
+    <RCTScrollView
+      contentContainerStyle={
         [
           {
             "alignItems": undefined,
@@ -1842,137 +3111,278 @@ exports[`MyVcsTab should render verification error overlay 1`] = `
           null,
           null,
           null,
-          {
-            "paddingVertical": 2,
-          },
-          {
-            "paddingHorizontal": 8,
-          },
+          null,
+          null,
         ]
       }
+      refreshControl={
+        <RefreshControlMock
+          onRefresh={[MockFunction]}
+          refreshing={false}
+        />
+      }
     >
-      <RCTScrollView
-        contentContainerStyle={
-          [
+      <RCTRefreshControl />
+      <View>
+        <View
+          style={
             {
-              "alignItems": undefined,
-              "flexDirection": "column",
-              "justifyContent": undefined,
-            },
-            {
-              "flex": 1,
-            },
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            {
-              "alignItems": "center",
-              "backgroundColor": "#fff",
-              "borderRadius": 10,
-              "elevation": 5,
-              "justifyContent": "center",
-              "padding": 10,
-              "shadowColor": "#000",
-              "shadowOpacity": 0.4,
-            },
-            null,
-            null,
-          ]
-        }
-        refreshControl={
-          <RefreshControlMock
-            onRefresh={[MockFunction]}
-            refreshing={false}
-          />
-        }
-      >
-        <RCTRefreshControl />
-        <View>
-          <View
+              "paddingBottom": 32,
+              "paddingHorizontal": 16,
+            }
+          }
+        >
+          <Image
+            accessibilityLabel="banner"
+            resizeMode="cover"
+            source=""
             style={
               {
-                "alignItems": "center",
+                "alignSelf": "stretch",
+                "height": 180,
+                "marginBottom": 24,
+                "marginHorizontal": -16,
+                "width": "auto",
+              }
+            }
+          />
+          <Text
+            style={
+              {
+                "color": "#1A1D20",
+                "fontSize": 17,
+                "fontWeight": "600",
+                "marginBottom": 16,
               }
             }
           >
-            DigitalIdentity
-            <Text
+            documents
+          </Text>
+          <View
+            style={
+              {
+                "backgroundColor": "#FFFFFF",
+                "borderColor": "#0B5D3440",
+                "borderRadius": 8,
+                "borderWidth": 1,
+                "marginBottom": 16,
+                "overflow": "hidden",
+              }
+            }
+          >
+            <View
+              accessibilityRole="button"
+              accessibilityState={
+                {
+                  "busy": undefined,
+                  "checked": undefined,
+                  "disabled": undefined,
+                  "expanded": true,
+                  "selected": undefined,
+                }
+              }
+              accessibilityValue={
+                {
+                  "max": undefined,
+                  "min": undefined,
+                  "now": undefined,
+                  "text": undefined,
+                }
+              }
+              accessible={true}
+              collapsable={false}
+              focusable={true}
+              onBlur={[Function]}
+              onClick={[Function]}
+              onFocus={[Function]}
+              onResponderGrant={[Function]}
+              onResponderMove={[Function]}
+              onResponderRelease={[Function]}
+              onResponderTerminate={[Function]}
+              onResponderTerminationRequest={[Function]}
+              onStartShouldSetResponder={[Function]}
               style={
-                [
-                  {
-                    "color": "#000000",
-                    "fontSize": 16,
-                    "lineHeight": 18,
-                  },
-                  {
-                    "fontFamily": "Montserrat_700Bold",
-                    "fontSize": 15,
-                    "justifyContent": "center",
-                  },
-                  null,
-                  {
-                    "textAlign": "center",
-                  },
-                  {
-                    "marginBottom": 6,
-                    "marginEnd": 0,
-                    "marginStart": 0,
-                    "marginTop": 33,
-                  },
-                  null,
-                  {
-                    "paddingTop": 3,
-                  },
-                ]
+                {
+                  "alignItems": "center",
+                  "backgroundColor": "#0B5D340D",
+                  "flexDirection": "row",
+                  "gap": 8,
+                  "justifyContent": "space-between",
+                  "padding": 16,
+                }
               }
             >
-              bringYourDigitalID
-            </Text>
-            <Text
+              <Text
+                style={
+                  {
+                    "color": "#0B5D34",
+                    "flex": 1,
+                    "fontSize": 13,
+                    "fontWeight": "700",
+                  }
+                }
+              >
+                studentId
+              </Text>
+              <Text
+                style={
+                  {
+                    "color": "#0B5D34",
+                    "fontSize": 19,
+                  }
+                }
+              >
+                ▴
+              </Text>
+            </View>
+            <View
+              accessibilityLabel="addStudentId"
+              accessibilityRole="button"
+              accessibilityState={
+                {
+                  "busy": undefined,
+                  "checked": undefined,
+                  "disabled": undefined,
+                  "expanded": undefined,
+                  "selected": undefined,
+                }
+              }
+              accessibilityValue={
+                {
+                  "max": undefined,
+                  "min": undefined,
+                  "now": undefined,
+                  "text": undefined,
+                }
+              }
+              accessible={true}
+              collapsable={false}
+              focusable={true}
+              onBlur={[Function]}
+              onClick={[Function]}
+              onFocus={[Function]}
+              onResponderGrant={[Function]}
+              onResponderMove={[Function]}
+              onResponderRelease={[Function]}
+              onResponderTerminate={[Function]}
+              onResponderTerminationRequest={[Function]}
+              onStartShouldSetResponder={[Function]}
               style={
-                [
+                {
+                  "alignItems": "center",
+                  "justifyContent": "center",
+                  "minHeight": 190,
+                  "padding": 24,
+                }
+              }
+              testID="addStudentId"
+            >
+              <Text
+                style={
                   {
-                    "color": "#000000",
-                    "fontSize": 16,
-                    "lineHeight": 18,
-                  },
+                    "color": "#0B5D34",
+                    "fontSize": 32,
+                    "marginBottom": 8,
+                  }
+                }
+              >
+                +
+              </Text>
+              <Text
+                style={
                   {
-                    "fontFamily": "Montserrat_400Regular",
-                    "fontSize": 14,
-                  },
-                  {
-                    "color": "#C7C7C7",
-                  },
-                  {
-                    "textAlign": "center",
-                  },
-                  {
-                    "marginBottom": 30,
-                    "marginEnd": 12,
-                    "marginStart": 12,
-                    "marginTop": 0,
-                  },
-                  null,
-                  {
-                    "fontFamily": "Montserrat_700Bold",
+                    "color": "#0B5D34",
                     "fontSize": 15,
-                    "justifyContent": "center",
-                    "paddingTop": 3,
-                  },
-                ]
+                    "fontWeight": "600",
+                    "textAlign": "center",
+                  }
+                }
+              >
+                addStudentId
+              </Text>
+            </View>
+          </View>
+          <View
+            style={
+              {
+                "backgroundColor": "#FFFFFF",
+                "borderColor": "#0B5D3440",
+                "borderRadius": 8,
+                "borderWidth": 1,
+                "marginBottom": 16,
+                "overflow": "hidden",
+              }
+            }
+          >
+            <View
+              accessibilityRole="button"
+              accessibilityState={
+                {
+                  "busy": undefined,
+                  "checked": undefined,
+                  "disabled": undefined,
+                  "expanded": false,
+                  "selected": undefined,
+                }
+              }
+              accessibilityValue={
+                {
+                  "max": undefined,
+                  "min": undefined,
+                  "now": undefined,
+                  "text": undefined,
+                }
+              }
+              accessible={true}
+              collapsable={false}
+              focusable={true}
+              onBlur={[Function]}
+              onClick={[Function]}
+              onFocus={[Function]}
+              onResponderGrant={[Function]}
+              onResponderMove={[Function]}
+              onResponderRelease={[Function]}
+              onResponderTerminate={[Function]}
+              onResponderTerminationRequest={[Function]}
+              onStartShouldSetResponder={[Function]}
+              style={
+                {
+                  "alignItems": "center",
+                  "backgroundColor": "#0B5D340D",
+                  "flexDirection": "row",
+                  "gap": 8,
+                  "justifyContent": "space-between",
+                  "padding": 16,
+                }
               }
             >
-              generateVcFABDescription
-            </Text>
+              <Text
+                style={
+                  {
+                    "color": "#0B5D34",
+                    "flex": 1,
+                    "fontSize": 13,
+                    "fontWeight": "700",
+                  }
+                }
+              >
+                transcript
+              </Text>
+              <Text
+                style={
+                  {
+                    "color": "#0B5D34",
+                    "fontSize": 19,
+                  }
+                }
+              >
+                ▾
+              </Text>
+            </View>
           </View>
         </View>
-      </RCTScrollView>
-    </View>
+      </View>
+    </RCTScrollView>
   </View>,
   <View
     testID="messageOverlay"
@@ -2021,8 +3431,8 @@ exports[`MyVcsTab should render when not visible 1`] = `
       ]
     }
   >
-    <View
-      style={
+    <RCTScrollView
+      contentContainerStyle={
         [
           {
             "alignItems": undefined,
@@ -2041,137 +3451,278 @@ exports[`MyVcsTab should render when not visible 1`] = `
           null,
           null,
           null,
-          {
-            "paddingVertical": 2,
-          },
-          {
-            "paddingHorizontal": 8,
-          },
+          null,
+          null,
         ]
       }
+      refreshControl={
+        <RefreshControlMock
+          onRefresh={[MockFunction]}
+          refreshing={false}
+        />
+      }
     >
-      <RCTScrollView
-        contentContainerStyle={
-          [
+      <RCTRefreshControl />
+      <View>
+        <View
+          style={
             {
-              "alignItems": undefined,
-              "flexDirection": "column",
-              "justifyContent": undefined,
-            },
-            {
-              "flex": 1,
-            },
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            {
-              "alignItems": "center",
-              "backgroundColor": "#fff",
-              "borderRadius": 10,
-              "elevation": 5,
-              "justifyContent": "center",
-              "padding": 10,
-              "shadowColor": "#000",
-              "shadowOpacity": 0.4,
-            },
-            null,
-            null,
-          ]
-        }
-        refreshControl={
-          <RefreshControlMock
-            onRefresh={[MockFunction]}
-            refreshing={false}
-          />
-        }
-      >
-        <RCTRefreshControl />
-        <View>
-          <View
+              "paddingBottom": 32,
+              "paddingHorizontal": 16,
+            }
+          }
+        >
+          <Image
+            accessibilityLabel="banner"
+            resizeMode="cover"
+            source=""
             style={
               {
-                "alignItems": "center",
+                "alignSelf": "stretch",
+                "height": 180,
+                "marginBottom": 24,
+                "marginHorizontal": -16,
+                "width": "auto",
+              }
+            }
+          />
+          <Text
+            style={
+              {
+                "color": "#1A1D20",
+                "fontSize": 17,
+                "fontWeight": "600",
+                "marginBottom": 16,
               }
             }
           >
-            DigitalIdentity
-            <Text
+            documents
+          </Text>
+          <View
+            style={
+              {
+                "backgroundColor": "#FFFFFF",
+                "borderColor": "#0B5D3440",
+                "borderRadius": 8,
+                "borderWidth": 1,
+                "marginBottom": 16,
+                "overflow": "hidden",
+              }
+            }
+          >
+            <View
+              accessibilityRole="button"
+              accessibilityState={
+                {
+                  "busy": undefined,
+                  "checked": undefined,
+                  "disabled": undefined,
+                  "expanded": true,
+                  "selected": undefined,
+                }
+              }
+              accessibilityValue={
+                {
+                  "max": undefined,
+                  "min": undefined,
+                  "now": undefined,
+                  "text": undefined,
+                }
+              }
+              accessible={true}
+              collapsable={false}
+              focusable={true}
+              onBlur={[Function]}
+              onClick={[Function]}
+              onFocus={[Function]}
+              onResponderGrant={[Function]}
+              onResponderMove={[Function]}
+              onResponderRelease={[Function]}
+              onResponderTerminate={[Function]}
+              onResponderTerminationRequest={[Function]}
+              onStartShouldSetResponder={[Function]}
               style={
-                [
-                  {
-                    "color": "#000000",
-                    "fontSize": 16,
-                    "lineHeight": 18,
-                  },
-                  {
-                    "fontFamily": "Montserrat_700Bold",
-                    "fontSize": 15,
-                    "justifyContent": "center",
-                  },
-                  null,
-                  {
-                    "textAlign": "center",
-                  },
-                  {
-                    "marginBottom": 6,
-                    "marginEnd": 0,
-                    "marginStart": 0,
-                    "marginTop": 33,
-                  },
-                  null,
-                  {
-                    "paddingTop": 3,
-                  },
-                ]
+                {
+                  "alignItems": "center",
+                  "backgroundColor": "#0B5D340D",
+                  "flexDirection": "row",
+                  "gap": 8,
+                  "justifyContent": "space-between",
+                  "padding": 16,
+                }
               }
             >
-              bringYourDigitalID
-            </Text>
-            <Text
+              <Text
+                style={
+                  {
+                    "color": "#0B5D34",
+                    "flex": 1,
+                    "fontSize": 13,
+                    "fontWeight": "700",
+                  }
+                }
+              >
+                studentId
+              </Text>
+              <Text
+                style={
+                  {
+                    "color": "#0B5D34",
+                    "fontSize": 19,
+                  }
+                }
+              >
+                ▴
+              </Text>
+            </View>
+            <View
+              accessibilityLabel="addStudentId"
+              accessibilityRole="button"
+              accessibilityState={
+                {
+                  "busy": undefined,
+                  "checked": undefined,
+                  "disabled": undefined,
+                  "expanded": undefined,
+                  "selected": undefined,
+                }
+              }
+              accessibilityValue={
+                {
+                  "max": undefined,
+                  "min": undefined,
+                  "now": undefined,
+                  "text": undefined,
+                }
+              }
+              accessible={true}
+              collapsable={false}
+              focusable={true}
+              onBlur={[Function]}
+              onClick={[Function]}
+              onFocus={[Function]}
+              onResponderGrant={[Function]}
+              onResponderMove={[Function]}
+              onResponderRelease={[Function]}
+              onResponderTerminate={[Function]}
+              onResponderTerminationRequest={[Function]}
+              onStartShouldSetResponder={[Function]}
               style={
-                [
+                {
+                  "alignItems": "center",
+                  "justifyContent": "center",
+                  "minHeight": 190,
+                  "padding": 24,
+                }
+              }
+              testID="addStudentId"
+            >
+              <Text
+                style={
                   {
-                    "color": "#000000",
-                    "fontSize": 16,
-                    "lineHeight": 18,
-                  },
+                    "color": "#0B5D34",
+                    "fontSize": 32,
+                    "marginBottom": 8,
+                  }
+                }
+              >
+                +
+              </Text>
+              <Text
+                style={
                   {
-                    "fontFamily": "Montserrat_400Regular",
-                    "fontSize": 14,
-                  },
-                  {
-                    "color": "#C7C7C7",
-                  },
-                  {
-                    "textAlign": "center",
-                  },
-                  {
-                    "marginBottom": 30,
-                    "marginEnd": 12,
-                    "marginStart": 12,
-                    "marginTop": 0,
-                  },
-                  null,
-                  {
-                    "fontFamily": "Montserrat_700Bold",
+                    "color": "#0B5D34",
                     "fontSize": 15,
-                    "justifyContent": "center",
-                    "paddingTop": 3,
-                  },
-                ]
+                    "fontWeight": "600",
+                    "textAlign": "center",
+                  }
+                }
+              >
+                addStudentId
+              </Text>
+            </View>
+          </View>
+          <View
+            style={
+              {
+                "backgroundColor": "#FFFFFF",
+                "borderColor": "#0B5D3440",
+                "borderRadius": 8,
+                "borderWidth": 1,
+                "marginBottom": 16,
+                "overflow": "hidden",
+              }
+            }
+          >
+            <View
+              accessibilityRole="button"
+              accessibilityState={
+                {
+                  "busy": undefined,
+                  "checked": undefined,
+                  "disabled": undefined,
+                  "expanded": false,
+                  "selected": undefined,
+                }
+              }
+              accessibilityValue={
+                {
+                  "max": undefined,
+                  "min": undefined,
+                  "now": undefined,
+                  "text": undefined,
+                }
+              }
+              accessible={true}
+              collapsable={false}
+              focusable={true}
+              onBlur={[Function]}
+              onClick={[Function]}
+              onFocus={[Function]}
+              onResponderGrant={[Function]}
+              onResponderMove={[Function]}
+              onResponderRelease={[Function]}
+              onResponderTerminate={[Function]}
+              onResponderTerminationRequest={[Function]}
+              onStartShouldSetResponder={[Function]}
+              style={
+                {
+                  "alignItems": "center",
+                  "backgroundColor": "#0B5D340D",
+                  "flexDirection": "row",
+                  "gap": 8,
+                  "justifyContent": "space-between",
+                  "padding": 16,
+                }
               }
             >
-              generateVcFABDescription
-            </Text>
+              <Text
+                style={
+                  {
+                    "color": "#0B5D34",
+                    "flex": 1,
+                    "fontSize": 13,
+                    "fontWeight": "700",
+                  }
+                }
+              >
+                transcript
+              </Text>
+              <Text
+                style={
+                  {
+                    "color": "#0B5D34",
+                    "fontSize": 19,
+                  }
+                }
+              >
+                ▾
+              </Text>
+            </View>
           </View>
         </View>
-      </RCTScrollView>
-    </View>
+      </View>
+    </RCTScrollView>
   </View>,
   <View
     testID="messageOverlay"

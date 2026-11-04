@@ -21,21 +21,22 @@ sequenceDiagram
     User->>Mobile: Tap "+ Add Credential" -> "AIT Registrar — Local Demo"
     Mobile->>Mimoto: GET /v1/mimoto/issuers
     Mimoto-->>Mobile: Returns AITRegistrar metadata & display configurations
-    Mobile->>Issuer: GET /authorize (opens in-app browser)
-    User->>Issuer: Enter mock credentials (student / student-local-password)
-    Issuer-->>Mobile: 302 Redirect (io.mosip.residentapp.inji://oauthredirect?code=...)
-    Mobile->>Mimoto: POST /v1/mimoto/get-token/AITRegistrar (auth code + PKCE verifier)
-    Mimoto->>Issuer: POST /oauth/token (with private_key_jwt client assertion)
-    Issuer-->>Mimoto: Returns access_token & c_nonce
-    Mimoto-->>Mobile: Forwards token & single-use nonce
+    User->>Mobile: Simulate scanning the SIS credential request QR
+    Mobile->>Issuer: POST /demo/credential-request
+    Issuer-->>Mobile: Fictional student preview + short-lived credential offer
+    Mobile->>User: Review Nisha's data; approve or reject
+    User->>Mobile: Approve with the existing wallet PIN (checked locally)
+    Mobile->>Issuer: POST /oauth/token (single-use pre-authorized code)
+    Issuer-->>Mobile: Returns access_token & c_nonce
     Mobile->>Issuer: POST /credential (with holder proof JWT signed by wallet hardware key)
     Issuer-->>Mobile: Returns signed W3C JSON-LD VC bound to wallet's did:jwk
     Mobile->>Mobile: Saves VC to encrypted local storage
 ```
 
 ### Key Security & Protocol Properties
-* **Mutual Client Authentication (`private_key_jwt`)**: Mimoto authenticates to the issuer using an RSA keypair stored in its local PKCS#12 keystore (`oidckeystore.p12`), mapped to the registered `ait-wallet-mobile-client` alias.
-* **PKCE Enforcement**: Authorization code exchange mandates `S256` PKCE code challenge and verifier matching.
+* **Demo QR Approval**: Simulated scan → issuer-owned data preview → local wallet PIN verification → signed credential. No username/password form; the PIN is never sent to the issuer. Only available in development builds and for fictional data.
+* **One-Time Offers**: The [OIDC4VCI pre-authorized code flow](https://openid.net/specs/openid-4-verifiable-credential-issuance-1_0.html#name-pre-authorized-code-flow) uses five-minute offers and single-use codes, tokens, and nonces.
+* **Authorization-Code Compatibility**: The legacy consent-based path still enforces `S256` PKCE and Mimoto's `private_key_jwt` client authentication through the registered `ait-wallet-mobile-client` alias.
 * **Cryptographic Holder Binding**: The issued credential is tied to the wallet's public key as `did:jwk:...` using a signed `openid4vci-proof+jwt` proof of possession.
 * **Standards-Based Vocabularies**: No proprietary schema definitions exist in this repository (in strict accordance with [AGENTS.md](../../AGENTS.md)). Claims use global `schema.org` terms and standard `eduPersonAffiliation` OIDs.
 
@@ -60,6 +61,8 @@ cd apps/bff
    * Imports the client key into Mimoto's PKCS#12 keystore under alias `ait-wallet-mobile-client`.
    * Exports Mimoto's JVM truststore and imports the local Development CA, so Mimoto trusts the issuer over TLS.
 5. Launches `config-server`, `mimoto`, and `local-issuer` via `docker compose -f docker-compose.yml -f docker-compose.local-issuer.yml`.
+
+- If Mimoto is restarted separately, restart `local-issuer` afterward: they share a network namespace, and the issuer must rejoin Mimoto's new network.
 
 ---
 
@@ -135,16 +138,13 @@ npm test
 2. Start the mobile app:
    ```bash
    cd apps/mobile
-   npm run docker:metro   # or npm start
+   npx expo start --dev-client --host lan --port 8091
    ```
 
 3. In the Inji Mobile app:
-   * Tap **+ Add Credential** / **Download Credential**.
-   * Select **AIT Registrar — Local Demo**.
-   * On the login page, enter the mock student credentials:
-     * **Username**: `student`
-     * **Password**: `student-local-password`
-   * Tap **Sign in and issue student ID**.
+   * After PIN setup, tap **Scan credential QR**, or select **AIT Local Demo** from Add Card.
+   * Tap **Simulate QR scan**, review Nisha's data, then **Approve**.
+   * Enter the wallet PIN you created and tap **Confirm & add credential**. Rejecting or entering a wrong PIN does not request issuance.
    * The credential for **Nisha Gurung** (`DEMO-2026-0002`) will download and appear on your wallet home screen.
 
 ---
@@ -156,11 +156,11 @@ npm test
 | **BFF Host** | `http://localhost:8099` | Inji Mimoto backend port |
 | **Local Issuer Origin** | `https://localhost:8443` | OIDC4VCI mock server |
 | **Issuer Discovery** | `/.well-known/openid-credential-issuer` | OIDC4VCI issuer configuration |
-| **OAuth Authorization** | `/authorize` | Interactive mock login page |
-| **Token Endpoint** | `/oauth/token` | PKCE + `private_key_jwt` token exchange |
+| **Demo QR Request** | `/demo/credential-request` | Fictional preview + one-time offer |
+| **OAuth Authorization** | `/authorize` | Legacy demo consent page |
+| **Token Endpoint** | `/oauth/token` | Pre-authorized offer or PKCE token exchange |
 | **Credential Endpoint**| `/credential` | W3C JSON-LD issuance with holder binding |
-| **Mock Username** | `student` | Demo login account username |
-| **Mock Password** | `student-local-password` | Demo login account password |
+| **Approval PIN** | Your wallet PIN | Checked locally; never sent to the issuer |
 | **Credential Subject** | Nisha Gurung (`DEMO-2026-0002`) | Issued student profile |
 | **Credential Format** | `ldp_vc` (`RsaSignature2018`) | W3C Verifiable Credential 1.0 |
 

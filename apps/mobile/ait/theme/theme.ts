@@ -4,7 +4,7 @@
  * Supports Inji's APPLICATION_THEME switch (gradient | purple) as a variant,
  * so we extend Inji's config rather than replace it.
  */
-import { palette, typography, card, spacing, radius, type Hex } from '@ait/branding';
+import { palette, typography, card, spacing, radius, type Hex } from './tokens';
 
 export type ThemeVariant = 'gradient' | 'purple';
 

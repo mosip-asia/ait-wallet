@@ -93,20 +93,30 @@ refer [here](https://docs.mosip.io/inji/inji-wallet/technical-overview/backend-s
 Use this method to develop on Android **without installing Node.js, Java, or Android SDK on your host**. Only your local Android Emulator and `adb` run on the host:
 
 ```bash
-# 1. Compile the APK inside Docker container
-npm run docker:build:android
-# (Or run: ./scripts/docker-build-apk.sh)
+# 1. Compile the APK inside Docker container:
+./scripts/docker-build-apk.sh
+# (Or if npm is installed: npm run docker:build:android)
 
-# 2. Forward ports on host to your local Android Emulator
-adb reverse tcp:8081 tcp:8081
-adb reverse tcp:8099 tcp:8099
-adb reverse tcp:8443 tcp:8443
+# 2. Forward ports on host to your local Android Emulator:
+adb reverse tcp:8081 tcp:8081   # Metro bundler
+adb reverse tcp:8099 tcp:8099   # Inji Mimoto BFF
+adb reverse tcp:8443 tcp:8443   # Local Mock Issuer
+adb reverse tcp:443 tcp:8443    # Local Mock Issuer did:web resolution
 
-# 3. Install the APK onto your running local emulator
+# 3. (If testing with Local Mock Issuer): Trust local development CA:
+adb push ../../tools/local-issuer/state/ca.der /sdcard/Download/
+# In emulator: Settings -> Security & privacy -> More security settings -> Encryption & credentials -> Install a certificate -> CA certificate -> "Install anyway" -> select ca.der
+
+# 4. Install the APK onto your running local emulator:
+# (If upgrading from an older build with mismatched signatures, run: adb uninstall io.mosip.residentapp)
 adb install -r android/app/build/outputs/apk/residentapp/debug/Inji_universal.apk
 
-# 4. Start the Dockerized Metro bundler for live Fast Refresh / code updates
-npm run docker:metro
+# 5. Start the Dockerized Metro bundler for live Fast Refresh / code updates:
+docker compose -f docker-compose.android.yml up metro
+# (Or if npm is installed: npm run docker:metro)
+
+# 6. Launch the app on your emulator:
+adb shell am start -n io.mosip.residentapp/io.mosip.residentapp.MainActivity
 ```
 
 ---

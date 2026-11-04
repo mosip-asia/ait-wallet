@@ -132,7 +132,7 @@
     "title": "More Options",
     "unPinCard": "Unpin",
     "pinCard": "Pin",
-    "share": "Share",
+    "share": "Scan",
     "reverify": "Check Card Status",
     "new": "NEW",
     "shareWithSelfie": "Share with Selfie",
@@ -604,11 +604,13 @@
     }
   },
   "MyVcsTab": {
-    "searchByName": "Search",
-    "bringYourDigitalID": "Bring your digital identity",
+    "dashboardTitle": "Your AIT wallet",
+    "dashboardDescription": "Your campus credentials, together in one place.",
+    "searchByName": "Search credentials",
+    "bringYourDigitalID": "Your AIT journey starts here",
     "generateVcDescription": "Tap on \"Download card\" below to download your card",
-    "generateVcFABDescription": "Tap on  \"+\" below to download your card",
-    "downloadCard": "Download Card",
+    "generateVcFABDescription": "Tap + to add a credential from AIT or another issuer.",
+    "downloadCard": "Add credential",
     "downloadingYourCard": "Downloading your card, this can take upto 5 minutes",
     "downloadingVcSuccess": "Your Card has been downloaded successfully",
     "downloadingVcFailed": "Sorry! Due to technical error we are unable to download your card now. Please try again later.",
@@ -711,10 +713,60 @@
       }
     }
   },
+  "AitHistory": {
+    "title": "Transaction history",
+    "transactionDetails": "Identity transaction",
+    "issuerFilter": "Filter by issuer",
+    "allIssuers": "All issuers",
+    "time": "Time",
+    "filter": "Filter",
+    "all": "All outcomes",
+    "approved": "Approved",
+    "rejected": "Rejected",
+    "failed": "Failed",
+    "recorded": "Recorded",
+    "close": "Close",
+    "noHistory": "No transactions yet",
+    "noMatches": "No transactions match these filters",
+    "receivedOn": "Received on",
+    "requestedBy": "Requesting party",
+    "outcome": "Outcome",
+    "requestedInformation": "Requested information",
+    "notRecorded": "Not recorded"
+  },
+  "AitDashboard": {
+    "banner": "Asian Institute of Technology",
+    "documents": "Documents",
+    "studentId": "STUDENT IDENTIFICATION CARD",
+    "addStudentId": "Add Student ID Card +",
+    "transcript": "Transcript",
+    "addTranscript": "Add transcript +",
+    "otherCredentials": "Other credentials",
+    "profile": "Profile",
+    "view": "View",
+    "download": "Download",
+    "downloading": "Downloading\u2026",
+    "issuedBy": "Issued by",
+    "credentialFormat": "Credential format",
+    "notAvailable": "Not available",
+    "verified": "Verified",
+    "notVerified": "Not verified",
+    "expired": "Expired",
+    "revoked": "Revoked",
+    "detailsUnavailable": "Open View for full credential details.",
+    "moreDetails": "More details",
+    "backToDashboard": "Back to dashboard",
+    "issuedOn": "Date of issue",
+    "validUntil": "Expiration date",
+    "credentialSerial": "Credential serial",
+    "credentialStatus": "Credential status",
+    "downloadFailed": "Unable to download",
+    "downloadFailedDescription": "Please try saving the credential again."
+  },
   "MainLayout": {
-    "home": "Home",
-    "share": "Share",
-    "history": "History",
+    "home": "Dashboard",
+    "share": "Scan",
+    "history": "Transaction history",
     "request": "Request",
     "settings": "Settings"
   },
@@ -1025,7 +1077,7 @@
   "SelectVcOverlay": {
     "header": "Share Card",
     "chooseVc": "Choose the Card you'd like to share with",
-    "share": "Share",
+    "share": "Scan",
     "verifyAndShare": "Verify Identity & Share"
   },
   "SendVcScreen": {
@@ -1172,7 +1224,7 @@
       "previous": "Previous",
       "next": "Next",
       "instruction": "Select a card from each step to continue"
-  },
+    },
     "verifierInfo": {
       "trusted": "Trusted",
       "unknownVerifier": "Unknown Verifier"

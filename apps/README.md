@@ -83,28 +83,36 @@ Best for developers who want a zero-host-dependency workflow without installing 
 cd apps/mobile
 
 # 1. Compile the APK headlessly inside Docker:
-npm run docker:build:android
-# (Or run directly: ./scripts/docker-build-apk.sh)
+./scripts/docker-build-apk.sh
+# (Or if npm is installed on host: npm run docker:build:android)
 
-# 2. Forward emulator ports to host containers:
+# 2. Start your local Android Emulator (if not already running):
+# emulator -list-avds
+# emulator -avd <avd_name>
+
+# 3. Forward emulator ports to host containers:
 adb reverse tcp:8081 tcp:8081   # Metro bundler
 adb reverse tcp:8099 tcp:8099   # Inji Mimoto BFF
 adb reverse tcp:8443 tcp:8443   # Local Mock Issuer
 adb reverse tcp:443 tcp:8443    # Local Mock Issuer did:web resolution
 
-# 3. (If testing with Local Mock Issuer): Trust local development CA:
+# 4. (If testing with Local Mock Issuer): Trust local development CA:
 adb push ../../tools/local-issuer/state/ca.der /sdcard/Download/
-# In emulator: Settings -> Security -> More Security Settings -> Encryption & Credentials -> Install a certificate -> CA certificate (select ca.der)
+# In emulator: Settings -> Security & privacy -> More security settings -> Encryption & credentials -> Install a certificate -> CA certificate -> "Install anyway" -> select ca.der
 
-# 4. Install the freshly compiled APK onto your running emulator:
+# 5. Install the freshly compiled APK onto your running emulator:
 # (If upgrading from an older build with mismatched signatures, run: adb uninstall io.mosip.residentapp)
 adb install -r android/app/build/outputs/apk/residentapp/debug/Inji_universal.apk
 
-# 5. Start the Dockerized Metro bundler for live Fast Refresh / code updates:
-npm run docker:metro
+# 6. Start the Dockerized Metro bundler for live Fast Refresh / code updates:
+docker compose -f docker-compose.android.yml up metro
+# (Or if npm is installed on host: npm run docker:metro)
+
+# 7. Launch the app on your emulator:
+adb shell am start -n io.mosip.residentapp/io.mosip.residentapp.MainActivity
 ```
 
-*Open the installed Inji app on your emulator. When you edit TypeScript/React Native code on your host, Metro will hot-reload the changes live.*
+*When you edit TypeScript/React Native code on your host, Metro will hot-reload the changes live.*
 
 > [!TIP]
 > **Signature Mismatch (`INSTALL_FAILED_UPDATE_INCOMPATIBLE`)**:
@@ -112,6 +120,10 @@ npm run docker:metro
 > ```bash
 > adb uninstall io.mosip.residentapp
 > ```
+
+> [!TIP]
+> **Metro Dev Menu & Reload**:
+> If the app doesn't automatically connect to Metro or you need to force a bundle reload, press `Ctrl + M` (or `Cmd + M` on macOS) inside the emulator window to open the Inji Dev Menu, then select **Reload**.
 
 ---
 

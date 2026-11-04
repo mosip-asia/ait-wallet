@@ -17,7 +17,7 @@ exports[`HomeScreen should match snapshot 1`] = `
         null,
         null,
         {
-          "backgroundColor": "#F8F8F8",
+          "backgroundColor": "#F8F9FA",
         },
         null,
         null,

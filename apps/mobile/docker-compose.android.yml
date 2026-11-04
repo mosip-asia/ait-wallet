@@ -8,6 +8,7 @@ services:
     working_dir: /app
     volumes:
       - .:/app
+      - ../../packages:/packages
       - gradle-cache:/root/.gradle
       - npm-cache:/root/.npm
     environment:
@@ -26,6 +27,7 @@ services:
       - "8081:8081"
     volumes:
       - .:/app
+      - ../../packages:/packages
       - gradle-cache:/root/.gradle
       - npm-cache:/root/.npm
     command: >

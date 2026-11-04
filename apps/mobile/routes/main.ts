@@ -54,8 +54,8 @@ const settings: TabScreen = {
 
 export const mainRoutes: TabScreen[] = [];
 mainRoutes.push(home);
-mainRoutes.push(share);
 mainRoutes.push(history);
+mainRoutes.push(share);
 mainRoutes.push(settings);
 
 export interface TabScreen {

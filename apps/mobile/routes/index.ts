@@ -16,6 +16,14 @@ import {SplashScreen} from '../screens/SplashScreen';
 import {RequestStackParamList} from './routesConstants';
 import {KeyManagementScreen} from '../screens/Settings/KeyManagementScreen';
 import AuthWebViewScreen from '../screens/AuthWebViewScreen';
+import {AitCredentialRequestScreen} from '../ait/features/issuance/AitCredentialRequestScreen';
+import {
+  PhoneEntryScreen,
+  OtpScreen,
+  TermsScreen,
+  AitPinScreen,
+  CongratulationsScreen,
+} from '../ait/features/onboarding';
 
 export const baseRoutes: Screen[] = [
   {
@@ -24,6 +32,31 @@ export const baseRoutes: Screen[] = [
     options: {
       headerShown: false,
     },
+  },
+  {
+    name: 'PhoneEntry',
+    component: PhoneEntryScreen,
+    options: {headerShown: false},
+  },
+  {
+    name: 'Otp',
+    component: OtpScreen,
+    options: {headerShown: false},
+  },
+  {
+    name: 'Terms',
+    component: TermsScreen,
+    options: {headerShown: false},
+  },
+  {
+    name: 'AitPin',
+    component: AitPinScreen,
+    options: {headerShown: false},
+  },
+  {
+    name: 'Congratulations',
+    component: CongratulationsScreen,
+    options: {headerShown: false},
   },
   {
     name: 'KeyManagement',
@@ -74,6 +107,11 @@ export const baseRoutes: Screen[] = [
 
 export const authRoutes: Screen[] = [
   {
+    name: 'AitCredentialRequest',
+    component: AitCredentialRequestScreen,
+    options: {headerShown: false},
+  },
+  {
     name: 'Main',
     component: MainLayout,
     options: {
@@ -87,6 +125,12 @@ export const authRoutes: Screen[] = [
 ];
 
 export type RootStackParamList = {
+  PhoneEntry: undefined;
+  Otp: {phone: string};
+  Terms: undefined;
+  AitPin: undefined;
+  Congratulations: undefined;
+  AitCredentialRequest: undefined;
   Language: undefined;
   KeySetup: undefined;
   IntroSliders: undefined;
