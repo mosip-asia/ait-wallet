@@ -735,6 +735,14 @@
     "notRecorded": "Not recorded"
   },
   "AitDashboard": {
+    "aitContext": "AIT Campus",
+    "mosipContext": "MOSIP VC",
+    "mosipEyebrow": "EXPLORE CREDENTIALS",
+    "mosipTitle": "MOSIP VC",
+    "mosipDescription": "Your credentials, beyond campus. Discover more with MOSIP Inji.",
+    "sandboxDocuments": "Insurance & Mock Identity",
+    "browseSandboxIssuers": "Browse issuers",
+    "sandboxDescription": "Add an Insurance or Mock Identity credential.",
     "banner": "Asian Institute of Technology",
     "documents": "Documents",
     "studentId": "STUDENT IDENTIFICATION CARD",

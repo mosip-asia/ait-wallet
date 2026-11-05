@@ -106,11 +106,20 @@ export const MainLayout: React.FC = () => {
                   onPress={() => navigation.navigate(BOTTOM_TAB_ROUTES.home)}
                   style={{
                     paddingHorizontal: 12,
+                    minWidth: 44,
                     minHeight: 44,
                     justifyContent: 'center',
                   }}>
-                  <Text style={{color: palette.primary, fontWeight: '600'}}>
-                    ‹ AIT Wallet
+                  <Text
+                    style={{
+                      color: palette.primary,
+                      fontWeight: '600',
+                      fontSize:
+                        route.name === BOTTOM_TAB_ROUTES.history ? 28 : 14,
+                    }}>
+                    {route.name === BOTTOM_TAB_ROUTES.history
+                      ? '‹'
+                      : '‹ AIT Wallet'}
                   </Text>
                 </Pressable>
               ),

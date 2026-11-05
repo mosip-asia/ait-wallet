@@ -250,6 +250,14 @@ test("real Mimoto token proxy, holder proof, RSA signature, signed identity and 
   });
   assert.equal(issued.status, 200, "credential signing must succeed");
   const vc = issued.body.credential;
+  // Match the proof canonicalization used by the wallet's linked-data suite.
+  const LinkedDataSignature = createRequire(import.meta.url)("jsonld-signatures/lib/suites/LinkedDataSignature.js");
+  const walletSuite = new LinkedDataSignature({type: "RsaSignature2018"});
+  assert.equal(
+    await walletSuite.canonizeProof(vc.proof, {document: vc, documentLoader}),
+    await new RsaSignature2018().canonizeProof(vc.proof, {documentLoader})
+  );
+
   assert.equal(vc.credentialSubject.name, "Nisha Gurung");
   assert.equal(vc.credentialSubject.identifier, "DEMO-2026-0002");
   assert.equal(
@@ -284,8 +292,8 @@ test("real Mimoto token proxy, holder proof, RSA signature, signed identity and 
   assert.equal(did.body.id, "did:web:localhost");
 });
 
-test("demo QR offer is short-lived and single-use, with holder-bound signed Nisha data and no password", async () => {
-  const result = await request("/demo/credential-request", {method: "POST"});
+test("authenticated demo offer is short-lived and single-use with holder-bound signed Nisha data", async () => {
+  const result = await request("/demo/credential-request", {method: "POST", json: {email: "st126987", password: "qwerty"}});
   assert.equal(result.status, 200);
   assert.equal(result.body.fixture, true);
   assert.equal(result.body.fields.find(f => f.label === "Full name").value, "Nisha Gurung");
@@ -321,4 +329,9 @@ test("demo QR offer is short-lived and single-use, with holder-bound signed Nish
   assert.equal((await jsigs.verify(vc, options)).verified, false);
   assert.equal((await request("/credential", {method: "POST", token: token.access_token,
     json: {format: "ldp_vc", proof: {proof_type: "jwt", jwt: proof}}})).status, 401);
+});
+
+test("demo sign-in rejects missing and incorrect credentials", async () => {
+  assert.equal((await request("/demo/credential-request", {method: "POST", json: {}})).status, 401);
+  assert.equal((await request("/demo/credential-request", {method: "POST", json: {email: "st126987", password: "wrong"}})).status, 401);
 });

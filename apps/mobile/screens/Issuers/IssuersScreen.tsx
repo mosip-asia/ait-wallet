@@ -1,6 +1,5 @@
 import React, {useEffect, useLayoutEffect, useState} from 'react';
 import {useTranslation} from 'react-i18next';
-import {CommonActions} from '@react-navigation/native';
 import {FlatList, Pressable, View} from 'react-native';
 import {Issuer} from '../../components/openId4VCI/Issuer';
 import {Header} from '../../components/ui/Header';
@@ -10,7 +9,6 @@ import {RootRouteProps} from '../../routes';
 import {HomeRouteProps} from '../../routes/routeTypes';
 import {useIssuerScreenController} from './IssuerScreenController';
 import {Loader} from '../../components/ui/Loader';
-import ScanIcon from '../../assets/scanIcon.svg';
 import {isTranslationKeyFound, removeWhiteSpace} from '../../shared/commonUtil';
 import {
   ErrorMessage,
@@ -32,7 +30,6 @@ import {DeeplinkBanner} from '../../components/DeeplinkBanner';
 import {WALLET_REDIRECT_URI} from '../../shared/constants';
 import {BannerNotificationContainer} from '../../components/BannerNotificationContainer';
 import {CredentialTypeSelectionScreen} from './CredentialTypeSelectionScreen';
-import {QrScanner} from '../../components/QrScanner';
 import {AUTH_ROUTES} from '../../routes/routesConstants';
 import {TransactionCodeModal} from './TransactionCodeScreen';
 import {TrustModal} from '../../components/TrustModal';
@@ -54,8 +51,9 @@ export const IssuersScreen: React.FC<
 > = props => {
   const controller = useIssuerScreenController(props);
   const {i18n, t} = useTranslation('IssuersScreen');
-  const issuers: issuerType[] = controller.issuers;
-  const [filteredSearchData, setFilteredSearchData] = useState(issuers);
+  const issuers: issuerType[] = controller.issuers.filter(
+    (issuer: issuerType) => issuer.issuer_id !== 'AITRegistrar',
+  );
   const [search, setSearch] = useState('');
   const [tapToSearch, setTapToSearch] = useState(false);
   const [clearSearchIcon, setClearSearchIcon] = useState(false);
@@ -82,17 +80,13 @@ export const IssuersScreen: React.FC<
         header: props => (
           <Header
             goBack={props.navigation.goBack}
-            title={controller.isQrScanning ? t('download') : t('title')}
+            title={t('title')}
             testID="issuersScreenHeader"
           />
         ),
       });
     }
-  }, [
-    controller.loadingReason,
-    controller.errorMessageType,
-    controller.isQrScanning,
-  ]);
+  }, [controller.loadingReason, controller.errorMessageType]);
 
   useLayoutEffect(() => {
     if (controller.loadingReason && controller.isPresentationAuthorization) {
@@ -137,10 +131,6 @@ export const IssuersScreen: React.FC<
   }, [controller.isAuthEndpointToOpen]);
 
   const onPressHandler = (id: string, protocol: string) => {
-    if (__DEV__ && id === 'AITRegistrar' && issuers.find(issuer => issuer.issuer_id === id)?.display?.some(display => display.title === 'AIT Local Demo')) {
-      props.navigation.dispatch(CommonActions.navigate({name: 'AitCredentialRequest'}));
-      return;
-    }
     sendStartEvent(
       getStartEventData(TelemetryConstants.FlowType.vcDownload, {id: id}),
     );
@@ -183,16 +173,6 @@ export const IssuersScreen: React.FC<
   };
 
   const filterIssuers = (searchText: string) => {
-    const filteredData = issuers.filter((item: issuerType) => {
-      if (
-        getDisplayObjectForCurrentLanguage(item.display)
-          ?.name.toLowerCase()
-          .includes(searchText.toLowerCase())
-      ) {
-        return getDisplayObjectForCurrentLanguage(item.display);
-      }
-    });
-    setFilteredSearchData(filteredData);
     setSearch(searchText);
     if (searchText !== '') {
       setClearSearchIcon(true);
@@ -400,17 +380,6 @@ export const IssuersScreen: React.FC<
     );
   }
 
-  if (controller.isQrScanning) {
-    return qrScannerComponent();
-  }
-  function qrScannerComponent() {
-    return (
-      <Column crossAlign="center">
-        <QrScanner onQrFound={controller.QR_CODE_SCANNED} />
-      </Column>
-    );
-  }
-
   function issuerTrustConsentComponent() {
     return (
       <TrustModal
@@ -467,25 +436,14 @@ export const IssuersScreen: React.FC<
             }}>
             {t('description')}
           </Text>
-          {search === '' && (
-            <View style={{height: 85}}>
-              <Issuer
-                defaultLogo={ScanIcon}
-                displayDetails={{
-                  title: t('offerTitle'),
-                  locale: i18n.language,
-                  description: t('offerDescription'),
-                }}
-                onPress={controller.SCAN_CREDENTIAL_OFFER_QR_CODE}
-                testID={'credentalOfferButton'}
-              />
-            </View>
-          )}
-
           <Column scroll style={Theme.IssuersScreenStyles.issuersContainer}>
             {controller.issuers.length > 0 && (
               <FlatList
-                data={filteredSearchData}
+                data={issuers.filter(item =>
+                  getDisplayObjectForCurrentLanguage(item.display)
+                    ?.name.toLowerCase()
+                    .includes(search.toLowerCase()),
+                )}
                 renderItem={({item}) => (
                   <Issuer
                     testID={removeWhiteSpace(item.issuer_id)}
