@@ -22,14 +22,14 @@ export const CongratulationsScreen: React.FC<RootRouteProps> = ({
       footer={
         <>
           <AitButton
-            testID="scanCredentialRequest"
-            label="Scan credential QR"
+            testID="signInCredentialRequest"
+            label="Sign in to add student ID"
             disabled={!isAuthorized}
             onPress={() => navigation.navigate('AitCredentialRequest')}
           />
           <AitButton
             testID="finishOnboarding"
-            label="Continue without scanning"
+            label="Continue to wallet"
             variant="secondary"
             disabled={!isAuthorized}
             onPress={finish}

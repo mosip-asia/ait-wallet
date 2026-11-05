@@ -60,7 +60,11 @@ const didDocument = {
 };
 const credentialContext = [
   "https://www.w3.org/2018/credentials/v1",
-  { "@vocab": "https://schema.org/" },
+  {
+    "@vocab": "https://schema.org/",
+    "sec": "https://w3id.org/security#",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+  },
 ];
 const credentialTypes = [
   "VerifiableCredential",
@@ -68,7 +72,7 @@ const credentialTypes = [
 ];
 const display = [
   {
-    name: "AIT Local Demo Student ID",
+    name: "Student ID",
     locale: "en",
     language: "en",
     background_color: "#005c50",
@@ -163,7 +167,7 @@ const demoStudent = Object.freeze({
   familyName: "Gurung",
   identifier: "DEMO-2026-0002",
   program: "Computer Science (M.Eng.)",
-  institution: "AIT Local Demo",
+  institution: "Asian Institute of Technology",
 });
 function fail(error, status = 400) {
   throw Object.assign(new Error(error), { status });
@@ -232,7 +236,7 @@ export async function issueCredential(holder) {
       enrollment: "active",
     },
     // enrollment is a schema.org Enrollment/educational role via a full semantic IRI below.
-    name: "AIT Local Demo Student ID",
+    name: "Student ID",
     description: "Fictional local development student credential",
     about: { type: "Course", name: demoStudent.program },
   };
@@ -242,7 +246,7 @@ export async function issueCredential(holder) {
     type: "OrganizationRole",
     roleName: "student",
     description: "active enrollment",
-    memberOf: { type: "EducationalOrganization", name: "AIT Local Demo" },
+    memberOf: { type: "EducationalOrganization", name: "Asian Institute of Technology" },
   };
   const signer = {
     id: method.id,
@@ -299,6 +303,15 @@ async function handle(req, res) {
   if (req.method === "GET" && path === "/health")
     return json(res, 200, { status: "UP", fixture: true, events: counters });
   if (req.method === "POST" && path === "/demo/credential-request") {
+    const credentials = await body(req);
+    check(
+      typeof credentials.email === "string" &&
+      typeof credentials.password === "string" &&
+      equal(credentials.email.trim().toLowerCase(), "st126987") &&
+      equal(credentials.password, "qwerty"),
+      "invalid_credentials", 401
+    );
+    counters.login++;
     const code = random();
     const exp = now() + 300;
     offers.set(hash(code), {exp});
@@ -312,8 +325,8 @@ async function handle(req, res) {
       id: randomUUID(),
       expiresAt: exp * 1000,
       issuer: ORIGIN,
-      issuerName: "AIT SIS — Local Demo",
-      credentialName: "AIT Local Demo Student ID",
+      issuerName: "AIT Registrar",
+      credentialName: "Student ID",
       fields: [
         { label: "Full name", value: demoStudent.name },
         { label: "Student ID", value: demoStudent.identifier },

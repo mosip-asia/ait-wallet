@@ -15,27 +15,30 @@ export interface DemoRequest {
   offerUri: string;
 }
 
-export async function loadDemoRequest(): Promise<DemoRequest> {
-  if (!__DEV__)
-    throw new Error(
-      'This fictional QR flow is available in development builds only.',
-    );
+export async function loadDemoRequest(
+  email: string,
+  password: string,
+): Promise<DemoRequest> {
   const issuers: issuerType[] = await API.fetchIssuers();
   const issuer = issuers.find(
     item =>
       item.issuer_id === 'AITRegistrar' &&
       item.display?.some(display => display.title === 'AIT Local Demo'),
   );
-  if (!issuer) throw new Error('The AIT local demo issuer is not available.');
+  if (!issuer) throw new Error('The AIT issuer is not available.');
   const origin = new URL(issuer.credential_issuer_host).origin;
   if (!origin.startsWith('https://'))
-    throw new Error('The demo issuer must use HTTPS.');
+    throw new Error('The issuer must use HTTPS.');
   const response = await fetch(origin + '/demo/credential-request', {
     method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({email: email.trim().toLowerCase(), password}),
   });
+  if (response.status === 401)
+    throw new Error('Student ID or password is incorrect.');
   if (!response.ok)
     throw new Error(
-      'Could not retrieve the credential request. Please scan again.',
+      'Could not retrieve the credential request. Please sign in again.',
     );
   const request: DemoRequest = await response.json();
   const offer = JSON.parse(
@@ -55,7 +58,7 @@ export async function loadDemoRequest(): Promise<DemoRequest> {
     )
   ) {
     throw new Error(
-      'The demo credential request is invalid or expired. Please scan again.',
+      'The credential request is invalid or expired. Please sign in again.',
     );
   }
   return request;

@@ -26,6 +26,60 @@
       "proxy_token_endpoint": "https://localhost:8443/oauth/token",
       "qr_code_type": "EmbeddedVC",
       "enabled": "true"
+    },
+    {
+      "issuer_id": "StayProtected(QA)",
+      "protocol": "OpenId4VCI",
+      "display": [
+        {
+          "name": "StayProtected Insurance(QA)",
+          "logo": {
+            "url": "https://inji.github.io/inji-config/logos/StayProtectedInsurance.png",
+            "alt_text": "a square logo of a Sunbird"
+          },
+          "title": "Download StayProtected Insurance Credentials (qa-inji1)",
+          "description": "Download insurance credential",
+          "language": "en"
+        }
+      ],
+      "client_id": "mpartner-qainji-mimoto-insurance-oidc",
+      "wellknown_endpoint": "https://injicertify-insurance.qainji.mosip.net/v1/certify/.well-known/openid-credential-issuer",
+      "redirect_uri": "io.mosip.residentapp.inji://oauthredirect",
+      "authorization_audience": "https://esignet-insurance.released.mosip.net/v1/esignet/oauth/v2/token",
+      "token_endpoint": "https://api.qainji.mosip.net/v1/mimoto/get-token/StayProtected(QA)",
+      "proxy_token_endpoint": "https://esignet-insurance.released.mosip.net/v1/esignet/oauth/v2/token",
+      "client_alias": "mpartner-qainji-mimoto-insurance-oidc",
+      "qr_code_type": "OnlineSharing",
+      "enabled": "true",
+      "credential_issuer": "StayProtected(QA)",
+      "credential_issuer_host": "https://injicertify-insurance.qainji.mosip.net"
+    },
+    {
+      "issuer_id": "Mock(QA)",
+      "protocol": "OpenId4VCI",
+      "display": [
+        {
+          "name": "Mock Identity(QA)",
+          "logo": {
+            "url": "https://inji.github.io/inji-config/logos/mosipid-logo.png",
+            "alt_text": "mosip-logo"
+          },
+          "title": "Mock Identity (qa-inji1)",
+          "description": "Download Mock Identity Credential",
+          "language": "en"
+        }
+      ],
+      "client_id": "mpartner-qainji-mimoto-mock-oidc",
+      "wellknown_endpoint": "https://injicertify-mock.qainji.mosip.net/v1/certify/.well-known/openid-credential-issuer",
+      "redirect_uri": "io.mosip.residentapp.inji://oauthredirect",
+      "authorization_audience": "https://esignet-mock.released.mosip.net/v1/esignet/oauth/v2/token",
+      "token_endpoint": "https://api.qainji.mosip.net/v1/mimoto/get-token/Mock(QA)",
+      "proxy_token_endpoint": "https://esignet-mock.released.mosip.net/v1/esignet/oauth/v2/token",
+      "client_alias": "mpartner-qainji-mimoto-mock-oidc",
+      "qr_code_type": "OnlineSharing",
+      "enabled": "true",
+      "credential_issuer": "Mock(QA)",
+      "credential_issuer_host": "https://injicertify-mock.qainji.mosip.net"
     }
   ]
 }

@@ -1,5 +1,11 @@
 import React from 'react';
-import {ActivityIndicator, StyleSheet, Text, View} from 'react-native';
+import {
+  ActivityIndicator,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from 'react-native';
 import type {RootRouteProps} from '../../../routes';
 import {AitButton, AitOtpInput, AitScreen} from '../../components';
 import {useTheme} from '../../theme';
@@ -7,7 +13,7 @@ import {useDemoIssuance} from './useDemoIssuance';
 import type {DemoStage} from './useDemoIssuance';
 
 const stageTitles: Record<DemoStage, string> = {
-  scan: 'Add your student ID',
+  login: 'Sign in to AIT',
   loading: 'Loading student details',
   review: 'Review your student ID',
   pin: 'Confirm with your wallet PIN',
@@ -22,6 +28,13 @@ export const AitCredentialRequestScreen: React.FC<RootRouteProps> = ({
 }) => {
   const theme = useTheme();
   const flow = useDemoIssuance();
+  const [email, setEmail] = React.useState('');
+  const [password, setPassword] = React.useState('');
+  const signIn = () => {
+    const secret = password;
+    setPassword('');
+    void flow.login(email, secret);
+  };
   const goHome = () => navigation.reset({index: 0, routes: [{name: 'Main'}]});
   const isBusy = flow.stage === 'loading' || flow.stage === 'issuing';
   const text = {color: theme.colors.textPrimary};
@@ -34,11 +47,12 @@ export const AitCredentialRequestScreen: React.FC<RootRouteProps> = ({
       title={stageTitles[flow.stage]}
       footer={
         <>
-          {flow.stage === 'scan' && (
+          {flow.stage === 'login' && (
             <AitButton
-              testID="simulateCredentialScan"
-              label="Try a sample QR code"
-              onPress={flow.scan}
+              testID="credentialSignIn"
+              label="Sign in"
+              disabled={!email.trim() || !password}
+              onPress={signIn}
             />
           )}
           {flow.stage === 'review' && (
@@ -76,9 +90,9 @@ export const AitCredentialRequestScreen: React.FC<RootRouteProps> = ({
           )}
           {flow.stage === 'error' && (
             <AitButton
-              testID="retryCredentialScan"
+              testID="retryCredentialSignIn"
               label="Try again"
-              onPress={flow.scan}
+              onPress={flow.restart}
             />
           )}
           {!isBusy && flow.stage !== 'pin' && (
@@ -95,28 +109,53 @@ export const AitCredentialRequestScreen: React.FC<RootRouteProps> = ({
           )}
         </>
       }>
-      <Text style={[styles.demo, muted]}>
-        Demo only · sample student details
-      </Text>
-      {flow.stage === 'scan' && (
-        <View style={styles.center}>
-          <View
+      {flow.stage === 'login' && (
+        <View>
+          <Text style={[styles.description, muted]}>
+            Sign in to retrieve your student ID, then review it before adding it
+            to your wallet.
+          </Text>
+          <Text style={[styles.label, text]}>Student ID</Text>
+          <TextInput
+            testID="credentialEmail"
+            accessibilityLabel="Student ID"
+            value={email}
+            onChangeText={setEmail}
+            keyboardType="default"
+            autoCapitalize="none"
+            autoCorrect={false}
+            autoComplete="username"
             style={[
-              styles.scanner,
+              styles.input,
               {
-                borderColor: theme.colors.primary,
-                borderRadius: theme.radius.lg,
+                color: theme.colors.textPrimary,
+                borderColor: theme.colors.textMuted,
+                borderRadius: theme.radius.md,
               },
-            ]}>
-            <Text style={[styles.qr, {color: theme.colors.primary}]}>▦</Text>
-          </View>
-          <Text style={[styles.description, muted]}>
-            Use the QR code from AIT SIS to add your student ID to your wallet.
-          </Text>
-          <Text style={[styles.description, muted]}>
-            Try a sample QR code to explore the steps with fictional student
-            details.
-          </Text>
+            ]}
+            placeholder="st126987"
+            placeholderTextColor={theme.colors.textMuted}
+          />
+          <Text style={[styles.label, text]}>Password</Text>
+          <TextInput
+            testID="credentialPassword"
+            accessibilityLabel="Password"
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry
+            autoCapitalize="none"
+            autoCorrect={false}
+            autoComplete="current-password"
+            onSubmitEditing={email.trim() && password ? signIn : undefined}
+            style={[
+              styles.input,
+              {
+                color: theme.colors.textPrimary,
+                borderColor: theme.colors.textMuted,
+                borderRadius: theme.radius.md,
+              },
+            ]}
+          />
         </View>
       )}
       {isBusy && (
@@ -207,16 +246,14 @@ export const AitCredentialRequestScreen: React.FC<RootRouteProps> = ({
 };
 
 const styles = StyleSheet.create({
-  demo: {fontSize: 12, marginBottom: 20},
   center: {flex: 1, alignItems: 'center', justifyContent: 'center', gap: 16},
-  scanner: {
-    width: 220,
-    height: 220,
-    borderWidth: 2,
-    alignItems: 'center',
-    justifyContent: 'center',
+  input: {
+    borderWidth: 1,
+    padding: 14,
+    fontSize: 16,
+    marginTop: 8,
+    marginBottom: 20,
   },
-  qr: {fontSize: 140},
   description: {fontSize: 14, lineHeight: 22, marginVertical: 12},
   issuer: {fontSize: 20, fontWeight: '700'},
   card: {borderWidth: 1, padding: 20, marginVertical: 16},
