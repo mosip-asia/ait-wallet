@@ -4,7 +4,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.android
-    image: ait-wallet-android-builder:latest
+    image: ghcr.io/mosip-asia/ait-wallet-android-builder:latest
     working_dir: /app
     volumes:
       - .:/app
@@ -13,15 +13,14 @@ services:
       - npm-cache:/root/.npm
     environment:
       - GRADLE_OPTS=-Dorg.gradle.daemon=false -Dorg.gradle.parallel=true -Dorg.gradle.jvmargs="-Xmx4096m -XX:+HeapDumpOnOutOfMemoryError"
-    command: >
-      bash -c "npm install && cd android && ./gradlew :app:assembleResidentappDebug"
+    command: ["./scripts/internal-build-android.sh"]
 
   # 2. Metro Bundler for live code updates on host emulator
   metro:
     build:
       context: .
       dockerfile: Dockerfile.android
-    image: ait-wallet-android-builder:latest
+    image: ghcr.io/mosip-asia/ait-wallet-android-builder:latest
     working_dir: /app
     ports:
       - "8081:8081"
