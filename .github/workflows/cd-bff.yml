@@ -1,0 +1,111 @@
+name: 🚀 BFF Deployment (wallet-dev)
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# One deployment at a time on the VM, and never cut in half: a newer run waits.
+concurrency:
+  group: cd-bff-wallet-dev
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: 🚀 Deploy BFF to wallet-dev
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment:
+      name: wallet-dev
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: 🔍 Validate Deployment Secrets & Variables
+        uses: ./.github/actions/preflight-check
+        with:
+          netbird-setup-key: ${{ secrets.NETBIRD_SETUP_KEY }}
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+          netbird-management-url: ${{ vars.NETBIRD_MANAGEMENT_URL }}
+          server-host: ${{ vars.SERVER_HOST }}
+          server-user: ${{ vars.SERVER_USER }}
+          server-project-dir: ${{ vars.SERVER_PROJECT_DIR }}
+
+      - name: 🛡️ Verify Secrets Guard
+        run: bash apps/bff/scripts/check-secrets-guard.sh
+
+      - name: 🐳 Validate Docker Compose Configuration
+        working-directory: apps/bff
+        run: |
+          cp .env.example .env
+          docker compose config --quiet
+          rm -f .env
+
+      - name: 🌐 Connect to NetBird VPN Mesh
+        uses: ./.github/actions/netbird-connect
+        with:
+          management-url: ${{ vars.NETBIRD_MANAGEMENT_URL }}
+          setup-key: ${{ secrets.NETBIRD_SETUP_KEY }}
+          server-host: ${{ vars.SERVER_HOST }}
+
+      - name: 🔑 Setup SSH Authentication
+        uses: ./.github/actions/ssh-setup
+        with:
+          ssh-key: ${{ secrets.SSH_PRIVATE_KEY }}
+          server-host: ${{ vars.SERVER_HOST }}
+
+      - name: 🚀 Update Repository and Deploy via SSH
+        uses: ./.github/actions/ssh-exec
+        with:
+          server-host: ${{ vars.SERVER_HOST }}
+          server-user: ${{ vars.SERVER_USER }}
+          cmd: |
+            set -e
+            # The repository is public: clone without a token, so none is left in .git/config.
+            REPO_URL="https://github.com/${{ github.repository }}.git"
+            TARGET_DIR="${{ vars.SERVER_PROJECT_DIR }}"
+
+            if [ ! -d "$TARGET_DIR/.git" ]; then
+              echo "Cloning repository for the first time into $TARGET_DIR..."
+              sudo mkdir -p "$TARGET_DIR"
+              sudo chown -R "$(id -u):$(id -g)" "$TARGET_DIR"
+              git clone "$REPO_URL" "$TARGET_DIR"
+            fi
+
+            cd "$TARGET_DIR"
+            git remote set-url origin "$REPO_URL"
+            git fetch origin --tags
+
+            # 1. Read last verified successful release, falling back to current tag if first run
+            if [ -f .deploy_success ] && [ -n "$(cat .deploy_success 2>/dev/null)" ]; then
+              STABLE_REV="$(cat .deploy_success)"
+            else
+              STABLE_REV="$(git describe --tags --exact-match 2>/dev/null || git rev-parse HEAD)"
+            fi
+            echo "Last verified stable baseline on host: ${STABLE_REV}"
+
+            echo "Checking out target release ${{ github.ref_name }} (${{ github.sha }})..."
+            git checkout -f ${{ github.sha }}
+
+            echo "Running deployment and smoke tests..."
+            if ! bash apps/bff/scripts/deploy.sh; then
+              echo "=========================================================="
+              echo "🚨 DEPLOYMENT OR SMOKE TEST FAILED!"
+              echo "Rolling back to last verified stable release: ${STABLE_REV}"
+              echo "=========================================================="
+              git checkout -f "${STABLE_REV}"
+              bash apps/bff/scripts/deploy.sh
+              echo "✅ Rollback to ${STABLE_REV} complete. Server restored to stable release."
+              echo "Failing workflow per Fail Forward policy."
+              exit 1
+            fi
+
+            # 2. Only record new success AFTER deploy.sh and smoke-test SUCCEED. The commit, not the
+            #    ref name: after a manual run the name is a branch, which moves.
+            echo "${{ github.sha }}" > .deploy_success
+            echo "✅ Deployment verified! Recorded ${{ github.ref_name }} (${{ github.sha }}) as the new stable baseline."
