@@ -27,8 +27,7 @@ echo "=========================================================="
 # If user passed custom gradle arguments (e.g. assembleResidentappRelease), forward them
 if [ "$#" -gt 0 ]; then
   echo "🔧 Custom Gradle target requested: $*"
-  docker compose -f docker-compose.android.yml run --rm android-builder \
-    bash -c "npm install && cd android && ./gradlew $*"
+  docker compose -f docker-compose.android.yml run --rm android-builder ./scripts/internal-build-android.sh "$@"
 else
   echo "🔨 Compiling Residentapp Debug APK..."
   docker compose -f docker-compose.android.yml run --rm android-builder

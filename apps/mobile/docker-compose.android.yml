@@ -12,9 +12,14 @@ services:
       - gradle-cache:/root/.gradle
       - npm-cache:/root/.npm
     environment:
+      - http_proxy
+      - https_proxy
+      - HTTP_PROXY
+      - HTTPS_PROXY
+      - no_proxy
+      - NO_PROXY
       - GRADLE_OPTS=-Dorg.gradle.daemon=false -Dorg.gradle.parallel=true -Dorg.gradle.jvmargs="-Xmx4096m -XX:+HeapDumpOnOutOfMemoryError"
-    command: >
-      bash -c "npm install && cd android && ./gradlew :app:assembleResidentappDebug"
+    command: ["./scripts/internal-build-android.sh"]
 
   # 2. Metro Bundler for live code updates on host emulator
   metro:
