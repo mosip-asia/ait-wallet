@@ -2,7 +2,7 @@ import {AitDocumentDashboard} from '../../ait/components/AitDocumentDashboard';
 import {SvgImage} from '../../components/ui/svg';
 import React, {useEffect, useState} from 'react';
 import {Button, Column, Row} from '../../components/ui';
-import {RefreshControl} from 'react-native';
+import {RefreshControl, ScrollView} from 'react-native';
 import {useMyVcsTab} from './MyVcsTabController';
 import {HomeScreenTabProps} from './HomeScreen';
 import {AddVcModal} from './MyVcs/AddVcModal';
@@ -133,9 +133,11 @@ export const MyVcsTab: React.FC<HomeScreenTabProps> = props => {
             testId={'downloadingVcPopup'}
           />
         )}
-        <Column
-          scroll
-          fill
+        <ScrollView
+          testID="walletDashboardScroll"
+          style={{flex: 1}}
+          contentContainerStyle={{flexGrow: 1}}
+          directionalLockEnabled
           refreshControl={
             <RefreshControl
               refreshing={controller.isRefreshingVcs}
@@ -144,6 +146,7 @@ export const MyVcsTab: React.FC<HomeScreenTabProps> = props => {
           }>
           <AitDocumentDashboard
             credentials={vcMetadataOrderedByPinStatus}
+            onBrowseIssuers={props.onBrowseIssuers}
             onAdd={props.onAddCredential ?? controller.DOWNLOAD_ID}
             renderCredential={vcMetadata => {
               const vcKey = vcMetadata.getVcKey();
@@ -173,7 +176,7 @@ export const MyVcsTab: React.FC<HomeScreenTabProps> = props => {
               );
             }}
           />
-        </Column>
+        </ScrollView>
       </Column>
 
       {controller.AddVcModalService && (

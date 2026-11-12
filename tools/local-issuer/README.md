@@ -18,10 +18,10 @@ sequenceDiagram
     participant Mimoto as Inji Mimoto BFF (:8099)
     participant Issuer as Local Issuer (:8443 HTTPS)
 
-    User->>Mobile: Tap "+ Add Credential" -> "AIT Registrar — Local Demo"
+    User->>Mobile: Tap "+ Add Credential" -> AIT sign-in
     Mobile->>Mimoto: GET /v1/mimoto/issuers
     Mimoto-->>Mobile: Returns AITRegistrar metadata & display configurations
-    User->>Mobile: Simulate scanning the SIS credential request QR
+    User->>Mobile: Sign in with the fictional email and password
     Mobile->>Issuer: POST /demo/credential-request
     Issuer-->>Mobile: Fictional student preview + short-lived credential offer
     Mobile->>User: Review Nisha's data; approve or reject
@@ -34,7 +34,7 @@ sequenceDiagram
 ```
 
 ### Key Security & Protocol Properties
-* **Demo QR Approval**: Simulated scan → issuer-owned data preview → local wallet PIN verification → signed credential. No username/password form; the PIN is never sent to the issuer. Only available in development builds and for fictional data.
+* **Demo Login Approval**: Issuer-validated email/password → issuer-owned data preview → local wallet PIN verification → signed credential. Use `st126987` / `qwerty` for this isolated fixture. The password is checked by the issuer over HTTPS; the wallet PIN is never sent to the issuer. Available in debug and release builds when the BFF provides the local AIT issuer configuration. The data and login remain fictional fixtures; release builds still require network access to the issuer and trust in its HTTPS certificate.
 * **One-Time Offers**: The [OIDC4VCI pre-authorized code flow](https://openid.net/specs/openid-4-verifiable-credential-issuance-1_0.html#name-pre-authorized-code-flow) uses five-minute offers and single-use codes, tokens, and nonces.
 * **Authorization-Code Compatibility**: The legacy consent-based path still enforces `S256` PKCE and Mimoto's `private_key_jwt` client authentication through the registered `ait-wallet-mobile-client` alias.
 * **Cryptographic Holder Binding**: The issued credential is tied to the wallet's public key as `did:jwk:...` using a signed `openid4vci-proof+jwt` proof of possession.
@@ -142,8 +142,8 @@ npm test
    ```
 
 3. In the Inji Mobile app:
-   * After PIN setup, tap **Scan credential QR**, or select **AIT Local Demo** from Add Card.
-   * Tap **Simulate QR scan**, review Nisha's data, then **Approve**.
+   * After PIN setup, tap **Sign in to add student ID**, or tap the empty Student ID card on the home screen.
+   * Sign in with `st126987` / `qwerty`, review Nisha's data, then continue to confirmation.
    * Enter the wallet PIN you created and tap **Confirm & add credential**. Rejecting or entering a wrong PIN does not request issuance.
    * The credential for **Nisha Gurung** (`DEMO-2026-0002`) will download and appear on your wallet home screen.
 
@@ -156,7 +156,7 @@ npm test
 | **BFF Host** | `http://localhost:8099` | Inji Mimoto backend port |
 | **Local Issuer Origin** | `https://localhost:8443` | OIDC4VCI mock server |
 | **Issuer Discovery** | `/.well-known/openid-credential-issuer` | OIDC4VCI issuer configuration |
-| **Demo QR Request** | `/demo/credential-request` | Fictional preview + one-time offer |
+| **Demo Login Request** | `/demo/credential-request` | Authenticated fictional preview + one-time offer |
 | **OAuth Authorization** | `/authorize` | Legacy demo consent page |
 | **Token Endpoint** | `/oauth/token` | Pre-authorized offer or PKCE token exchange |
 | **Credential Endpoint**| `/credential` | W3C JSON-LD issuance with holder binding |
@@ -182,3 +182,5 @@ rm -f certs/oidckeystore.p12
 rm -rf ../../tools/local-issuer/state
 ```
 Then re-run `./scripts/start-local-issuer.sh` to generate a fresh synchronized environment.
+
+The mobile home add action and onboarding sign-in action open the same login screen directly. Both AIT login and the issuer directory use local Mimoto (`MIMOTO_HOST`). The local issuer JSON includes AIT and two sandbox entries: Insurance and Mock Identity.

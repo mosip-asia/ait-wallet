@@ -43,9 +43,14 @@ beforeEach(() => {
 });
 
 it('loads a request only from the configured fictional issuer', async () => {
-  expect((await loadDemoRequest()).issuer).toBe(origin);
+  expect((await loadDemoRequest('st126987', 'qwerty')).issuer).toBe(origin);
   expect(fetch).toHaveBeenCalledWith(origin + '/demo/credential-request', {
     method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({
+      email: 'st126987',
+      password: 'qwerty',
+    }),
   });
 });
 
@@ -64,7 +69,9 @@ it.each(['expired', 'not-fixture', 'different-issuer'])(
       ok: true,
       json: async () => payload,
     });
-    await expect(loadDemoRequest()).rejects.toThrow('invalid or expired');
+    await expect(loadDemoRequest('st126987', 'qwerty')).rejects.toThrow(
+      'invalid or expired',
+    );
   },
 );
 
@@ -72,7 +79,9 @@ it('does not substitute a hosted issuer when the demo is unavailable', async () 
   (API.fetchIssuers as jest.Mock).mockResolvedValue([
     {issuer_id: 'OtherIssuer'},
   ]);
-  await expect(loadDemoRequest()).rejects.toThrow('not available');
+  await expect(loadDemoRequest('st126987', 'qwerty')).rejects.toThrow(
+    'not available',
+  );
   expect(fetch).not.toHaveBeenCalled();
 });
 
@@ -113,4 +122,23 @@ it('requires the signed student identity to match the reviewed request', () => {
       request(),
     ),
   ).toThrow('does not match');
+});
+
+it('rejects incorrect credentials without returning a preview', async () => {
+  (fetch as jest.Mock).mockResolvedValue({ok: false, status: 401});
+  await expect(loadDemoRequest('st126987', 'wrong')).rejects.toThrow(
+    'Student ID or password',
+  );
+});
+
+it('allows the configured AIT issuer in release builds', async () => {
+  const original = global.__DEV__;
+  global.__DEV__ = false;
+  try {
+    await expect(loadDemoRequest('st126987', 'qwerty')).resolves.toMatchObject({
+      issuer: origin,
+    });
+  } finally {
+    global.__DEV__ = original;
+  }
 });

@@ -20,7 +20,7 @@ import {
 } from './demoRequest';
 
 export type DemoStage =
-  | 'scan'
+  | 'login'
   | 'loading'
   | 'review'
   | 'pin'
@@ -41,7 +41,7 @@ export function useDemoIssuance() {
   const reviewed = useRef<DemoRequest | null>(null);
   const submitting = useRef(false);
   const [request, setRequest] = useState<DemoRequest | null>(null);
-  const [stage, setStage] = useState<DemoStage>('scan');
+  const [stage, setStage] = useState<DemoStage>('login');
   const [pin, setPin] = useState('');
   const [pinBusy, setPinBusy] = useState(false);
   const [error, setError] = useState('');
@@ -89,13 +89,13 @@ export function useDemoIssuance() {
     return () => subscription.unsubscribe();
   }, [serviceRefs]);
 
-  const scan = async () => {
+  const login = async (email: string, password: string) => {
     setStage('loading');
     setError('');
     setPin('');
     reviewed.current = null;
     try {
-      const next = await loadDemoRequest();
+      const next = await loadDemoRequest(email, password);
       reviewed.current = next;
       setRequest(next);
       setStage('review');
@@ -117,7 +117,7 @@ export function useDemoIssuance() {
     setError('');
     try {
       if (request.expiresAt <= Date.now())
-        throw new Error('This request expired. Please scan again.');
+        throw new Error('This request expired. Please sign in again.');
       if (!(await verifyApprovalPin(pin, storedHash, salt))) {
         setError('PIN did not match. Please try again.');
         setPin('');
@@ -162,7 +162,7 @@ export function useDemoIssuance() {
       state.matches('handleVCVerificationFailure')
     ) {
       setError(
-        'Could not retrieve or verify the credential. Please scan again.',
+        'Could not retrieve or verify the credential. Please sign in again.',
       );
       setStage('error');
     }
@@ -171,7 +171,7 @@ export function useDemoIssuance() {
       state.context.isTransactionCodeRequested
     ) {
       setError(
-        'This demo offer requires an unexpected extra sign-in. Please scan again.',
+        'This offer requires an unexpected extra sign-in. Please sign in again.',
       );
       setStage('error');
     }
@@ -200,7 +200,11 @@ export function useDemoIssuance() {
     setPin,
     pinBusy,
     error,
-    scan,
+    login,
+    restart: () => {
+      setError('');
+      setStage('login');
+    },
     approve,
     review: () => {
       setPin('');

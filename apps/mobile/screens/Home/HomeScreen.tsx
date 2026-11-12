@@ -1,3 +1,4 @@
+import {CommonActions} from '@react-navigation/native';
 import React, {useContext, useEffect} from 'react';
 import {Column} from '../../components/ui';
 import {Theme} from '../../components/ui/styleUtils';
@@ -65,7 +66,12 @@ export const HomeScreen: React.FC<HomeRouteProps> = props => {
         {controller.haveTabsLoaded && (
           <Column fill>
             <MyVcsTab
-              onAddCredential={controller.GOTO_ISSUERS}
+              onBrowseIssuers={controller.GOTO_ISSUERS}
+              onAddCredential={() =>
+                props.navigation.dispatch(
+                  CommonActions.navigate({name: 'AitCredentialRequest'}),
+                )
+              }
               isVisible={controller.activeTab === 0}
               service={controller.tabRefs.myVcs}
               vcItemActor={controller.selectedVc}
@@ -101,6 +107,7 @@ export const HomeScreen: React.FC<HomeRouteProps> = props => {
 
 export interface HomeScreenTabProps {
   onAddCredential?: () => void;
+  onBrowseIssuers?: () => void;
   isViewingVc: any;
   isVisible: boolean;
   service: TabRef;

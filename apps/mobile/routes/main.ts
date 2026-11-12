@@ -32,7 +32,12 @@ const history: TabScreen = {
   component: HistoryScreen,
   icon: 'history',
   options: {
-    headerTitleStyle: Theme.Styles.HistoryHeaderTitleStyle,
+    headerTitleAlign: 'left',
+    headerTitleStyle: {
+      ...Theme.Styles.HistoryHeaderTitleStyle,
+      fontSize: 18,
+      marginTop: 0,
+    },
     title: i18n.t('MainLayout:history'),
   },
 };

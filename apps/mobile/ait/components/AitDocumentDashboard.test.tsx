@@ -19,6 +19,32 @@ describe('AIT document dashboard', () => {
   beforeAll(() => {
     React.useState = jest.requireActual('react').useState;
   });
+  it('switches document sections when swiping and returns through the AIT indicator', () => {
+    const onAdd = jest.fn();
+    const onBrowseIssuers = jest.fn();
+    const screen = render(
+      <AitDocumentDashboard
+        credentials={[]}
+        onAdd={onAdd}
+        onBrowseIssuers={onBrowseIssuers}
+        renderCredential={renderCredential}
+      />,
+    );
+    fireEvent(screen.getByTestId('dashboardCarousel').parent!, 'layout', {
+      nativeEvent: {layout: {width: 390}},
+    });
+    fireEvent(screen.getByTestId('dashboardCarousel'), 'momentumScrollEnd', {
+      nativeEvent: {contentOffset: {x: 390}},
+    });
+    expect(screen.queryByTestId('addStudentId')).toBeNull();
+    fireEvent.press(screen.getByTestId('browseSandboxIssuers'));
+    expect(onBrowseIssuers).toHaveBeenCalledTimes(1);
+    expect(onAdd).not.toHaveBeenCalled();
+    fireEvent.press(screen.getAllByLabelText('aitContext').slice(-1)[0]);
+    expect(screen.getByTestId('addStudentId')).toBeTruthy();
+    expect(screen.queryByTestId('browseSandboxIssuers')).toBeNull();
+  });
+
   it('opens the add flow from the empty student card', () => {
     const onAdd = jest.fn();
     const screen = render(
@@ -57,7 +83,7 @@ describe('AIT document dashboard', () => {
     expect(screen.queryByTestId('addStudentId')).toBeNull();
   });
 
-  it('expands transcripts and keeps staff credentials separate from the student card', () => {
+  it('expands transcripts without displaying other credential categories', () => {
     const screen = render(
       <AitDocumentDashboard
         credentials={[
@@ -69,7 +95,8 @@ describe('AIT document dashboard', () => {
       />,
     );
     expect(screen.queryByText('Academic Transcript')).toBeNull();
-    expect(screen.getByText('Staff ID')).toBeTruthy();
+    expect(screen.queryByText('Staff ID')).toBeNull();
+    expect(screen.queryByText('otherCredentials')).toBeNull();
     expect(screen.getByTestId('addStudentId')).toBeTruthy();
     fireEvent.press(screen.getByText('transcript'));
     expect(screen.getByText('Academic Transcript')).toBeTruthy();
