@@ -57,6 +57,10 @@ Adhere to the Conventional Commits format:
 - `fix(security): resolve biometric fallback loop on Android 14`
 - `docs(standards): add compliance mapping matrix for Thai trust registry`
 
+### BFF Releases & Deployment
+- `bash apps/bff/scripts/release.sh v0.1.0` promotes `dev` into `main` and pushes a `v*` tag (run it with `--dry-run` first).
+- Every `v*` tag deploys the BFF to the `wallet-dev` VM through [`.github/workflows/cd-bff.yml`](../.github/workflows/cd-bff.yml); see [`apps/bff/README.md`](../apps/bff/README.md). Mobile releases need another tag prefix.
+
 ---
 
 ## ✅ 3. Definition of Done (DoD)

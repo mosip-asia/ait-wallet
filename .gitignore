@@ -92,3 +92,6 @@ scratch/
 
 # Internal Recruiting & Job Descriptions
 jobs/
+
+# CD marker on the deploy host: the last release that passed its smoke test
+.deploy_success
